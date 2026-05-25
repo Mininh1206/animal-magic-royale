@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce97ff8119d26a04f8107dc0d27a6db2, type: 3}
+  m_Name: Hormiga_SprayLimpieza
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Spells.SpellData
+  spellName: Spray Limpieza
+  tier: 1
+  icon: {fileID: 0}
+  damage: 0
+  cooldown: 5
+  projectileSpeed: 15
+  projectileCount: 1
+  projectilePrefab: {fileID: 0}
+  effects:
+  - {fileID: 11400000, guid: 20dc12e8aa4cfd3429bd53e7c9dc80e4, type: 2}
+  - {fileID: 11400000, guid: 0ffad5fc041ff624a854b973af9eaed6, type: 2}
