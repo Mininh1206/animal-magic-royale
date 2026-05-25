@@ -72,5 +72,23 @@ namespace AnimalMagicRoyale.Player
                 playerController.IsSprinting = context.ReadValueAsButton();
             }
         }
+
+        private void Update()
+        {
+            if (playerController != null)
+            {
+                if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+                {
+                    playerController.AttackRequested = true;
+                }
+
+                if (Keyboard.current != null)
+                {
+                    if (Keyboard.current.digit1Key.wasPressedThisFrame) playerController.ActiveSlotChange = 0;
+                    if (Keyboard.current.digit2Key.wasPressedThisFrame) playerController.ActiveSlotChange = 1;
+                    if (Keyboard.current.digit3Key.wasPressedThisFrame) playerController.ActiveSlotChange = 2;
+                }
+            }
+        }
     }
 }

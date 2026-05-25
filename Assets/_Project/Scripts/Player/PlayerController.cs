@@ -25,34 +25,49 @@ namespace AnimalMagicRoyale.Player
         // Estados
         public PlayerIdleState IdleState { get; private set; }
         public PlayerMoveState MoveState { get; private set; }
+        public PlayerAttackState AttackState { get; private set; }
+        public PlayerStunnedState StunnedState { get; private set; }
 
         // Input
         public Vector2 MoveInput { get; set; }
         public bool IsSprinting { get; set; }
         public bool JumpRequested { get; set; }
         public float CameraYAngle { get; set; }
+        public bool AttackRequested { get; set; }
+        public int ActiveSlotChange { get; set; } = -1;
 
         // Estado interno
         public float VerticalVelocity { get; set; }
         public bool IsGrounded { get; private set; }
         public float RotationVelocity; // Usado por SmoothDampAngle
 
-        private void Awake()
+        public void Awake()
         {
             CharacterController = GetComponent<CharacterController>();
             StateMachine = new StateMachine();
 
             IdleState = new PlayerIdleState(this, StateMachine);
             MoveState = new PlayerMoveState(this, StateMachine);
+            AttackState = new PlayerAttackState(this, StateMachine);
+            StunnedState = new PlayerStunnedState(this, StateMachine);
         }
 
-        private void Start()
+        public void Start()
         {
             StateMachine.Initialize(IdleState);
         }
 
         private void Update()
         {
+            if (ActiveSlotChange != -1)
+            {
+                var inventory = GetComponent<AnimalMagicRoyale.Components.SpellInventory>();
+                if (inventory != null)
+                {
+                    inventory.SelectSlot(ActiveSlotChange);
+                }
+            }
+
             GroundedCheck();
             StateMachine.Update();
             ApplyGravity();
@@ -67,6 +82,8 @@ namespace AnimalMagicRoyale.Player
         private void LateUpdate()
         {
             JumpRequested = false;
+            AttackRequested = false;
+            ActiveSlotChange = -1;
         }
 
         private void GroundedCheck()

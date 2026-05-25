@@ -19,6 +19,12 @@ namespace AnimalMagicRoyale.Player
 
         public override void Update()
         {
+            if (player.AttackRequested)
+            {
+                stateMachine.ChangeState(player.AttackState);
+                return;
+            }
+
             // Transición a MoveState si hay input
             if (player.MoveInput.sqrMagnitude > 0.01f)
             {
