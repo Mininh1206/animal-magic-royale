@@ -48,6 +48,12 @@ namespace AnimalMagicRoyale.Spells
         {
             if (!isInitialized) return;
             if (other.gameObject == caster) return;
+            
+            // Ignorar choques entre otros proyectiles
+            if (other.GetComponent<Projectile>() != null) return;
+
+            // Debug para saber contra qué choca
+            Debug.Log($"[Projectile] Chocó contra: {other.gameObject.name}");
 
             if (spellData != null && spellData.effects != null)
             {

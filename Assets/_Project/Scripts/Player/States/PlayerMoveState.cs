@@ -38,18 +38,16 @@ namespace AnimalMagicRoyale.Player
         private void Move()
         {
             float targetSpeed = player.IsSprinting ? player.sprintSpeed : player.moveSpeed;
-            Vector3 inputDirection = new Vector3(player.MoveInput.x, 0.0f, player.MoveInput.y).normalized;
 
-            // Mover relativo a la rotación de la cámara (CameraYAngle)
-            float targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + player.CameraYAngle;
+            // Rotar el personaje con A/D (MoveInput.x)
+            float turnSpeed = 150f; // Grados por segundo
+            player.transform.Rotate(0, player.MoveInput.x * turnSpeed * Time.deltaTime, 0);
+
+            // Mover hacia adelante/atrás con W/S (MoveInput.y) basado en hacia dónde mira el personaje
+            Vector3 targetDirection = player.transform.forward * player.MoveInput.y;
             
-            // Rotar el personaje
-            float rotation = Mathf.SmoothDampAngle(player.transform.eulerAngles.y, targetRotation, ref player.RotationVelocity, player.rotationSmoothTime);
-            player.transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-
-            // Mover
-            Vector3 targetDirection = Quaternion.Euler(0.0f, targetRotation, 0.0f) * Vector3.forward;
-            player.CharacterController.Move(targetDirection.normalized * (targetSpeed * Time.deltaTime));
+            // Aplicar movimiento
+            player.CharacterController.Move(targetDirection * (targetSpeed * Time.deltaTime));
         }
     }
 }

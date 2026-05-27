@@ -32,6 +32,7 @@ namespace AnimalMagicRoyale.Components
                 if (slots[i].IsEmpty)
                 {
                     slots[i].spellData = newSpell;
+                    Debug.Log($"¡Hechizo {newSpell.name} recogido en el slot {i + 1}!");
                     return true;
                 }
             }
@@ -52,12 +53,19 @@ namespace AnimalMagicRoyale.Components
         {
             SpellSlot currentSlot = slots[activeSlotIndex];
 
-            if (currentSlot.IsEmpty || currentSlot.IsOnCooldown)
+            if (currentSlot.IsEmpty)
             {
+                Debug.LogWarning($"[SpellInventory] Intento de disparo fallido: El slot {activeSlotIndex} está VACÍO.");
+                return false;
+            }
+            if (currentSlot.IsOnCooldown)
+            {
+                Debug.LogWarning($"[SpellInventory] Intento de disparo fallido: El slot {activeSlotIndex} está en ENFRIAMIENTO.");
                 return false;
             }
 
             SpellData data = currentSlot.spellData;
+            Debug.Log($"[SpellInventory] Disparando {data.spellName} desde el slot {activeSlotIndex}. ¿Tiene prefab 3D?: {(data.projectilePrefab != null ? "SÍ" : "NO")}");
 
             if (data.projectileSpeed > 0 && data.projectilePrefab != null)
             {

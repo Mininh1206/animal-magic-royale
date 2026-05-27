@@ -242,18 +242,18 @@ BotController
 ### M2: Combate y Hechizos
 | Tarea | Prioridad | Estado |
 |---|---|---|
-| Arquitectura de Hechizos (SpellData SO + SpellEffect) | 🔴 Alta | To Do |
-| Sistema de Object Pooling | 🟡 Normal | To Do |
-| Inventario de Hechizos (3 slots, descarte, cooldowns) | 🟡 Normal | To Do |
-| Sistema de Salud y Daño (HealthComponent, TakeDamage, Die) | 🔴 Alta | To Do |
+| Arquitectura de Hechizos (SpellData SO + SpellEffect) | 🔴 Alta | Done |
+| Sistema de Object Pooling | 🟡 Normal | Done |
+| Inventario de Hechizos (3 slots, descarte, cooldowns) | 🟡 Normal | Done |
+| Sistema de Salud y Daño (HealthComponent, TakeDamage, Die) | 🔴 Alta | Done |
 
 ### M3: Game Loop y Battle Royale
 | Tarea | Prioridad | Estado |
 |---|---|---|
-| GameManager y Estados de la Partida (Waiting, Playing, GameOver) | 🔴 Alta | To Do |
-| Sistema de Zona de Daño Incremental | 🔴 Alta | To Do |
-| Spawners de Cajas de Botín (Común, Rara, Legendaria) | 🟡 Normal | To Do |
-| Habilidades Especiales de Personajes (Cerdo, Gallo, Gallina, Pato) | 🟡 Normal | To Do |
+| GameManager y Estados de la Partida (Waiting, Playing, GameOver) | 🔴 Alta | Done |
+| Sistema de Zona de Daño Incremental | 🔴 Alta | Done |
+| Spawners de Cajas de Botín (Común, Rara, Legendaria) | 🟡 Normal | Done |
+| Habilidades Especiales de Personajes (Cerdo, Gallo, Gallina, Pato) | 🟡 Normal | Done |
 
 ### M4: Inteligencia Artificial
 | Tarea | Prioridad | Estado |
@@ -305,3 +305,4 @@ BotController
 8. **El daño de zona es incremental**, no fijo.
 9. **La persistencia** usa JSON + Hash para records, `PlayerPrefs` para configuración.
 10. **Genera código limpio**, siguiendo las convenciones del punto 8, y con tests cuando sea posible.
+11. **Actualiza este archivo (CLAUDE.md) siempre que se complete una tarea** del backlog (sección 7). Cambia el estado de `To Do` a `Done` inmediatamente después de finalizar la implementación y verificación de cada tarea. Esto mantiene el archivo como fuente de verdad del progreso del proyecto.

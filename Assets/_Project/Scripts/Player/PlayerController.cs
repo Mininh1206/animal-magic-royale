@@ -35,6 +35,8 @@ namespace AnimalMagicRoyale.Player
         public float CameraYAngle { get; set; }
         public bool AttackRequested { get; set; }
         public int ActiveSlotChange { get; set; } = -1;
+        public bool AbilityRequested { get; set; }
+        public bool InteractRequested { get; set; }
 
         // Estado interno
         public float VerticalVelocity { get; set; }
@@ -68,6 +70,28 @@ namespace AnimalMagicRoyale.Player
                 }
             }
 
+            if (AbilityRequested)
+            {
+                var abilityHolder = GetComponent<AnimalMagicRoyale.Components.AbilityHolder>();
+                if (abilityHolder != null)
+                {
+                    abilityHolder.TryActivate();
+                }
+            }
+
+            if (InteractRequested)
+            {
+                var colliders = Physics.OverlapSphere(transform.position, 3f);
+                foreach (var col in colliders)
+                {
+                    var lootBox = col.GetComponent<AnimalMagicRoyale.Components.LootBox>();
+                    if (lootBox != null)
+                    {
+                        if (lootBox.TryOpen(gameObject)) break;
+                    }
+                }
+            }
+
             GroundedCheck();
             StateMachine.Update();
             ApplyGravity();
@@ -84,6 +108,8 @@ namespace AnimalMagicRoyale.Player
             JumpRequested = false;
             AttackRequested = false;
             ActiveSlotChange = -1;
+            AbilityRequested = false;
+            InteractRequested = false;
         }
 
         private void GroundedCheck()

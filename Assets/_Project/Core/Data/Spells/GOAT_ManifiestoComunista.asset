@@ -19,7 +19,7 @@ MonoBehaviour:
   cooldown: 15
   projectileSpeed: 20
   projectileCount: 1
-  projectilePrefab: {fileID: 0}
+  projectilePrefab: {fileID: 8349761922293664815, guid: 848e099678108084e90bb9235cfb1d9b, type: 3}
   effects:
   - {fileID: 11400000, guid: fc6b24a492c851b478bc84228eacb5da, type: 2}
   - {fileID: 11400000, guid: 0ad4eebd140800948b458ad7d798adcc, type: 2}

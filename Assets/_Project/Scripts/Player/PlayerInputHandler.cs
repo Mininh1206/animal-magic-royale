@@ -87,6 +87,8 @@ namespace AnimalMagicRoyale.Player
                     if (Keyboard.current.digit1Key.wasPressedThisFrame) playerController.ActiveSlotChange = 0;
                     if (Keyboard.current.digit2Key.wasPressedThisFrame) playerController.ActiveSlotChange = 1;
                     if (Keyboard.current.digit3Key.wasPressedThisFrame) playerController.ActiveSlotChange = 2;
+                    if (Keyboard.current.qKey.wasPressedThisFrame) playerController.AbilityRequested = true;
+                    if (Keyboard.current.eKey.wasPressedThisFrame) playerController.InteractRequested = true;
                 }
             }
         }

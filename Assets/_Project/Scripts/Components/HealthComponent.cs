@@ -25,6 +25,15 @@ namespace AnimalMagicRoyale.Components
         {
             if (!IsAlive || amount <= 0) return;
 
+            var shield = GetComponent<AnimalMagicRoyale.Components.Abilities.ShieldComponent>();
+            if (shield != null && shield.remainingShield > 0)
+            {
+                float absorbed = Mathf.Min(amount, shield.remainingShield);
+                shield.remainingShield -= absorbed;
+                amount -= absorbed;
+                if (amount <= 0) return; // Completely absorbed
+            }
+
             CurrentHealth -= amount;
             
             if (CurrentHealth <= 0)
