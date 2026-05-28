@@ -49,7 +49,6 @@ namespace AnimalMagicRoyale.Player
         
         [Header("Mouse Look")]
         public float mouseSensitivity = 15f;
-        private float cameraPitch;
 
         public void Awake()
         {
@@ -67,14 +66,6 @@ namespace AnimalMagicRoyale.Player
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             StateMachine.Initialize(IdleState);
-            
-            // Leer el pitch inicial desde la cámara del prefab
-            if (UnityEngine.Camera.main != null)
-            {
-                cameraPitch = UnityEngine.Camera.main.transform.localEulerAngles.x;
-                // Normalizar a rango [-180, 180]
-                if (cameraPitch > 180f) cameraPitch -= 360f;
-            }
         }
 
         private void Update()
@@ -127,18 +118,9 @@ namespace AnimalMagicRoyale.Player
         {
             if (LookInput.sqrMagnitude < 0.01f) return;
 
-            // Rotar jugador horizontalmente
+            // Solo rotar el jugador horizontalmente; Cinemachine gestiona el pitch de la cámara
             float yaw = LookInput.x * mouseSensitivity * Time.deltaTime;
             transform.Rotate(Vector3.up, yaw);
-
-            // Rotar cámara verticalmente (solo pitch)
-            cameraPitch -= LookInput.y * mouseSensitivity * Time.deltaTime;
-            cameraPitch = Mathf.Clamp(cameraPitch, -89f, 89f);
-
-            if (UnityEngine.Camera.main != null && UnityEngine.Camera.main.transform.parent == transform)
-            {
-                UnityEngine.Camera.main.transform.localRotation = Quaternion.Euler(cameraPitch, 0, 0);
-            }
         }
 
         private void FixedUpdate()
