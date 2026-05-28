@@ -258,9 +258,9 @@ BotController
 ### M4: Inteligencia Artificial
 | Tarea | Prioridad | Estado |
 |---|---|---|
-| Sistema Sensorial de la IA (visión + audición) | 🟡 Normal | To Do |
-| Controlador de Lógica Difusa (Fuzzy) | 🔴 Alta | To Do |
-| Árbol de Comportamiento (Behavior Tree) | 🔴 Alta | To Do |
+| Sistema Sensorial de la IA (visión + audición) | 🟡 Normal | Done |
+| Controlador de Lógica Difusa (Fuzzy) | 🔴 Alta | Done |
+| Árbol de Comportamiento (Behavior Tree) | 🔴 Alta | Done |
 
 ### M5: UI y Persistencia
 | Tarea | Prioridad | Estado |

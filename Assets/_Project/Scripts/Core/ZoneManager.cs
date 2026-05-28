@@ -6,6 +6,8 @@ namespace AnimalMagicRoyale.Core
 {
     public class ZoneManager : MonoBehaviour
     {
+        public static ZoneManager Instance { get; private set; }
+
         [Header("References")]
         public Transform zoneVisual;
         public ZoneShrinkEvent onZoneShrink;
@@ -22,6 +24,18 @@ namespace AnimalMagicRoyale.Core
         private bool isActive = false;
         private bool isShrinking = false;
         private float damageTimer = 0f;
+
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
 
         private void Start()
         {
