@@ -34,30 +34,34 @@
 
 ## 3. Estructura de Carpetas
 
-```
+La carpeta principal y única de desarrollo es **`Assets/_Project/`**. El resto de carpetas hijas directas de `Assets/` (como `Blocks`, `Platformer`, `Shooter`, etc.) provienen de un template base y **deben ser ignoradas** a la hora de crear o modificar código y assets.
+
+```text
 animal-magic-royale/
 ├── Assets/
-│   ├── Core/
-│   │   ├── Art/              # Modelos, materiales, texturas
-│   │   ├── Audio/            # SFX y música
-│   │   ├── Data/             # ScriptableObjects (SpellData, etc.)
-│   │   ├── GameEvents/       # Eventos del Event Bus
-│   │   ├── Prefabs/          # Prefabs reutilizables
+│   ├── _Project/               # 🟢 CARPETA PRINCIPAL DE DESARROLLO 🟢
+│   │   ├── Core/
+│   │   │   ├── Art/            # Animaciones, Materiales, Modelos (Pato, Cerdo, Gallo, etc.)
+│   │   │   ├── Data/           # ScriptableObjects (Habilidades, Eventos, Hechizos, Fases de Zona)
+│   │   │   ├── Prefabs/        # Prefabs de entidades (ej. Player)
+│   │   │   └── Scenes/         # Escenas del juego y de testeo
 │   │   ├── Scripts/
-│   │   │   ├── Editor/       # Scripts de editor
-│   │   │   └── Runtime/      # Scripts de gameplay
-│   │   │       ├── Components/   # HealthComponent, SpellInventory, etc.
-│   │   │       ├── Framework/    # FSM, EventBus, ObjectPool
-│   │   │       ├── GameEvents/   # Definiciones de eventos
-│   │   │       └── Generated/    # Código auto-generado
-│   │   ├── Settings/         # Configuración URP, Input Actions
-│   │   └── TestScenes/       # Escenas de prueba
-│   ├── Blocks/               # Bloques del template
-│   ├── Platformer/           # Assets del template (adaptar/eliminar)
-│   └── Shooter/              # Assets del template (adaptar/eliminar)
+│   │   │   ├── AI/             # Behavior Tree, Lógica Difusa (Fuzzy), Acciones
+│   │   │   ├── Camera/         # Scripts relacionados con la cámara
+│   │   │   ├── Components/     # Componentes del juego (Habilidades, UI, etc.)
+│   │   │   ├── Core/           # Arquitectura (EventBus, FSM, ObjectPool, GameStates)
+│   │   │   ├── Editor/         # Herramientas custom para el editor de Unity
+│   │   │   ├── Player/         # Controlador del jugador, InputHandler, CinemachinePOVInput, Estados
+│   │   │   └── Spells/         # Lógica de combate, proyectiles y efectos modulares
+│   │   └── Tests/              # Pruebas unitarias
+│   │
+│   ├── Blocks/                 # ⛔ Ignorar (Template)
+│   ├── Platformer/             # ⛔ Ignorar (Template)
+│   ├── Shooter/                # ⛔ Ignorar (Template)
+│   └── ...                     # ⛔ Ignorar (Template)
 ├── Packages/
 ├── ProjectSettings/
-├── tareas.csv                # Backlog de tareas (Trello export)
+├── tareas.csv                  # Backlog de tareas (Trello export)
 └── Documento de Análisis de Requisitos.txt
 ```
 
@@ -87,6 +91,14 @@ GameManager ──(EventBus)──► UI (HUD)
 PlayerController ──(FSM)──► States (Idle, Move, Attack, Stunned)
 BotController ────(FSM)──► States + BehaviorTree + FuzzyController
 ```
+
+### 4.3. Sistema de Cámara (Cinemachine 3.x)
+
+- **CinemachineBrain**: Ubicado en la `Main Camera` de la escena.
+- **CinemachineCamera (Virtual)**: Orbita alrededor del jugador. Usa `CinemachineThirdPersonFollow` para el seguimiento y `CinemachineDeoccluder` para evitar atravesar la geometría.
+- **Rotación Horizontal (Yaw)**: El script `PlayerController.cs` recibe el input X del ratón y rota todo el Transform del jugador directamente.
+- **Rotación Vertical (Pitch)**: El script custom `CinemachinePOVInput.cs` recibe el input Y del ratón y alimenta directamente el eje Tilt del componente `CinemachinePanTilt` de la cámara virtual, evitando conflictos o doble rotación.
+
 
 ---
 
