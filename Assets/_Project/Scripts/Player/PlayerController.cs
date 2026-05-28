@@ -30,6 +30,7 @@ namespace AnimalMagicRoyale.Player
 
         // Input
         public Vector2 MoveInput { get; set; }
+        public Vector2 LookInput { get; set; }
         public bool IsSprinting { get; set; }
         public bool JumpRequested { get; set; }
         public float CameraYAngle { get; set; }
@@ -42,6 +43,12 @@ namespace AnimalMagicRoyale.Player
         public float VerticalVelocity { get; set; }
         public bool IsGrounded { get; private set; }
         public float RotationVelocity; // Usado por SmoothDampAngle
+        
+        [Header("Mouse Look")]
+        public float mouseSensitivity = 15f;
+        public float cameraDistance = 10f;
+        public Vector3 cameraPivotOffset = new Vector3(0, 2f, 0);
+        private float cameraPitch = 35f;
 
         public void Awake()
         {
@@ -56,7 +63,14 @@ namespace AnimalMagicRoyale.Player
 
         public void Start()
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             StateMachine.Initialize(IdleState);
+            
+            if (UnityEngine.Camera.main != null)
+            {
+                cameraPitch = UnityEngine.Camera.main.transform.localEulerAngles.x;
+            }
         }
 
         private void Update()
@@ -92,10 +106,35 @@ namespace AnimalMagicRoyale.Player
                 }
             }
 
+            HandleMouseLook();
             GroundedCheck();
             StateMachine.Update();
             ApplyGravity();
             ApplyVerticalMovement();
+        }
+
+        private void HandleMouseLook()
+        {
+            if (LookInput.sqrMagnitude >= 0.01f)
+            {
+                // Rotar jugador horizontalmente
+                float yaw = LookInput.x * mouseSensitivity * Time.deltaTime;
+                transform.Rotate(Vector3.up, yaw);
+
+                // Rotar cámara verticalmente
+                cameraPitch -= LookInput.y * mouseSensitivity * Time.deltaTime;
+                cameraPitch = Mathf.Clamp(cameraPitch, -89f, 89f);
+            }
+
+            // Actualizar siempre la posición de la cámara para que orbite al jugador
+            if (UnityEngine.Camera.main != null && UnityEngine.Camera.main.transform.parent == transform)
+            {
+                Quaternion localRotation = Quaternion.Euler(cameraPitch, 0, 0);
+                Vector3 localPosition = cameraPivotOffset - (localRotation * Vector3.forward * cameraDistance);
+
+                UnityEngine.Camera.main.transform.localPosition = localPosition;
+                UnityEngine.Camera.main.transform.localRotation = localRotation;
+            }
         }
 
         private void FixedUpdate()
@@ -114,8 +153,15 @@ namespace AnimalMagicRoyale.Player
 
         private void GroundedCheck()
         {
-            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y + groundedOffset, transform.position.z);
-            IsGrounded = Physics.CheckSphere(spherePosition, groundedRadius, groundLayers, QueryTriggerInteraction.Ignore);
+            // Usar primariamente la comprobación del CharacterController que no depende de capas
+            IsGrounded = CharacterController.isGrounded;
+            
+            // Fallback por si acaso con CheckSphere, solo si hay groundLayers configuradas
+            if (!IsGrounded && groundLayers != 0)
+            {
+                Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y + groundedOffset, transform.position.z);
+                IsGrounded = Physics.CheckSphere(spherePosition, groundedRadius, groundLayers, QueryTriggerInteraction.Ignore);
+            }
         }
 
         private void ApplyGravity()
