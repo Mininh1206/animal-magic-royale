@@ -93,7 +93,7 @@ PlayerController ──(FSM)──► States (Idle, Move, Attack, Stunned)
 BotController ────(FSM)──► States + BehaviorTree + FuzzyController
 
 * Ambos controladores delegan la animación al CharacterAnimationHandler.
-* Los inputs del jugador (1, 2, 3, Q, E) se leen vía KeyBindingManager.
+* Los inputs del jugador se leen vía KeyBindingManager utilizando el nuevo Input System (`UnityEngine.InputSystem.Key`).
 ```
 
 ### 4.3. Sistema de Cámara y Apuntado (Shooter-like)
