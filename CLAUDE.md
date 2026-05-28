@@ -78,6 +78,7 @@ animal-magic-royale/
 | **Object Pooling** | Reciclaje de proyectiles y partículas de impacto | `Scripts/Runtime/Framework/ObjectPool.cs` |
 | **Strategy / Composición** | Sistema de efectos modulares en hechizos (`SpellEffect` abstracto → `DamageEffect`, `StunEffect`, etc.) | `Scripts/Runtime/Components/` |
 | **ScriptableObjects** | Datos de hechizos (`SpellData`) con tier, daño, cooldown y lista de efectos | `Core/Data/` |
+| **Singleton / Managers** | Control centralizado de bindings (`KeyBindingManager`) y estado del juego. | `Scripts/Core/` |
 
 ### 4.2. Comunicación entre Sistemas
 
@@ -90,14 +91,18 @@ GameManager ──(EventBus)──► UI (HUD)
 
 PlayerController ──(FSM)──► States (Idle, Move, Attack, Stunned)
 BotController ────(FSM)──► States + BehaviorTree + FuzzyController
+
+* Ambos controladores delegan la animación al CharacterAnimationHandler.
+* Los inputs del jugador (1, 2, 3, Q, E) se leen vía KeyBindingManager.
 ```
 
-### 4.3. Sistema de Cámara (Cinemachine 3.x)
+### 4.3. Sistema de Cámara y Apuntado (Shooter-like)
 
 - **CinemachineBrain**: Ubicado en la `Main Camera` de la escena.
-- **CinemachineCamera (Virtual)**: Orbita alrededor del jugador. Usa `CinemachineThirdPersonFollow` para el seguimiento y `CinemachineDeoccluder` para evitar atravesar la geometría.
+- **CinemachineCamera (Virtual)**: Orbita alrededor del jugador. Usa `CinemachineThirdPersonFollow` y `CinemachineDeoccluder`.
 - **Rotación Horizontal (Yaw)**: El script `PlayerController.cs` recibe el input X del ratón y rota todo el Transform del jugador directamente.
-- **Rotación Vertical (Pitch)**: El script custom `CinemachinePOVInput.cs` recibe el input Y del ratón y alimenta directamente el eje Tilt del componente `CinemachinePanTilt` de la cámara virtual, evitando conflictos o doble rotación.
+- **Rotación Vertical (Pitch)**: El script `CinemachinePOVInput.cs` alimenta el eje Tilt del componente `CinemachinePanTilt`.
+- **Apuntado y Disparo**: El jugador tiene una cruceta en el centro de la pantalla (`CrosshairController`). Al disparar, `AimHelper` lanza un raycast desde el centro de la cámara para determinar la dirección exacta del proyectil, el cual se instancia en el `FirePoint` específico del modelo del animal.
 
 
 ---
@@ -274,13 +279,15 @@ BotController
 | Controlador de Lógica Difusa (Fuzzy) | 🔴 Alta | Done |
 | Árbol de Comportamiento (Behavior Tree) | 🔴 Alta | Done |
 
-### M5: UI y Persistencia
+### M5: UI, Persistencia y Pulido
 | Tarea | Prioridad | Estado |
 |---|---|---|
 | Flujo de Escenas y UI de Menús (Presentación, Configuración, Finalización) | 🟡 Normal | To Do |
 | UI In-Game / HUD (barra de vida, inventario con cooldown radial, timer zona) | 🟡 Normal | To Do |
 | Persistencia de Datos (JSON + Hash) | 🔴 Alta | To Do |
+| Persistencia de Configuración y Controles (KeyBindingManager / PlayerPrefs) | 🔴 Alta | Done |
 | Pulido, Arte y Efectos VFX/SFX (modelos Low-Poly, partículas, audio) | 🟡 Normal | To Do |
+| Refactorización Arquitectura (Animaciones compartidas, apuntado tipo shooter) | 🔴 Alta | Done |
 
 ---
 

@@ -89,11 +89,15 @@ namespace AnimalMagicRoyale.Player
 
                 if (Keyboard.current != null)
                 {
-                    if (Keyboard.current.digit1Key.wasPressedThisFrame) playerController.ActiveSlotChange = 0;
-                    if (Keyboard.current.digit2Key.wasPressedThisFrame) playerController.ActiveSlotChange = 1;
-                    if (Keyboard.current.digit3Key.wasPressedThisFrame) playerController.ActiveSlotChange = 2;
-                    if (Keyboard.current.qKey.wasPressedThisFrame) playerController.AbilityRequested = true;
-                    if (Keyboard.current.eKey.wasPressedThisFrame) playerController.InteractRequested = true;
+                    var kb = AnimalMagicRoyale.Core.KeyBindingManager.Instance;
+                    if (kb != null)
+                    {
+                        if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.SelectSlot1)) playerController.ActiveSlotChange = 0;
+                        if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.SelectSlot2)) playerController.ActiveSlotChange = 1;
+                        if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.SelectSlot3)) playerController.ActiveSlotChange = 2;
+                        if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.Ability)) playerController.AbilityRequested = true;
+                        if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.Interact)) playerController.InteractRequested = true;
+                    }
                 }
             }
         }

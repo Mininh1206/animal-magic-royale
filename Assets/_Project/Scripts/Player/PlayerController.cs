@@ -4,6 +4,10 @@ using AnimalMagicRoyale.Core;
 namespace AnimalMagicRoyale.Player
 {
     [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(AnimalMagicRoyale.Components.HealthComponent))]
+    [RequireComponent(typeof(AnimalMagicRoyale.Components.SpellInventory))]
+    [RequireComponent(typeof(AnimalMagicRoyale.Components.AbilityHolder))]
+    [RequireComponent(typeof(AnimalMagicRoyale.Components.CharacterAnimationHandler))]
     public class PlayerController : MonoBehaviour
     {
         [Header("Movement Settings")]
@@ -18,8 +22,8 @@ namespace AnimalMagicRoyale.Player
         public float groundedRadius = 0.28f;
         public LayerMask groundLayers;
 
-        [Header("Animation")]
-        public Animator targetAnimator;
+        // Components cache
+        private AnimalMagicRoyale.Components.CharacterAnimationHandler _animHandler;
 
         // Componentes
         public CharacterController CharacterController { get; private set; }
@@ -59,6 +63,8 @@ namespace AnimalMagicRoyale.Player
             MoveState = new PlayerMoveState(this, StateMachine);
             AttackState = new PlayerAttackState(this, StateMachine);
             StunnedState = new PlayerStunnedState(this, StateMachine);
+
+            _animHandler = GetComponent<AnimalMagicRoyale.Components.CharacterAnimationHandler>();
         }
 
         public void Start()
@@ -66,14 +72,20 @@ namespace AnimalMagicRoyale.Player
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             StateMachine.Initialize(IdleState);
+
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.RegisterPlayer(gameObject);
+            }
         }
 
         private void Update()
         {
-            if (targetAnimator != null)
+            if (_animHandler != null)
             {
-                bool isRunning = MoveInput.sqrMagnitude > 0.01f;
-                targetAnimator.SetBool("isRunning", isRunning);
+                bool effectiveSprinting = IsSprinting && MoveInput.y >= -0.1f;
+                float speed = MoveInput.sqrMagnitude > 0.01f ? (effectiveSprinting ? sprintSpeed : moveSpeed) : 0f;
+                _animHandler.UpdateLocomotion(speed, effectiveSprinting);
             }
 
             if (ActiveSlotChange != -1)

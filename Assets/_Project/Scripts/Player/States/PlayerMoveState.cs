@@ -37,7 +37,8 @@ namespace AnimalMagicRoyale.Player
 
         private void Move()
         {
-            float targetSpeed = player.IsSprinting ? player.sprintSpeed : player.moveSpeed;
+            bool effectiveSprinting = player.IsSprinting && player.MoveInput.y >= -0.1f;
+            float targetSpeed = effectiveSprinting ? player.sprintSpeed : player.moveSpeed;
 
             // Mover hacia adelante/atrás y lados con W/S/A/D relativo a donde mira el personaje
             Vector3 targetDirection = player.transform.right * player.MoveInput.x + player.transform.forward * player.MoveInput.y;

@@ -83,6 +83,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1165384056112328064, guid: 70e3a433d44f29e4bb248b3b99ef27df, type: 3}
+      propertyPath: targetAnimator
+      value: 
+      objectReference: {fileID: 6580004677149415844}
+    - target: {fileID: 3111492276379742013, guid: 70e3a433d44f29e4bb248b3b99ef27df, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.526
+      objectReference: {fileID: 0}
     - target: {fileID: 3246918770384183912, guid: 70e3a433d44f29e4bb248b3b99ef27df, type: 3}
       propertyPath: targetAnimator
       value: 
@@ -139,11 +147,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: PigPlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 9088721466116376003, guid: 70e3a433d44f29e4bb248b3b99ef27df, type: 3}
+      propertyPath: ability
+      value: 
+      objectReference: {fileID: 11400000, guid: c79f34d0d91325341b1d834d69870e89, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5570204458787750647, guid: 70e3a433d44f29e4bb248b3b99ef27df, type: 3}
-      insertIndex: -1
+      insertIndex: 0
       addedObject: {fileID: 986556258798240734}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70e3a433d44f29e4bb248b3b99ef27df, type: 3}

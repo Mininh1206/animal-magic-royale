@@ -66,6 +66,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 29bcb769f3c51f64987d1ba4482dc26d, type: 3}
   m_PrefabInstance: {fileID: 3938944055842439437}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &7476930952290155676 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 29bcb769f3c51f64987d1ba4482dc26d, type: 3}
+  m_PrefabInstance: {fileID: 3938944055842439437}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8364461400554874391
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -118,11 +123,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: DuckBot
       objectReference: {fileID: 0}
+    - target: {fileID: 6956224123718136175, guid: 84ca9580a0842a54f836b9bf8570ed9c, type: 3}
+      propertyPath: targetAnimator
+      value: 
+      objectReference: {fileID: 7476930952290155676}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1664618265462263143, guid: 84ca9580a0842a54f836b9bf8570ed9c, type: 3}
-      insertIndex: -1
+      insertIndex: 0
       addedObject: {fileID: 3540754832436324070}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 84ca9580a0842a54f836b9bf8570ed9c, type: 3}

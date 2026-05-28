@@ -15,6 +15,7 @@ namespace AnimalMagicRoyale.AI
                     Vector3 center = ZoneManager.Instance.transform.position;
                     // Get slightly random point near center to avoid clustering
                     Vector3 randomOffset = new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-5f, 5f));
+                    ctx.Bot.Agent.speed = 8f; // Correr a zona segura
                     ctx.Bot.Agent.SetDestination(center + randomOffset);
                     return NodeStatus.Running; // Always running until condition (IsOutsideZone) becomes false
                 }
@@ -28,6 +29,13 @@ namespace AnimalMagicRoyale.AI
             {
                 if (!ctx.NearestEnemy.HasValue) return NodeStatus.Failure;
                 
+                // Si el agente ya tiene un camino activo y no ha llegado, continuar
+                if (!ctx.Bot.Agent.pathPending && ctx.Bot.Agent.hasPath && ctx.Bot.Agent.remainingDistance > 2f)
+                {
+                    return NodeStatus.Running;
+                }
+                
+                // Calcular nuevo destino de huida
                 Vector3 enemyPos = ctx.NearestEnemy.Value.transform.position;
                 Vector3 fleeDir = (ctx.Bot.transform.position - enemyPos).normalized;
                 
@@ -42,8 +50,10 @@ namespace AnimalMagicRoyale.AI
                     fleeDest = ctx.Bot.transform.position + (fleeDir + centerDir).normalized * 10f;
                 }
 
+                ctx.Bot.Agent.isStopped = false;
+                ctx.Bot.Agent.speed = 8f; // Correr
                 ctx.Bot.Agent.SetDestination(fleeDest);
-                return NodeStatus.Success; // Action executed for this tick
+                return NodeStatus.Running;
             });
         }
 
@@ -65,6 +75,7 @@ namespace AnimalMagicRoyale.AI
                 
                 // Sino, acercarse
                 ctx.Bot.Agent.isStopped = false;
+                ctx.Bot.Agent.speed = 5f; // Acercarse andando
                 ctx.Bot.Agent.SetDestination(target.position);
                 return NodeStatus.Running;
             });
@@ -145,6 +156,7 @@ namespace AnimalMagicRoyale.AI
                 }
                 
                 ctx.Bot.Agent.isStopped = false;
+                ctx.Bot.Agent.speed = 5f; // Andar a caja
                 ctx.Bot.Agent.SetDestination(box.position);
                 return NodeStatus.Running;
             });
@@ -175,6 +187,7 @@ namespace AnimalMagicRoyale.AI
                     // Comprobar que el punto es válido en el NavMesh
                     if (UnityEngine.AI.NavMesh.SamplePosition(dest, out UnityEngine.AI.NavMeshHit hit, 10f, UnityEngine.AI.NavMesh.AllAreas))
                     {
+                        ctx.Bot.Agent.speed = 5f; // Andar patrullando
                         ctx.Bot.Agent.SetDestination(hit.position);
                     }
                 }

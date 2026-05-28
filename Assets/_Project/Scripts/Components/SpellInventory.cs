@@ -6,9 +6,12 @@ namespace AnimalMagicRoyale.Components
     public class SpellInventory : MonoBehaviour
     {
         [SerializeField] private SpellData basicStickSpell;
+        [SerializeField] private Transform firePoint;
 
         public SpellSlot[] slots = new SpellSlot[3];
         public int activeSlotIndex = 0;
+        
+        public Transform FirePoint => firePoint;
 
         public void Awake()
         {
@@ -49,7 +52,7 @@ namespace AnimalMagicRoyale.Components
             }
         }
 
-        public bool TryCast(GameObject caster, Vector3 direction, Transform firePoint = null)
+        public bool TryCast(GameObject caster, Vector3 direction, Transform overrideFirePoint = null)
         {
             SpellSlot currentSlot = slots[activeSlotIndex];
 
@@ -78,7 +81,8 @@ namespace AnimalMagicRoyale.Components
                         spreadDir = Quaternion.Euler(0, spreadAngle, 0) * direction;
                     }
 
-                    Vector3 spawnPos = firePoint != null ? firePoint.position : caster.transform.position + Vector3.up * 1f;
+                    Transform effectiveFirePoint = overrideFirePoint != null ? overrideFirePoint : this.firePoint;
+                    Vector3 spawnPos = effectiveFirePoint != null ? effectiveFirePoint.position : caster.transform.position + Vector3.up * 1f;
                     Projectile proj = Core.ProjectilePoolManager.Instance.GetProjectile(data.projectilePrefab);
                     if (proj != null)
                     {

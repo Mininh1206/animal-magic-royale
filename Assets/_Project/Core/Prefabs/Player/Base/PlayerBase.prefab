@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2496990225313979059
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3111492276379742013}
+  m_Layer: 3
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3111492276379742013
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2496990225313979059}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.51, z: 1.05}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5570204458787750647}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6843955092458633083
 GameObject:
   m_ObjectHideFlags: 0
@@ -19,6 +50,7 @@ GameObject:
   - component: {fileID: 7438684229072739025}
   - component: {fileID: 3446011943192510452}
   - component: {fileID: 9088721466116376003}
+  - component: {fileID: 1165384056112328064}
   m_Layer: 3
   m_Name: PlayerBase
   m_TagString: Player
@@ -38,7 +70,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 3111492276379742013}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7404170865951430304
@@ -167,7 +200,6 @@ MonoBehaviour:
   groundLayers:
     serializedVersion: 2
     m_Bits: 0
-  targetAnimator: {fileID: 0}
   RotationVelocity: 0
   mouseSensitivity: 15
 --- !u!114 &9146990903678730635
@@ -211,6 +243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.SpellInventory
   basicStickSpell: {fileID: 11400000, guid: ca09857129a60e4468a99a8f20f06cef, type: 2}
+  firePoint: {fileID: 3111492276379742013}
   slots:
   - spellData: {fileID: 0}
     lastCastTime: -100
@@ -244,3 +277,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.AbilityHolder
   ability: {fileID: 0}
+--- !u!114 &1165384056112328064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6843955092458633083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0f07f90a0638424f8aeef481ef0aeaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.CharacterAnimationHandler
+  targetAnimator: {fileID: 0}
+  locomotionBlendSpeed: 10

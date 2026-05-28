@@ -10,6 +10,7 @@ namespace AnimalMagicRoyale.AI
     [RequireComponent(typeof(HealthComponent))]
     [RequireComponent(typeof(SpellInventory))]
     [RequireComponent(typeof(AISensorSystem))]
+    [RequireComponent(typeof(CharacterAnimationHandler))]
     public class BotController : MonoBehaviour
     {
         public float attackRange = 10f;
@@ -22,6 +23,7 @@ namespace AnimalMagicRoyale.AI
         private FuzzyController fuzzyController;
         private BTNode behaviorTree;
         private BotContext context;
+        private CharacterAnimationHandler _animHandler;
 
         private void Awake()
         {
@@ -32,6 +34,7 @@ namespace AnimalMagicRoyale.AI
 
             fuzzyController = new FuzzyController();
             context = new BotContext { Bot = this, Sensor = Sensor };
+            _animHandler = GetComponent<CharacterAnimationHandler>();
             
             BuildBehaviorTree();
         }
@@ -115,6 +118,13 @@ namespace AnimalMagicRoyale.AI
 
             // Behavior Tree Step
             behaviorTree.Tick(context);
+
+            if (_animHandler != null)
+            {
+                float botSpeed = Agent.velocity.magnitude;
+                bool botRunning = botSpeed > 6.5f; // Umbral para correr (Walk=5, Run=8)
+                _animHandler.UpdateLocomotion(botSpeed, botRunning);
+            }
         }
 
         private void UpdateContext()

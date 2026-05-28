@@ -23,18 +23,22 @@ namespace AnimalMagicRoyale.Player
 
             if (inventory != null)
             {
-                Vector3 direction = player.transform.forward;
+                Vector3 firePos = inventory.FirePoint != null ? inventory.FirePoint.position : player.transform.position + Vector3.up * 1f;
+                Vector3 direction = AimHelper.GetAimDirection(firePos);
                 inventory.TryCast(player.gameObject, direction);
             }
         }
 
         public override void Update()
         {
-            // Lógica de movimiento (Tank Controls) mientras se ataca
-            float targetSpeed = player.IsSprinting ? player.sprintSpeed : player.moveSpeed;
-            float turnSpeed = 150f;
-            player.transform.Rotate(0, player.MoveInput.x * turnSpeed * Time.deltaTime, 0);
-            Vector3 targetDirection = player.transform.forward * player.MoveInput.y;
+            bool effectiveSprinting = player.IsSprinting && player.MoveInput.y >= -0.1f;
+            float targetSpeed = effectiveSprinting ? player.sprintSpeed : player.moveSpeed;
+            
+            Vector3 targetDirection = player.transform.right * player.MoveInput.x + player.transform.forward * player.MoveInput.y;
+            if (targetDirection.sqrMagnitude > 1f)
+            {
+                targetDirection.Normalize();
+            }
             player.CharacterController.Move(targetDirection * (targetSpeed * Time.deltaTime));
 
             // Lógica de finalización de ataque

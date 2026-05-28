@@ -8,7 +8,7 @@ namespace AnimalMagicRoyale.Components
     {
         [SerializeField] private SpellTier tier;
         [SerializeField] private float interactionRange = 2f;
-        [SerializeField] private float openDuration = 1f; // For E hold mechanic if needed later, right now instant
+
 
         private bool isOpened = false;
         private SpellData containedSpell;

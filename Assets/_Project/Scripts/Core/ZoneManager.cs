@@ -137,7 +137,7 @@ namespace AnimalMagicRoyale.Core
                 {
                     // This is slightly inefficient if we could get the alive list directly, but we don't have access to the private list.
                     // We'll have to rely on objects with ZoneDamageTracker for now.
-                    var trackers = FindObjectsByType<ZoneDamageTracker>(FindObjectsSortMode.None);
+                    var trackers = FindObjectsByType<ZoneDamageTracker>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
                     foreach (var tracker in trackers)
                     {
                         bool isInside = IsInsideZone(tracker.transform.position);
