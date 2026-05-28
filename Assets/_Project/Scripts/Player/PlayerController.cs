@@ -49,9 +49,7 @@ namespace AnimalMagicRoyale.Player
         
         [Header("Mouse Look")]
         public float mouseSensitivity = 15f;
-        public float cameraDistance = 10f;
-        public Vector3 cameraPivotOffset = new Vector3(0, 2f, 0);
-        private float cameraPitch = 35f;
+        private float cameraPitch;
 
         public void Awake()
         {
@@ -70,9 +68,12 @@ namespace AnimalMagicRoyale.Player
             Cursor.visible = false;
             StateMachine.Initialize(IdleState);
             
+            // Leer el pitch inicial desde la cámara del prefab
             if (UnityEngine.Camera.main != null)
             {
                 cameraPitch = UnityEngine.Camera.main.transform.localEulerAngles.x;
+                // Normalizar a rango [-180, 180]
+                if (cameraPitch > 180f) cameraPitch -= 360f;
             }
         }
 
@@ -80,8 +81,6 @@ namespace AnimalMagicRoyale.Player
         {
             if (targetAnimator != null)
             {
-                // Actualizamos el parámetro 'isRunning' del Animator.
-                // Si te refieres a correr (sprint), puedes usar: IsSprinting && MoveInput.sqrMagnitude > 0.01f
                 bool isRunning = MoveInput.sqrMagnitude > 0.01f;
                 targetAnimator.SetBool("isRunning", isRunning);
             }
@@ -126,25 +125,19 @@ namespace AnimalMagicRoyale.Player
 
         private void HandleMouseLook()
         {
-            if (LookInput.sqrMagnitude >= 0.01f)
-            {
-                // Rotar jugador horizontalmente
-                float yaw = LookInput.x * mouseSensitivity * Time.deltaTime;
-                transform.Rotate(Vector3.up, yaw);
+            if (LookInput.sqrMagnitude < 0.01f) return;
 
-                // Rotar cámara verticalmente
-                cameraPitch -= LookInput.y * mouseSensitivity * Time.deltaTime;
-                cameraPitch = Mathf.Clamp(cameraPitch, -89f, 89f);
-            }
+            // Rotar jugador horizontalmente
+            float yaw = LookInput.x * mouseSensitivity * Time.deltaTime;
+            transform.Rotate(Vector3.up, yaw);
 
-            // Actualizar siempre la posición de la cámara para que orbite al jugador
+            // Rotar cámara verticalmente (solo pitch)
+            cameraPitch -= LookInput.y * mouseSensitivity * Time.deltaTime;
+            cameraPitch = Mathf.Clamp(cameraPitch, -89f, 89f);
+
             if (UnityEngine.Camera.main != null && UnityEngine.Camera.main.transform.parent == transform)
             {
-                Quaternion localRotation = Quaternion.Euler(cameraPitch, 0, 0);
-                Vector3 localPosition = cameraPivotOffset - (localRotation * Vector3.forward * cameraDistance);
-
-                UnityEngine.Camera.main.transform.localPosition = localPosition;
-                UnityEngine.Camera.main.transform.localRotation = localRotation;
+                UnityEngine.Camera.main.transform.localRotation = Quaternion.Euler(cameraPitch, 0, 0);
             }
         }
 
