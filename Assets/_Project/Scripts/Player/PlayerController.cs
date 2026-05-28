@@ -18,6 +18,9 @@ namespace AnimalMagicRoyale.Player
         public float groundedRadius = 0.28f;
         public LayerMask groundLayers;
 
+        [Header("Animation")]
+        public Animator targetAnimator;
+
         // Componentes
         public CharacterController CharacterController { get; private set; }
         public StateMachine StateMachine { get; private set; }
@@ -75,6 +78,14 @@ namespace AnimalMagicRoyale.Player
 
         private void Update()
         {
+            if (targetAnimator != null)
+            {
+                // Actualizamos el parámetro 'isRunning' del Animator.
+                // Si te refieres a correr (sprint), puedes usar: IsSprinting && MoveInput.sqrMagnitude > 0.01f
+                bool isRunning = MoveInput.sqrMagnitude > 0.01f;
+                targetAnimator.SetBool("isRunning", isRunning);
+            }
+
             if (ActiveSlotChange != -1)
             {
                 var inventory = GetComponent<AnimalMagicRoyale.Components.SpellInventory>();
