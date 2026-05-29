@@ -38,6 +38,14 @@ namespace AnimalMagicRoyale.AI
             {
                 UpdateSensor();
                 lastUpdateTime = Time.time;
+                
+                int enemyCount = 0;
+                int lootCount = 0;
+                foreach(var t in VisibleTargets) {
+                    if (t.type == TargetType.Enemy) enemyCount++;
+                    if (t.type == TargetType.LootBox) lootCount++;
+                }
+                Debug.Log($"[AISensorSystem] {gameObject.name}: Scan found {VisibleTargets.Count} targets ({enemyCount} enemies, {lootCount} lootboxes)");
             }
         }
 

@@ -15,7 +15,11 @@ namespace AnimalMagicRoyale.Core
         {
             Debug.Log("[GameOverState] Entered Game Over State.");
             
-            // TODO: Stop ZoneManager
+            if (ZoneManager.Instance != null)
+            {
+                ZoneManager.Instance.Deactivate();
+                Debug.Log("[GameOverState] ZoneManager deactivated.");
+            }
             // TODO: Disable player inputs
             
             if (gameManager.AlivePlayersCount == 1)

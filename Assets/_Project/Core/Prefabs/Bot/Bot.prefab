@@ -18,7 +18,8 @@ GameObject:
   - component: {fileID: 7411202754533574377}
   - component: {fileID: 626452310286192143}
   - component: {fileID: 6956224123718136175}
-  m_Layer: 0
+  - component: {fileID: 6099818358701154827}
+  m_Layer: 3
   m_Name: Bot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,8 +156,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.HealthComponent
   maxHealth: 100
-  onHealthChanged: {fileID: 0}
-  onDeath: {fileID: 0}
+  onHealthChanged: {fileID: 11400000, guid: 029bc29be33723d4c9e8b69935cf1164, type: 2}
+  onDeath: {fileID: 11400000, guid: 9175e6a733d72f84f98e3a8ce6f44d16, type: 2}
 --- !u!114 &4000655049293807265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,7 +192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d32f42acc6ff6b468bff496db1b3baa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.AI.AISensorSystem
-  config: {fileID: 0}
+  config: {fileID: 11400000, guid: f3631e8dfd3e8cd47a5210e40662340e, type: 2}
 --- !u!114 &626452310286192143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,6 +220,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.CharacterAnimationHandler
   targetAnimator: {fileID: 0}
   locomotionBlendSpeed: 10
+--- !u!114 &6099818358701154827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2524747108961993690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 852ac8d310a53d2419e61bb724b5bf2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.ZoneDamageTracker
 --- !u!1 &5756916300440959502
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,7 +241,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1156257856865417743}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

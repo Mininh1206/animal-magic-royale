@@ -104,11 +104,11 @@ namespace AnimalMagicRoyale.Player
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.LowerHealth))
                         {
                             // Invoca evento de daño sin usar eventbus
-                            playerController.TakeDamage(25);
+                            playerController.TakeDamage(25f, null);
                         }
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.HealPlayer))
                         {
-                            playerController.Heal(25);
+                            playerController.Heal(25f);
                         }
                     }
                 }

@@ -15,7 +15,7 @@ namespace AnimalMagicRoyale.Spells.Effects
             var health = target.GetComponent<HealthComponent>();
             if (health != null)
             {
-                health.TakeDamage(damageAmount);
+                health.TakeDamage(damageAmount, caster);
             }
         }
     }

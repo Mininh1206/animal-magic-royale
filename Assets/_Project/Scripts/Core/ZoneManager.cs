@@ -57,6 +57,11 @@ namespace AnimalMagicRoyale.Core
                 currentRadius = phases[currentPhaseIndex].startRadius;
                 targetRadius = phases[currentPhaseIndex].startRadius;
                 phaseTimer = phases[currentPhaseIndex].waitBeforeShrink;
+                Debug.Log($"[ZoneManager] Activated. Phase 0, start radius: {currentRadius}");
+            }
+            else
+            {
+                Debug.LogWarning("[ZoneManager] Activated but no phases are defined!");
             }
             isShrinking = false;
         }
@@ -68,28 +73,32 @@ namespace AnimalMagicRoyale.Core
 
         private void Update()
         {
-            if (!isActive || phases.Length == 0 || currentPhaseIndex >= phases.Length) return;
+            if (!isActive || phases.Length == 0) return;
 
-            ZonePhaseData currentPhase = phases[currentPhaseIndex];
+            int activePhaseIndex = Mathf.Min(currentPhaseIndex, phases.Length - 1);
+            ZonePhaseData currentPhase = phases[activePhaseIndex];
 
-            if (!isShrinking)
+            if (currentPhaseIndex < phases.Length)
             {
-                phaseTimer -= Time.deltaTime;
-                if (phaseTimer <= 0)
+                if (!isShrinking)
                 {
-                    StartShrinking(currentPhase);
+                    phaseTimer -= Time.deltaTime;
+                    if (phaseTimer <= 0)
+                    {
+                        StartShrinking(currentPhase);
+                    }
                 }
-            }
-            else
-            {
-                phaseTimer -= Time.deltaTime;
-                float t = 1f - (phaseTimer / currentPhase.shrinkDuration);
-                currentRadius = Mathf.Lerp(currentPhase.startRadius, currentPhase.endRadius, t);
-                UpdateVisuals();
-
-                if (phaseTimer <= 0)
+                else
                 {
-                    AdvancePhase();
+                    phaseTimer -= Time.deltaTime;
+                    float t = 1f - (phaseTimer / currentPhase.shrinkDuration);
+                    currentRadius = Mathf.Lerp(currentPhase.startRadius, currentPhase.endRadius, t);
+                    UpdateVisuals();
+
+                    if (phaseTimer <= 0)
+                    {
+                        AdvancePhase();
+                    }
                 }
             }
 
@@ -101,6 +110,7 @@ namespace AnimalMagicRoyale.Core
             isShrinking = true;
             phaseTimer = phase.shrinkDuration;
             targetRadius = phase.endRadius;
+            Debug.Log($"[ZoneManager] Zone shrinking to {targetRadius} over {phaseTimer}s.");
 
             if (onZoneShrink != null)
             {
@@ -122,6 +132,11 @@ namespace AnimalMagicRoyale.Core
             if (currentPhaseIndex < phases.Length)
             {
                 phaseTimer = phases[currentPhaseIndex].waitBeforeShrink;
+                Debug.Log($"[ZoneManager] Advanced to Phase {currentPhaseIndex}. Waiting {phaseTimer}s before shrink.");
+            }
+            else
+            {
+                Debug.Log("[ZoneManager] Final phase reached. Zone will no longer shrink.");
             }
         }
 
@@ -138,6 +153,10 @@ namespace AnimalMagicRoyale.Core
                     // This is slightly inefficient if we could get the alive list directly, but we don't have access to the private list.
                     // We'll have to rely on objects with ZoneDamageTracker for now.
                     var trackers = FindObjectsByType<ZoneDamageTracker>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+                    if (trackers.Length == 0)
+                    {
+                        Debug.LogWarning("[ZoneManager] WARNING: No ZoneDamageTrackers found in scene!");
+                    }
                     foreach (var tracker in trackers)
                     {
                         bool isInside = IsInsideZone(tracker.transform.position);
@@ -149,7 +168,8 @@ namespace AnimalMagicRoyale.Core
                             if (health != null && health.IsAlive)
                             {
                                 float damage = phase.baseDamage * tracker.GetDamageMultiplier(phase.damageMultiplier);
-                                health.TakeDamage(damage);
+                                health.TakeDamage(damage, gameObject); // Pass ZoneManager gameObject as source
+                                Debug.Log($"[ZoneManager] {tracker.gameObject.name} outside zone, dealt {damage} damage.");
                             }
                         }
                     }

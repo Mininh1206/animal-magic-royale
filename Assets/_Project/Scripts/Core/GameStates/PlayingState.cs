@@ -16,7 +16,11 @@ namespace AnimalMagicRoyale.Core
             Debug.Log("[PlayingState] Entered Playing State. Match is now active!");
             
             // TODO: Enable player inputs
-            // TODO: Activate ZoneManager
+            if (ZoneManager.Instance != null)
+            {
+                ZoneManager.Instance.Activate();
+                Debug.Log("[PlayingState] ZoneManager activated.");
+            }
             // TODO: Enable LootBox spawners
             
             if (gameManager.onGameStateChanged != null)

@@ -16,6 +16,7 @@ namespace AnimalMagicRoyale.Core
 
         [Header("Settings")]
         public float countdownDuration = 3f;
+        public float autoStartDelay = 2f;
 
         public StateMachine StateMachine { get; private set; }
         public WaitingState WaitingState { get; private set; }
@@ -56,6 +57,8 @@ namespace AnimalMagicRoyale.Core
         private void Start()
         {
             StateMachine.Initialize(WaitingState);
+            Debug.Log($"[GameManager] Auto-starting match in {autoStartDelay} seconds...");
+            Invoke(nameof(StartMatch), autoStartDelay);
         }
 
         private void OnEnable()
@@ -96,30 +99,43 @@ namespace AnimalMagicRoyale.Core
                 alivePlayers.Add(player);
                 TotalPlayers = alivePlayers.Count;
                 NotifyAliveCount();
+                Debug.Log($"[GameManager] Registered: {player.name}. Alive: {alivePlayers.Count}");
             }
         }
 
-        public void UnregisterPlayer(GameObject player)
+        public void UnregisterPlayer(GameObject player, GameObject killer = null)
         {
             if (alivePlayers.Contains(player))
             {
                 alivePlayers.Remove(player);
                 NotifyAliveCount();
+                Debug.Log($"[GameManager] Player eliminated: {player.name} by {killer?.name ?? "environment"}. Remaining: {alivePlayers.Count}");
 
                 if (onPlayerEliminated != null)
                 {
                     onPlayerEliminated.Raise(new PlayerEliminatedPayload
                     {
                         eliminated = player,
+                        killer = killer,
                         remainingPlayers = alivePlayers.Count
                     });
+                }
+
+                if (StateMachine.CurrentState == PlayingState && alivePlayers.Count <= 1)
+                {
+                    if (alivePlayers.Count == 1)
+                    {
+                        Winner = alivePlayers[0];
+                    }
+                    Debug.Log($"[GameManager] Match Ended! Winner: {(Winner != null ? Winner.name : "None")}");
+                    StateMachine.ChangeState(GameOverState);
                 }
             }
         }
 
-        private void HandlePlayerDeath(GameObject player)
+        private void HandlePlayerDeath(DeathPayload payload)
         {
-            UnregisterPlayer(player);
+            UnregisterPlayer(payload.victim, payload.killer);
         }
 
         public void StartMatch()

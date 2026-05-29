@@ -7,6 +7,7 @@ namespace AnimalMagicRoyale.Core
     public struct HealthChangedPayload
     {
         public GameObject target;
+        public GameObject source;
         public float currentHealth;
         public float maxHealth;
         public float delta;

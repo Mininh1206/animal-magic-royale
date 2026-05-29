@@ -36,12 +36,21 @@ namespace AnimalMagicRoyale.Components.UI
 
         private void HandlePlayerEliminated(PlayerEliminatedPayload payload)
         {
+            Debug.Log($"[KillFeedUI] HandlePlayerEliminated called for {payload.eliminated?.name}");
             if (bannerPanel != null && killText != null)
             {
                 string playerName = payload.eliminated != null ? payload.eliminated.name : "Un jugador";
-                killText.text = $"{playerName} ha sido eliminado";
+                if (payload.killer != null)
+                {
+                    killText.text = $"{payload.killer.name} ha eliminado a {playerName}";
+                }
+                else
+                {
+                    killText.text = $"{playerName} ha sido eliminado";
+                }
                 
                 bannerPanel.SetActive(true);
+                Debug.Log($"[KillFeedUI] Banner activated with text: {killText.text}");
                 
                 if (hideCoroutine != null)
                 {

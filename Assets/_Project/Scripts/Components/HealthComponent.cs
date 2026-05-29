@@ -14,16 +14,30 @@ namespace AnimalMagicRoyale.Components
 
         public float CurrentHealth { get; private set; }
         public bool IsAlive { get; private set; }
+        private GameObject lastDamager;
 
         public void Awake()
         {
             CurrentHealth = maxHealth;
             IsAlive = true;
+            lastDamager = null;
         }
 
-        public void TakeDamage(float amount)
+        public void TakeDamage(float amount, GameObject source = null)
         {
             if (!IsAlive || amount <= 0) return;
+
+            // Prevent damage if the game is not in Playing state
+            if (AnimalMagicRoyale.Core.GameManager.Instance != null && 
+                !(AnimalMagicRoyale.Core.GameManager.Instance.StateMachine.CurrentState is AnimalMagicRoyale.Core.PlayingState))
+            {
+                return;
+            }
+
+            if (source != null)
+            {
+                lastDamager = source;
+            }
 
             var shield = GetComponent<AnimalMagicRoyale.Components.Abilities.ShieldComponent>();
             if (shield != null && shield.remainingShield > 0)
@@ -46,11 +60,14 @@ namespace AnimalMagicRoyale.Components
                 onHealthChanged.Raise(new HealthChangedPayload
                 {
                     target = gameObject,
+                    source = source,
                     currentHealth = CurrentHealth,
                     maxHealth = maxHealth,
                     delta = -amount
                 });
             }
+
+            Debug.Log($"[HealthComponent] {gameObject.name} took {amount} dmg from {source?.name ?? "environment"}. HP: {CurrentHealth}/{maxHealth}");
 
             if (CurrentHealth <= 0)
             {
@@ -73,6 +90,7 @@ namespace AnimalMagicRoyale.Components
                 onHealthChanged.Raise(new HealthChangedPayload
                 {
                     target = gameObject,
+                    source = null,
                     currentHealth = CurrentHealth,
                     maxHealth = maxHealth,
                     delta = amount
@@ -85,10 +103,15 @@ namespace AnimalMagicRoyale.Components
             if (!IsAlive) return;
             
             IsAlive = false;
+            Debug.Log($"[HealthComponent] {gameObject.name} has been killed by {lastDamager?.name ?? "environment"}");
             
             if (onDeath != null)
             {
-                onDeath.Raise(gameObject);
+                onDeath.Raise(new DeathPayload
+                {
+                    victim = gameObject,
+                    killer = lastDamager
+                });
             }
             
             gameObject.SetActive(false);

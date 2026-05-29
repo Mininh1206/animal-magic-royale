@@ -83,6 +83,12 @@ namespace AnimalMagicRoyale.Components
 
                     Transform effectiveFirePoint = overrideFirePoint != null ? overrideFirePoint : this.firePoint;
                     Vector3 spawnPos = effectiveFirePoint != null ? effectiveFirePoint.position : caster.transform.position + Vector3.up * 1f;
+                    if (Core.ProjectilePoolManager.Instance == null)
+                    {
+                        Debug.LogWarning("[SpellInventory] ERROR: ProjectilePoolManager.Instance is null! Cannot spawn projectile.");
+                        return false;
+                    }
+
                     Projectile proj = Core.ProjectilePoolManager.Instance.GetProjectile(data.projectilePrefab);
                     if (proj != null)
                     {
@@ -93,6 +99,7 @@ namespace AnimalMagicRoyale.Components
             }
 
             currentSlot.lastCastTime = Time.time;
+            Debug.Log($"[SpellInventory] {caster.name} fired {data.spellName} from slot {activeSlotIndex}");
             return true;
         }
 

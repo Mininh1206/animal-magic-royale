@@ -25,6 +25,8 @@ namespace AnimalMagicRoyale.Components.UI
         [Header("Events")]
         [SerializeField] private GameStateEvent onGameStateChanged;
 
+        private HealthBarUI healthBarUI;
+
         private void OnEnable()
         {
             if (onGameStateChanged != null)
@@ -39,6 +41,16 @@ namespace AnimalMagicRoyale.Components.UI
         
         private void Start()
         {
+            if (healthBarPanel != null)
+            {
+                healthBarUI = healthBarPanel.GetComponent<HealthBarUI>();
+            }
+            else
+            {
+                Debug.LogWarning("[HUDManager] healthBarPanel is not assigned in the Inspector!");
+            }
+            
+            Debug.Log("[HUDManager] Start executed.");
             // Initial state based on typical GameManager startup (Waiting -> Playing)
             if (GameManager.Instance != null && GameManager.Instance.StateMachine.CurrentState is WaitingState)
             {
@@ -55,15 +67,30 @@ namespace AnimalMagicRoyale.Components.UI
 
         private void HandleGameStateChanged(GameState state)
         {
+            Debug.Log($"[HUDManager] GameState changed to {state}");
             switch (state)
             {
                 case GameState.Waiting:
-                    SetHUDActive(false);
+                    SetHUDActive(true);
                     if (gameOverPanel != null) gameOverPanel.SetActive(false);
                     break;
                 case GameState.Playing:
                     SetHUDActive(true);
                     if (gameOverPanel != null) gameOverPanel.SetActive(false);
+
+                    if (healthBarUI != null)
+                    {
+                        var player = FindAnyObjectByType<AnimalMagicRoyale.Player.PlayerController>();
+                        if (player != null)
+                        {
+                            healthBarUI.SetTrackedPlayer(player.gameObject);
+                            Debug.Log($"[HUDManager] Tracked player assigned: {player.gameObject.name}");
+                        }
+                        else
+                        {
+                            Debug.LogWarning("[HUDManager] Could not find PlayerController to assign to HealthBarUI.");
+                        }
+                    }
                     break;
                 case GameState.GameOver:
                     SetHUDActive(false);
@@ -74,7 +101,8 @@ namespace AnimalMagicRoyale.Components.UI
         
         private void SetHUDActive(bool isActive)
         {
-            if (hudContainer != null)
+            Debug.Log($"[HUDManager] Setting HUD active state to: {isActive}");
+            if (hudContainer != null && hudContainer != this.gameObject)
             {
                 hudContainer.SetActive(isActive);
             }

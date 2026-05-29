@@ -16,8 +16,6 @@ namespace AnimalMagicRoyale.Tests
             go = new GameObject("Player");
             go.AddComponent<CharacterController>();
             player = go.AddComponent<PlayerController>();
-            player.Awake();
-            player.Start();
         }
 
         [TearDown]

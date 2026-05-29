@@ -102,7 +102,11 @@ namespace AnimalMagicRoyale.AI
                             break;
                         }
                     }
-                    ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, dirToTarget);
+                    bool castSuccess = ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, dirToTarget);
+                    if (castSuccess)
+                    {
+                        Debug.Log($"[BotActions] {ctx.Bot.gameObject.name} casted spell at distance {dist:F1}m");
+                    }
                 }
 
                 return NodeStatus.Running;

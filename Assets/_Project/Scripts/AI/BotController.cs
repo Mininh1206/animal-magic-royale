@@ -7,43 +7,38 @@ using AnimalMagicRoyale.Core;
 namespace AnimalMagicRoyale.AI
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    [RequireComponent(typeof(HealthComponent))]
-    [RequireComponent(typeof(SpellInventory))]
     [RequireComponent(typeof(AISensorSystem))]
-    [RequireComponent(typeof(CharacterAnimationHandler))]
-    public class BotController : MonoBehaviour
+    public class BotController : BasicController
     {
         public float attackRange = 10f;
         
         public NavMeshAgent Agent { get; private set; }
-        public HealthComponent Health { get; private set; }
-        public SpellInventory Inventory { get; private set; }
         public AISensorSystem Sensor { get; private set; }
 
         private FuzzyController fuzzyController;
         private BTNode behaviorTree;
         private BotContext context;
-        private CharacterAnimationHandler _animHandler;
+        private float logTimer = 0f;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             Agent = GetComponent<NavMeshAgent>();
-            Health = GetComponent<HealthComponent>();
-            Inventory = GetComponent<SpellInventory>();
             Sensor = GetComponent<AISensorSystem>();
 
             fuzzyController = new FuzzyController();
             context = new BotContext { Bot = this, Sensor = Sensor };
-            _animHandler = GetComponent<CharacterAnimationHandler>();
             
             BuildBehaviorTree();
         }
 
-        private void Start()
+        protected override void Start()
         {
-            if (GameManager.Instance != null)
+            base.Start();
+            
+            if (Inventory.GetActiveSpell() == null)
             {
-                GameManager.Instance.RegisterPlayer(gameObject);
+                Debug.LogWarning($"[BotController] {gameObject.name} no tiene un hechizo activo asignado en su SpellInventory!");
             }
         }
 
@@ -118,11 +113,21 @@ namespace AnimalMagicRoyale.AI
             // Behavior Tree Step
             behaviorTree.Tick(context);
 
-            if (_animHandler != null)
+            logTimer += Time.deltaTime;
+            if (logTimer >= 2f)
+            {
+                logTimer = 0f;
+                int enemyCount = 0;
+                foreach(var t in Sensor.VisibleTargets) if(t.type == TargetType.Enemy) enemyCount++;
+                string activeSpell = Inventory.GetActiveSpell()?.spellName ?? "NONE";
+                Debug.Log($"[BotController] {gameObject.name}: Enemies={enemyCount}, Fuzzy(A={context.FuzzyResult.attackScore:F2}, F={context.FuzzyResult.fleeScore:F2}, C={context.FuzzyResult.collectScore:F2}), Spell={activeSpell}");
+            }
+
+            if (AnimHandler != null)
             {
                 float botSpeed = Agent.velocity.magnitude;
                 bool botRunning = botSpeed > 6.5f; // Umbral para correr (Walk=5, Run=8)
-                _animHandler.UpdateLocomotion(botSpeed, botRunning);
+                AnimHandler.UpdateLocomotion(botSpeed, botRunning);
             }
         }
 

@@ -5,11 +5,8 @@ using AnimalMagicRoyale.Components;
 namespace AnimalMagicRoyale.Player
 {
     [RequireComponent(typeof(CharacterController))]
-    [RequireComponent(typeof(AnimalMagicRoyale.Components.HealthComponent))]
-    [RequireComponent(typeof(AnimalMagicRoyale.Components.SpellInventory))]
     [RequireComponent(typeof(AnimalMagicRoyale.Components.AbilityHolder))]
-    [RequireComponent(typeof(AnimalMagicRoyale.Components.CharacterAnimationHandler))]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : BasicController
     {
         [Header("Movement Settings")]
         public float moveSpeed = 5f;
@@ -23,13 +20,8 @@ namespace AnimalMagicRoyale.Player
         public float groundedRadius = 0.28f;
         public LayerMask groundLayers;
 
-        // Components cache
-        private AnimalMagicRoyale.Components.CharacterAnimationHandler _animHandler;
-
-        // Componentes
         public CharacterController CharacterController { get; private set; }
         public StateMachine StateMachine { get; private set; }
-        public HealthComponent HealthComponent { get; private set; }
 
         // Estados
         public PlayerIdleState IdleState { get; private set; }
@@ -56,39 +48,33 @@ namespace AnimalMagicRoyale.Player
         [Header("Mouse Look")]
         public float mouseSensitivity = 15f;
 
-        public void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             CharacterController = GetComponent<CharacterController>();
             StateMachine = new StateMachine();
-            HealthComponent = GetComponent<HealthComponent>();
 
             IdleState = new PlayerIdleState(this, StateMachine);
             MoveState = new PlayerMoveState(this, StateMachine);
             AttackState = new PlayerAttackState(this, StateMachine);
             StunnedState = new PlayerStunnedState(this, StateMachine);
-
-            _animHandler = GetComponent<AnimalMagicRoyale.Components.CharacterAnimationHandler>();
         }
 
-        public void Start()
+        protected override void Start()
         {
+            base.Start();
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             StateMachine.Initialize(IdleState);
-
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.RegisterPlayer(gameObject);
-            }
         }
 
         private void Update()
         {
-            if (_animHandler != null)
+            if (AnimHandler != null)
             {
                 bool effectiveSprinting = IsSprinting && MoveInput.y >= -0.1f;
                 float speed = MoveInput.sqrMagnitude > 0.01f ? (effectiveSprinting ? sprintSpeed : moveSpeed) : 0f;
-                _animHandler.UpdateLocomotion(speed, effectiveSprinting);
+                AnimHandler.UpdateLocomotion(speed, effectiveSprinting);
             }
 
             if (ActiveSlotChange != -1)
@@ -192,16 +178,6 @@ namespace AnimalMagicRoyale.Player
         {
             Vector3 verticalMove = new Vector3(0, VerticalVelocity, 0) * Time.deltaTime;
             CharacterController.Move(verticalMove);
-        }
-
-        public void TakeDamage(int amount)
-        {
-            HealthComponent.TakeDamage(amount);
-        }
-
-        public void Heal(int amount)
-        {
-            HealthComponent.Heal(amount);
         }
     }
 }

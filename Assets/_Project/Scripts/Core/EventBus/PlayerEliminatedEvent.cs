@@ -7,6 +7,7 @@ namespace AnimalMagicRoyale.Core
     public struct PlayerEliminatedPayload
     {
         public GameObject eliminated;
+        public GameObject killer;
         public int remainingPlayers;
     }
 
