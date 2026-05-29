@@ -15,6 +15,7 @@ namespace AnimalMagicRoyale.AI
                     Vector3 center = ZoneManager.Instance.transform.position;
                     // Get slightly random point near center to avoid clustering
                     Vector3 randomOffset = new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-5f, 5f));
+                    if (ctx.Bot.Agent.isStopped) ctx.Bot.Agent.isStopped = false;
                     ctx.Bot.Agent.speed = 8f; // Correr a zona segura
                     ctx.Bot.Agent.SetDestination(center + randomOffset);
                     return NodeStatus.Running; // Always running until condition (IsOutsideZone) becomes false
@@ -50,7 +51,7 @@ namespace AnimalMagicRoyale.AI
                     fleeDest = ctx.Bot.transform.position + (fleeDir + centerDir).normalized * 10f;
                 }
 
-                ctx.Bot.Agent.isStopped = false;
+                if (ctx.Bot.Agent.isStopped) ctx.Bot.Agent.isStopped = false;
                 ctx.Bot.Agent.speed = 8f; // Correr
                 ctx.Bot.Agent.SetDestination(fleeDest);
                 return NodeStatus.Running;
@@ -76,17 +77,17 @@ namespace AnimalMagicRoyale.AI
                         ctx.Bot.transform.rotation, lookRot, Time.deltaTime * 10f);
                 }
 
-                // Si está fuera de rango, acercarse
                 if (dist > ctx.Bot.attackRange)
                 {
-                    ctx.Bot.Agent.isStopped = false;
+                    if (ctx.Bot.Agent.isStopped) ctx.Bot.Agent.isStopped = false;
                     ctx.Bot.Agent.speed = 5f;
                     ctx.Bot.Agent.SetDestination(target.position);
                 }
                 else
                 {
-                    // En rango: detenerse o ralentizar
+                    // En rango: detenerse
                     ctx.Bot.Agent.isStopped = true;
+                    // Opcional: ctx.Bot.Agent.ResetPath() para que no reanude hacia donde iba al salir del combate
                 }
 
                 // Intentar disparar siempre (si hay hechizo y no está en cooldown)
@@ -147,10 +148,10 @@ namespace AnimalMagicRoyale.AI
         {
             return new BTAction(ctx =>
             {
-                // Siempre asegurarnos de que el agente no esté detenido si está en modo patrulla
                 if (ctx.Bot.Agent.isStopped) 
                 {
                     ctx.Bot.Agent.isStopped = false;
+                    ctx.Bot.Agent.ResetPath(); // Clear old paths to prevent walking backwards
                 }
 
                 // Si ha llegado a su destino o no tiene un camino pendiente

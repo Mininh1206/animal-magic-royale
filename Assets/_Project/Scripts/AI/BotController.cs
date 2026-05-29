@@ -91,6 +91,12 @@ namespace AnimalMagicRoyale.AI
                 return;
             }
 
+            // Ensure agent is never left in a stopped state from a previous action
+            if (Agent.isStopped)
+            {
+                Agent.isStopped = false;
+            }
+
             UpdateContext();
             
             // Fuzzy Logic Step
