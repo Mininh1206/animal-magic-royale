@@ -283,7 +283,7 @@ BotController
 | Tarea | Prioridad | Estado |
 |---|---|---|
 | Flujo de Escenas y UI de Menús (Presentación, Configuración, Finalización) | 🟡 Normal | To Do |
-| UI In-Game / HUD (barra de vida, inventario con cooldown radial, timer zona) | 🟡 Normal | To Do |
+| UI In-Game / HUD (barra de vida, inventario con cooldown radial, timer zona) | 🟡 Normal | Done |
 | Persistencia de Datos (JSON + Hash) | 🔴 Alta | To Do |
 | Persistencia de Configuración y Controles (KeyBindingManager / PlayerPrefs) | 🔴 Alta | Done |
 | Pulido, Arte y Efectos VFX/SFX (modelos Low-Poly, partículas, audio) | 🟡 Normal | To Do |

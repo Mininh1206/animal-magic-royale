@@ -28,8 +28,9 @@ namespace AnimalMagicRoyale.AI
         {
             return new BTCondition(ctx => 
             {
-                return ctx.FuzzyResult.attackScore > ctx.FuzzyResult.collectScore && 
-                       ctx.NearestEnemy.HasValue;
+                return ctx.NearestEnemy.HasValue && 
+                       ctx.FuzzyResult.attackScore > 0.2f &&
+                       ctx.FuzzyResult.attackScore >= ctx.FuzzyResult.fleeScore;
             });
         }
 

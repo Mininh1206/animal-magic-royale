@@ -1,5 +1,6 @@
 using UnityEngine;
 using AnimalMagicRoyale.Core;
+using AnimalMagicRoyale.Components;
 
 namespace AnimalMagicRoyale.Player
 {
@@ -28,6 +29,7 @@ namespace AnimalMagicRoyale.Player
         // Componentes
         public CharacterController CharacterController { get; private set; }
         public StateMachine StateMachine { get; private set; }
+        public HealthComponent HealthComponent { get; private set; }
 
         // Estados
         public PlayerIdleState IdleState { get; private set; }
@@ -58,6 +60,7 @@ namespace AnimalMagicRoyale.Player
         {
             CharacterController = GetComponent<CharacterController>();
             StateMachine = new StateMachine();
+            HealthComponent = GetComponent<HealthComponent>();
 
             IdleState = new PlayerIdleState(this, StateMachine);
             MoveState = new PlayerMoveState(this, StateMachine);
@@ -189,6 +192,16 @@ namespace AnimalMagicRoyale.Player
         {
             Vector3 verticalMove = new Vector3(0, VerticalVelocity, 0) * Time.deltaTime;
             CharacterController.Move(verticalMove);
+        }
+
+        public void TakeDamage(int amount)
+        {
+            HealthComponent.TakeDamage(amount);
+        }
+
+        public void Heal(int amount)
+        {
+            HealthComponent.Heal(amount);
         }
     }
 }

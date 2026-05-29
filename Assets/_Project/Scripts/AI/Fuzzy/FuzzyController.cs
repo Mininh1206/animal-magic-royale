@@ -15,7 +15,7 @@ namespace AnimalMagicRoyale.AI
         // Sets para Distancia Enemigo (0-50)
         public FuzzySet EnemyClose = new FuzzySet("Close", -5, 0, 8, 15);
         public FuzzySet EnemyMedium = new FuzzySet("Medium", 10, 18, 25, 35);
-        public FuzzySet EnemyFar = new FuzzySet("Far", 25, 35, 50, 60);
+        public FuzzySet EnemyFar = new FuzzySet("Far", 25, 35, 100, 110);
 
         // Sets para Amenaza Percibida (0-1) (0 = sin amenaza, 1 = zona u otro peligro extremo)
         public FuzzySet ThreatLow = new FuzzySet("Low", -0.1f, 0f, 0.2f, 0.4f);
@@ -67,6 +67,26 @@ namespace AnimalMagicRoyale.AI
                 .AddCondition("EnemyDistance", EnemyFar)
                 .AddConclusion("Flee", 0.5f)
                 .AddConclusion("Collect", 0.5f));
+
+            // NUEVA: Cuando no hay enemigo cerca o hay poca amenaza, priorizar recolección
+            rules.Add(new FuzzyRule()
+                .AddCondition("Threat", ThreatLow)
+                .AddCondition("EnemyDistance", EnemyFar)
+                .AddConclusion("Collect", 0.7f));
+
+            // NUEVA: Health media sin amenaza -> buscar loot
+            rules.Add(new FuzzyRule()
+                .AddCondition("Health", HealthMedium)
+                .AddCondition("Threat", ThreatLow)
+                .AddConclusion("Collect", 0.5f)
+                .AddConclusion("Attack", 0.3f));
+
+            // NUEVA: Health media, enemigo cerca -> atacar decididamente
+            rules.Add(new FuzzyRule()
+                .AddCondition("Health", HealthMedium)
+                .AddCondition("EnemyDistance", EnemyClose)
+                .AddConclusion("Attack", 0.9f)
+                .AddConclusion("Flee", 0.1f));
         }
 
         public FuzzyOutput Evaluate(float health, float enemyDistance, float threat)

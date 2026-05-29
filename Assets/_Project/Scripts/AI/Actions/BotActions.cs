@@ -57,7 +57,7 @@ namespace AnimalMagicRoyale.AI
             });
         }
 
-        public static BTAction MoveTowardsEnemy()
+        public static BTAction PursueAndAttack()
         {
             return new BTAction(ctx =>
             {
@@ -65,42 +65,34 @@ namespace AnimalMagicRoyale.AI
                 
                 Transform target = ctx.NearestEnemy.Value.transform;
                 float dist = Vector3.Distance(ctx.Bot.transform.position, target.position);
-                
-                // Si está lo suficientemente cerca para atacar, detenerse
-                if (dist <= ctx.Bot.attackRange)
-                {
-                    ctx.Bot.Agent.isStopped = true;
-                    return NodeStatus.Success;
-                }
-                
-                // Sino, acercarse
-                ctx.Bot.Agent.isStopped = false;
-                ctx.Bot.Agent.speed = 5f; // Acercarse andando
-                ctx.Bot.Agent.SetDestination(target.position);
-                return NodeStatus.Running;
-            });
-        }
-
-        public static BTAction TryCastSpell()
-        {
-            return new BTAction(ctx =>
-            {
-                if (!ctx.NearestEnemy.HasValue) return NodeStatus.Failure;
-                
-                Transform target = ctx.NearestEnemy.Value.transform;
                 Vector3 dirToTarget = (target.position - ctx.Bot.transform.position).normalized;
-                dirToTarget.y = 0; // Apuntar horizontalmente por ahora
+                dirToTarget.y = 0;
 
-                // Rotate towards target manually since agent might be stopped
+                // Siempre rotar hacia el enemigo
                 if (dirToTarget.sqrMagnitude > 0)
                 {
                     Quaternion lookRot = Quaternion.LookRotation(dirToTarget);
-                    ctx.Bot.transform.rotation = Quaternion.Slerp(ctx.Bot.transform.rotation, lookRot, Time.deltaTime * 10f);
+                    ctx.Bot.transform.rotation = Quaternion.Slerp(
+                        ctx.Bot.transform.rotation, lookRot, Time.deltaTime * 10f);
                 }
 
+                // Si está fuera de rango, acercarse
+                if (dist > ctx.Bot.attackRange)
+                {
+                    ctx.Bot.Agent.isStopped = false;
+                    ctx.Bot.Agent.speed = 5f;
+                    ctx.Bot.Agent.SetDestination(target.position);
+                }
+                else
+                {
+                    // En rango: detenerse o ralentizar
+                    ctx.Bot.Agent.isStopped = true;
+                }
+
+                // Intentar disparar siempre (si hay hechizo y no está en cooldown)
                 if (ctx.Bot.Inventory != null)
                 {
-                    // Buscar un slot que tenga hechizo y no esté en cooldown
+                    // Seleccionar el mejor hechizo disponible
                     for (int i = 0; i < ctx.Bot.Inventory.slots.Length; i++)
                     {
                         var slot = ctx.Bot.Inventory.slots[i];
@@ -110,25 +102,10 @@ namespace AnimalMagicRoyale.AI
                             break;
                         }
                     }
-
-                    // Randomize aim slightly based on bot precision could go here
-                    // Try to cast the currently active spell
-                    if (ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, dirToTarget))
-                    {
-                        // Maybe switch spells occasionally if we have multiple
-                        if (Random.value < 0.1f)
-                        {
-                            int newSlot = Random.Range(0, 3);
-                            if (!ctx.Bot.Inventory.slots[newSlot].IsEmpty)
-                            {
-                                ctx.Bot.Inventory.SelectSlot(newSlot);
-                            }
-                        }
-                        return NodeStatus.Success;
-                    }
+                    ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, dirToTarget);
                 }
-                
-                return NodeStatus.Running; // Waiting for cooldown
+
+                return NodeStatus.Running;
             });
         }
 

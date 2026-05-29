@@ -56,12 +56,11 @@ namespace AnimalMagicRoyale.AI
                 BotActions.FleeFromNearestEnemy()
             });
 
-            // Attack Sequence
-            var attackSequence = new BTSequence(new List<BTNode>
+            // Combat Sequence
+            var combatSequence = new BTSequence(new List<BTNode>
             {
                 BotConditions.ShouldAttack(),
-                BotActions.MoveTowardsEnemy(),
-                BotActions.TryCastSpell()
+                BotActions.PursueAndAttack()
             });
 
             // Collect Sequence
@@ -83,7 +82,7 @@ namespace AnimalMagicRoyale.AI
             {
                 zoneSequence,
                 fleeSequence,
-                attackSequence,
+                combatSequence,
                 collectSequence,
                 BotActions.PatrolRandomPoint() // Fallback
             });
@@ -101,7 +100,7 @@ namespace AnimalMagicRoyale.AI
             
             // Fuzzy Logic Step
             float healthPerc = (Health.CurrentHealth / Health.maxHealth) * 100f;
-            float enemyDist = context.NearestEnemy.HasValue ? context.NearestEnemy.Value.distance : 100f;
+            float enemyDist = context.NearestEnemy.HasValue ? context.NearestEnemy.Value.distance : 50f;
             
             // Calculate Threat (0-1). Being outside zone is max threat.
             float threat = 0f;

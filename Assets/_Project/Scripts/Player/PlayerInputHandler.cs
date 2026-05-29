@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Blocks.Gameplay.Core;
+using System.Threading;
+using AnimalMagicRoyale.Core;
 
 namespace AnimalMagicRoyale.Player
 {
@@ -97,6 +99,17 @@ namespace AnimalMagicRoyale.Player
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.SelectSlot3)) playerController.ActiveSlotChange = 2;
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.Ability)) playerController.AbilityRequested = true;
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.Interact)) playerController.InteractRequested = true;
+
+                        // DEBUG
+                        if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.LowerHealth))
+                        {
+                            // Invoca evento de daño sin usar eventbus
+                            playerController.TakeDamage(25);
+                        }
+                        if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.HealPlayer))
+                        {
+                            playerController.Heal(25);
+                        }
                     }
                 }
             }

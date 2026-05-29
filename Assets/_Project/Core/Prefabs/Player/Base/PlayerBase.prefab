@@ -228,8 +228,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.HealthComponent
   maxHealth: 100
-  onHealthChanged: {fileID: 0}
-  onDeath: {fileID: 0}
+  onHealthChanged: {fileID: 11400000, guid: 029bc29be33723d4c9e8b69935cf1164, type: 2}
+  onDeath: {fileID: 11400000, guid: 9175e6a733d72f84f98e3a8ce6f44d16, type: 2}
 --- !u!114 &7438684229072739025
 MonoBehaviour:
   m_ObjectHideFlags: 0

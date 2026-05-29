@@ -19,7 +19,11 @@ namespace AnimalMagicRoyale.Core
             SelectSlot2,
             SelectSlot3,
             Ability,
-            Interact
+            Interact,
+
+            // Debug Actions
+            HealPlayer,
+            LowerHealth
         }
 
         // Valores predeterminados
@@ -30,6 +34,10 @@ namespace AnimalMagicRoyale.Core
             { GameAction.SelectSlot3, Key.Digit3 },
             { GameAction.Ability,     Key.Q },
             { GameAction.Interact,    Key.E },
+
+            // Debug Actions
+            { GameAction.HealPlayer,    Key.H },
+            { GameAction.LowerHealth,   Key.L }
         };
 
         private Dictionary<GameAction, Key> _currentBindings = new();
