@@ -919,7 +919,7 @@ MonoBehaviour:
   killFeedPanel: {fileID: 3872494858206962677}
   zoneTimerPanel: {fileID: 0}
   gameOverPanel: {fileID: 0}
-  onGameStateChanged: {fileID: 0}
+  onGameStateChanged: {fileID: 11400000, guid: 3b95ca4ca478d7e4cb7147e9e10948dd, type: 2}
 --- !u!1 &5966593568269144540
 GameObject:
   m_ObjectHideFlags: 0

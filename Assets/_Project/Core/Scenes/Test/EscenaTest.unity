@@ -163,11 +163,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8e0070f9e7c3eb42819f0b11e094259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.GameManager
-  onGameStateChanged: {fileID: 0}
-  onAliveCountChanged: {fileID: 0}
-  onPlayerDeath: {fileID: 0}
-  onMatchStart: {fileID: 0}
-  onPlayerEliminated: {fileID: 0}
+  onGameStateChanged: {fileID: 11400000, guid: 3b95ca4ca478d7e4cb7147e9e10948dd, type: 2}
+  onAliveCountChanged: {fileID: 11400000, guid: 8868b71b23fe14a4780574567614d9de, type: 2}
+  onPlayerDeath: {fileID: 11400000, guid: 8826daf8021906745946651c4159e441, type: 2}
+  onMatchStart: {fileID: 11400000, guid: a3b67c4febb11334cb210932eab704b2, type: 2}
+  onPlayerEliminated: {fileID: 11400000, guid: c507fb83e33bdef498f016e1763e5d98, type: 2}
   countdownDuration: 3
 --- !u!114 &60221070
 MonoBehaviour:
@@ -182,10 +182,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.ZoneManager
   zoneVisual: {fileID: 1190393787}
-  onZoneShrink: {fileID: 0}
+  onZoneShrink: {fileID: 11400000, guid: 94925067166ce4848bbdb786e0d0a275, type: 2}
   phases:
-  - {fileID: 1685546942}
-  - {fileID: 255373343}
+  - {fileID: 11400000, guid: 598e7a25bdb79aa4b86923d31bce1516, type: 2}
+  - {fileID: 11400000, guid: 7b55778e7f24c7144ab56321da83ae78, type: 2}
   damageTickInterval: 1
 --- !u!4 &60221071
 Transform:
@@ -341,24 +341,6 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &255373343
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a5ae5eba19702c4fb6921e8b0054396, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.ZonePhaseData
-  startRadius: 25
-  endRadius: 5
-  shrinkDuration: 10
-  waitBeforeShrink: 5
-  baseDamage: 10
-  damageMultiplier: 0.1
 --- !u!224 &413050385 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4035216357453924260, guid: fe313dde2f54a3142956a318c906ce8d, type: 3}
@@ -791,13 +773,16 @@ MonoBehaviour:
   lootBoxPrefab: {fileID: 2264072407734407482, guid: c052add4084164e4a85327dec479a3d6, type: 3}
   spawnPoints:
   - {fileID: 1146257324}
-  hormigaSpells: []
-  ornitorrincoSpells: []
-  goatSpells: []
+  hormigaSpells:
+  - {fileID: 11400000, guid: 2791998d9bf86eb41986e15cd549e6ff, type: 2}
+  ornitorrincoSpells:
+  - {fileID: 11400000, guid: a2bc06754b422be42a2fe86c4f8b9db2, type: 2}
+  goatSpells:
+  - {fileID: 11400000, guid: d759412c9c1701e4d9b917acf6c3f62f, type: 2}
   respawnInterval: 10
   commonChance: 0.6
   rareChance: 0.3
-  onLootBoxOpened: {fileID: 0}
+  onLootBoxOpened: {fileID: 11400000, guid: 29f655fbb06c71d478b6e8b92cbc7fff, type: 2}
 --- !u!114 &1608835402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -830,24 +815,6 @@ Transform:
   - {fileID: 1146257324}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1685546942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a5ae5eba19702c4fb6921e8b0054396, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.ZonePhaseData
-  startRadius: 50
-  endRadius: 25
-  shrinkDuration: 10
-  waitBeforeShrink: 5
-  baseDamage: 5
-  damageMultiplier: 0.1
 --- !u!1 &2022797353 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7589168191316163842, guid: fe313dde2f54a3142956a318c906ce8d, type: 3}
