@@ -32,6 +32,14 @@ namespace AnimalMagicRoyale.Player
         {
             if (panTilt == null || Mouse.current == null) return;
 
+            if (AnimalMagicRoyale.Core.GameManager.Instance != null && 
+                AnimalMagicRoyale.Core.GameManager.Instance.StateMachine.CurrentState is AnimalMagicRoyale.Core.GameOverState)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                return;
+            }
+
             Vector2 mouseDelta = Mouse.current.delta.ReadValue();
 
             // Solo aplicar el eje vertical; el horizontal lo maneja PlayerController

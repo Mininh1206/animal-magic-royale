@@ -1,3 +1,4 @@
+using Unity.Services.Multiplayer;
 using UnityEngine;
 
 namespace AnimalMagicRoyale.Components
@@ -5,9 +6,13 @@ namespace AnimalMagicRoyale.Components
     public class AbilityHolder : MonoBehaviour
     {
         [SerializeField] private SpecialAbility ability;
+
+        public SpecialAbility Ability => ability;
+
         private float lastUseTime = -Mathf.Infinity;
 
         public bool IsReady => ability != null && ability.CanActivate(lastUseTime);
+        public float TotalCooldown => ability != null ? ability.cooldown : 0f;
 
         public bool TryActivate()
         {

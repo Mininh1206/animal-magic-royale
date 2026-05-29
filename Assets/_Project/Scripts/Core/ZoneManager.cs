@@ -25,6 +25,11 @@ namespace AnimalMagicRoyale.Core
         private bool isShrinking = false;
         private float damageTimer = 0f;
 
+        public bool IsActive => isActive;
+        public bool IsShrinking => isShrinking;
+        public float PhaseTimer => phaseTimer;
+        public int CurrentPhaseIndex => currentPhaseIndex;
+
         private void Awake()
         {
             if (Instance == null)

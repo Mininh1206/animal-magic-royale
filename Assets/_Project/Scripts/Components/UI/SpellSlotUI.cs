@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using AnimalMagicRoyale.Spells;
+using AnimalMagicRoyale.Core;
+using TMPro;
 
 namespace AnimalMagicRoyale.Components.UI
 {
@@ -10,11 +12,28 @@ namespace AnimalMagicRoyale.Components.UI
         [SerializeField] private Image cooldownOverlay; // Image component with ImageType=Filled
         [SerializeField] private GameObject activeIndicator;
         [SerializeField] private GameObject emptyIndicator;
+        [SerializeField] private TextMeshProUGUI keyText;
+        [SerializeField] private KeyBindingManager.GameAction slotAction;
+        
+        private void Awake()
+        {
+            if (iconImage == null)
+            {
+                iconImage = GetComponent<Image>();
+            }
+        }
         
         public void UpdateSlot(SpellSlot slot, bool isActive)
         {
             if (activeIndicator != null)
                 activeIndicator.SetActive(isActive);
+                
+            if (keyText != null && KeyBindingManager.Instance != null)
+            {
+                string keyName = KeyBindingManager.Instance.GetBinding(slotAction).ToString();
+                keyText.text = keyName.Replace("Digit", "");
+                keyText.color = isActive ? Color.green : Color.white;
+            }
                 
             if (slot.IsEmpty)
             {

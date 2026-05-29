@@ -117,6 +117,12 @@ namespace AnimalMagicRoyale.Player
 
         private void HandleMouseLook()
         {
+            if (AnimalMagicRoyale.Core.GameManager.Instance != null && 
+                AnimalMagicRoyale.Core.GameManager.Instance.StateMachine.CurrentState is AnimalMagicRoyale.Core.GameOverState)
+            {
+                return;
+            }
+
             if (LookInput.sqrMagnitude < 0.01f) return;
 
             // Solo rotar el jugador horizontalmente; Cinemachine gestiona el pitch de la cámara

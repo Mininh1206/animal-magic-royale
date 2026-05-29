@@ -40,14 +40,17 @@ namespace AnimalMagicRoyale.Components.UI
             if (bannerPanel != null && killText != null)
             {
                 string playerName = payload.eliminated != null ? payload.eliminated.name : "Un jugador";
+                string outputText = "";
                 if (payload.killer != null)
                 {
-                    killText.text = $"{payload.killer.name} ha eliminado a {playerName}";
+                    outputText = $"{payload.killer.name} ha eliminado a {playerName}";
                 }
                 else
                 {
-                    killText.text = $"{playerName} ha sido eliminado";
+                    outputText = $"{playerName} ha sido eliminado";
                 }
+
+                killText.text = outputText;
                 
                 bannerPanel.SetActive(true);
                 Debug.Log($"[KillFeedUI] Banner activated with text: {killText.text}");

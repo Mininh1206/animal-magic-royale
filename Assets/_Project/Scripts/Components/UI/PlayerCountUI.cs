@@ -33,7 +33,7 @@ namespace AnimalMagicRoyale.Components.UI
         {
             if (countText != null)
             {
-                countText.text = count.ToString();
+                countText.text = "Jugadores restantes: " + count.ToString();
             }
         }
     }

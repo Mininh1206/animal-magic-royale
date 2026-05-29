@@ -10,56 +10,33 @@ namespace AnimalMagicRoyale.Components.UI
         [SerializeField] private TextMeshProUGUI phaseText;
         [SerializeField] private ZoneShrinkEvent onZoneShrink;
         
-        private float currentTimer;
-        private bool isTimerRunning;
-        
-        private void OnEnable()
-        {
-            if (onZoneShrink != null)
-                onZoneShrink.RegisterListener(HandleZoneShrink);
-        }
-        
-        private void OnDisable()
-        {
-            if (onZoneShrink != null)
-                onZoneShrink.UnregisterListener(HandleZoneShrink);
-        }
-
         private void Update()
         {
-            if (isTimerRunning && currentTimer > 0)
+            if (ZoneManager.Instance != null && ZoneManager.Instance.IsActive)
             {
-                currentTimer -= Time.deltaTime;
-                UpdateTimerText(currentTimer);
-                
-                if (currentTimer <= 0)
+                if (phaseText != null)
                 {
-                    isTimerRunning = false;
-                    if (timerText != null) timerText.text = "¡Zona reduciéndose!";
+                    phaseText.text = $"Fase {ZoneManager.Instance.CurrentPhaseIndex + 1}";
+                }
+
+                if (ZoneManager.Instance.IsShrinking)
+                {
+                    if (timerText != null) timerText.text = "¡La zona se está cerrando!";
+                }
+                else
+                {
+                    float time = ZoneManager.Instance.PhaseTimer;
+                    if (timerText != null)
+                    {
+                        int seconds = Mathf.CeilToInt(time);
+                        timerText.text = $"00:{seconds:00}";
+                    }
                 }
             }
-        }
-
-        private void HandleZoneShrink(ZoneShrinkPayload payload)
-        {
-            if (phaseText != null)
+            else
             {
-                phaseText.text = $"Fase {payload.phaseIndex + 1}";
-            }
-            
-            // Wait time is handled internally by ZoneManager, this event fires WHEN it starts shrinking.
-            // If we want to show countdown before shrink, we need a different event or poll ZoneManager.
-            // Since ZoneManager doesn't expose the phaseTimer publicly, let's just display the shrink duration for now.
-            currentTimer = payload.duration;
-            isTimerRunning = true;
-        }
-        
-        private void UpdateTimerText(float time)
-        {
-            if (timerText != null)
-            {
-                int seconds = Mathf.CeilToInt(time);
-                timerText.text = $"00:{seconds:00}"; // Simplified formatting
+                if (timerText != null) timerText.text = "Esperando...";
+                if (phaseText != null) phaseText.text = "";
             }
         }
     }

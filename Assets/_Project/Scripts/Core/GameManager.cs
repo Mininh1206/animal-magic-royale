@@ -66,6 +66,11 @@ namespace AnimalMagicRoyale.Core
             if (onPlayerDeath != null)
             {
                 onPlayerDeath.RegisterListener(HandlePlayerDeath);
+                Debug.Log($"[GameManager] Subscribed to DeathEvent (asset: {onPlayerDeath.name})");
+            }
+            else
+            {
+                Debug.LogWarning("[GameManager] onPlayerDeath is NULL! Cannot listen for deaths. KillFeed chain broken.");
             }
         }
 
@@ -135,6 +140,7 @@ namespace AnimalMagicRoyale.Core
 
         private void HandlePlayerDeath(DeathPayload payload)
         {
+            Debug.Log($"[GameManager] HandlePlayerDeath received: {payload.victim?.name} killed by {payload.killer?.name ?? "environment"}");
             UnregisterPlayer(payload.victim, payload.killer);
         }
 

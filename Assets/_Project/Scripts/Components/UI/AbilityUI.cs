@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using AnimalMagicRoyale.Core;
+using TMPro;
 
 namespace AnimalMagicRoyale.Components.UI
 {
@@ -9,17 +11,39 @@ namespace AnimalMagicRoyale.Components.UI
         [SerializeField] private Image cooldownOverlay; // Filled image for radial cooldown
         [SerializeField] private AbilityHolder trackedAbility;
         [SerializeField] private SpecialAbility defaultIconSource; // Optional
+        [SerializeField] private TextMeshProUGUI keyText;
+        [SerializeField] private KeyBindingManager.GameAction slotAction = KeyBindingManager.GameAction.Ability;
         
+        private void Awake()
+        {
+            if (iconImage == null)
+            {
+                iconImage = GetComponent<Image>();
+            }
+        }
+
         private void Start()
         {
             if (iconImage != null && defaultIconSource != null && trackedAbility == null)
             {
                 iconImage.sprite = defaultIconSource.icon;
             }
+            else if (iconImage != null && trackedAbility != null)
+            {
+                iconImage.sprite = trackedAbility.Ability.icon;
+            }
         }
 
         private void Update()
         {
+            if (keyText != null && KeyBindingManager.Instance != null)
+            {
+                string keyName = KeyBindingManager.Instance.GetBinding(slotAction).ToString();
+                keyText.text = keyName.Replace("Digit", "");
+                // Mostrar en verde si está lista, blanco si no (o viceversa)
+                keyText.color = (trackedAbility != null && trackedAbility.IsReady) ? Color.green : Color.white;
+            }
+
             if (trackedAbility == null) return;
             
             if (cooldownOverlay != null)
@@ -27,15 +51,15 @@ namespace AnimalMagicRoyale.Components.UI
                 if (!trackedAbility.IsReady)
                 {
                     float remaining = trackedAbility.GetCooldownRemaining();
-                    // Assuming we can get total cooldown from somewhere, or pass a normalized value
-                    // Since AbilityHolder doesn't expose total cooldown easily, we will normalize it:
-                    // Actually, AbilityHolder uses `ability.cooldown`. Since we don't have direct access
-                    // we might need to assume a max cooldown. Let's just do a visual hack or access via reflection 
-                    // if necessary. For now, let's use a flat remaining time display if radial isn't perfect.
-                    // Wait, trackedAbility.GetCooldownRemaining() is exact time. To do radial, we need max cooldown.
-                    // I will add a method to AbilityHolder if necessary, or just rely on text. 
-                    // But radial is requested. I'll just use a fixed 10s for radial visual if max is unknown.
-                    cooldownOverlay.fillAmount = remaining > 0 ? 1f : 0f; 
+                    float total = trackedAbility.TotalCooldown;
+                    if (total > 0f)
+                    {
+                        cooldownOverlay.fillAmount = remaining / total;
+                    }
+                    else
+                    {
+                        cooldownOverlay.fillAmount = remaining > 0 ? 1f : 0f; 
+                    }
                 }
                 else
                 {

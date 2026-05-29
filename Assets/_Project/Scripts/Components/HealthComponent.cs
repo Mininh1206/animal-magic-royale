@@ -107,11 +107,24 @@ namespace AnimalMagicRoyale.Components
             
             if (onDeath != null)
             {
+                Debug.Log($"[HealthComponent] {gameObject.name}: Raising DeathEvent (asset: {onDeath.name})");
                 onDeath.Raise(new DeathPayload
                 {
                     victim = gameObject,
                     killer = lastDamager
                 });
+            }
+            else
+            {
+                Debug.LogWarning($"[HealthComponent] {gameObject.name}: onDeath event is NULL! KillFeed chain will not fire via events.");
+            }
+
+            // Fallback directo robusto: si el GameManager existe, le notificamos directamente
+            // para evitar problemas de configuración del Inspector con los ScriptableObjects.
+            if (AnimalMagicRoyale.Core.GameManager.Instance != null)
+            {
+                Debug.Log($"[HealthComponent] Fallback: Notificando directamente al GameManager de la muerte de {gameObject.name}");
+                AnimalMagicRoyale.Core.GameManager.Instance.UnregisterPlayer(gameObject, lastDamager);
             }
             
             gameObject.SetActive(false);
