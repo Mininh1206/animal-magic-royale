@@ -14,6 +14,11 @@ namespace AnimalMagicRoyale.Components.UI
         
         private Coroutine hideCoroutine;
 
+        private void Awake()
+        {
+            if (onPlayerEliminated == null) onPlayerEliminated = Resources.Load<PlayerEliminatedEvent>("Events/PlayerEliminatedEvent");
+        }
+
         private void OnEnable()
         {
             if (onPlayerEliminated != null)

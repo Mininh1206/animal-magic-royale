@@ -77,12 +77,24 @@ namespace AnimalMagicRoyale.Components.UI
             }
         }
 
-        public void ShowPreview(SkinData skin)
+        public void ShowPreview(SkinData skin, AnimalType animalType = null)
         {
             if (skinManager != null && skin != null)
             {
-                skinManager.ApplySkin(skin);
-                currentPreviewModel = skinManager.gameObject; // The model is inside the spawn point
+                skinManager.ApplySkin(skin, animalType);
+                currentPreviewModel = skinManager.gameObject; 
+                
+                // Force rotation to -210 on Y as requested
+                if (previewSpawnPoint != null)
+                {
+                    previewSpawnPoint.localRotation = Quaternion.Euler(0, -210, 0);
+                }
+
+                // Force a render in case the camera was disabled or sleeping
+                if (previewCamera != null && !previewCamera.enabled)
+                {
+                    previewCamera.enabled = true;
+                }
             }
         }
 

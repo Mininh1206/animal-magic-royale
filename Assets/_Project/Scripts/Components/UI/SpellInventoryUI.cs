@@ -7,6 +7,14 @@ namespace AnimalMagicRoyale.Components.UI
         [SerializeField] private SpellSlotUI[] slotUIs;
         [SerializeField] private SpellInventory trackedInventory;
         
+        private void Awake()
+        {
+            if (slotUIs == null || slotUIs.Length == 0)
+            {
+                slotUIs = GetComponentsInChildren<SpellSlotUI>(true);
+            }
+        }
+        
         private void Update()
         {
             if (trackedInventory == null || slotUIs == null || slotUIs.Length == 0) return;

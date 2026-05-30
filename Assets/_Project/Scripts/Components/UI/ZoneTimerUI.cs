@@ -10,6 +10,11 @@ namespace AnimalMagicRoyale.Components.UI
         [SerializeField] private TextMeshProUGUI phaseText;
         [SerializeField] private ZoneShrinkEvent onZoneShrink;
         
+        private void Awake()
+        {
+            if (onZoneShrink == null) onZoneShrink = Resources.Load<ZoneShrinkEvent>("Events/ZoneShrinkEvent");
+        }
+
         private void Update()
         {
             if (ZoneManager.Instance != null && ZoneManager.Instance.IsActive)

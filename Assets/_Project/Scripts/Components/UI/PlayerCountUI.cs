@@ -9,6 +9,11 @@ namespace AnimalMagicRoyale.Components.UI
         [SerializeField] private TextMeshProUGUI countText;
         [SerializeField] private IntEvent onAliveCountChanged;
         
+        private void Awake()
+        {
+            if (onAliveCountChanged == null) onAliveCountChanged = Resources.Load<IntEvent>("Events/AliveCountEvent");
+        }
+
         private void OnEnable()
         {
             if (onAliveCountChanged != null)

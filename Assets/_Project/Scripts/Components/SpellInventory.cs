@@ -20,6 +20,11 @@ namespace AnimalMagicRoyale.Components
                 slots[i] = new SpellSlot();
             }
 
+            if (basicStickSpell == null)
+            {
+                basicStickSpell = Resources.Load<SpellData>("Spells/Basic_PalodeMadera");
+            }
+
             if (basicStickSpell != null)
             {
                 slots[0].spellData = basicStickSpell;
@@ -54,21 +59,22 @@ namespace AnimalMagicRoyale.Components
 
         public bool TryCast(GameObject caster, Vector3 direction, Transform overrideFirePoint = null)
         {
+            Debug.Log($"[SpellInventory] TryCast called by {caster.name}. activeSlotIndex: {activeSlotIndex}");
             SpellSlot currentSlot = slots[activeSlotIndex];
 
             if (currentSlot.IsEmpty)
             {
-                Debug.LogWarning($"[SpellInventory] Intento de disparo fallido: El slot {activeSlotIndex} está VACÍO.");
+                Debug.LogWarning($"[SpellInventory] Intento de disparo fallido: El slot {activeSlotIndex} está VACÍO. spellData is null: {currentSlot.spellData == null}");
                 return false;
             }
             if (currentSlot.IsOnCooldown)
             {
-                Debug.LogWarning($"[SpellInventory] Intento de disparo fallido: El slot {activeSlotIndex} está en ENFRIAMIENTO.");
+                Debug.LogWarning($"[SpellInventory] Intento de disparo fallido: El slot {activeSlotIndex} está en ENFRIAMIENTO. Faltan {currentSlot.CooldownRemaining}s");
                 return false;
             }
 
             SpellData data = currentSlot.spellData;
-            Debug.Log($"[SpellInventory] Disparando {data.spellName} desde el slot {activeSlotIndex}. ¿Tiene prefab 3D?: {(data.projectilePrefab != null ? "SÍ" : "NO")}");
+            Debug.Log($"[SpellInventory] Disparando {data.spellName} desde el slot {activeSlotIndex}. ¿Tiene prefab 3D?: {(data.projectilePrefab != null ? "SÍ" : "NO")}. Speed: {data.projectileSpeed}");
 
             if (data.projectileSpeed > 0 && data.projectilePrefab != null)
             {
@@ -89,13 +95,23 @@ namespace AnimalMagicRoyale.Components
                         return false;
                     }
 
+                    Debug.Log($"[SpellInventory] Solicitando proyectil a ProjectilePoolManager. Prefab: {data.projectilePrefab.name}");
                     Projectile proj = Core.ProjectilePoolManager.Instance.GetProjectile(data.projectilePrefab);
                     if (proj != null)
                     {
                         proj.transform.position = spawnPos;
                         proj.Initialize(data, caster, spreadDir);
+                        Debug.Log($"[SpellInventory] Proyectil inicializado y lanzado.");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[SpellInventory] ProjectilePoolManager devolvió null al pedir el proyectil: {data.projectilePrefab.name}");
                     }
                 }
+            }
+            else
+            {
+                Debug.LogWarning($"[SpellInventory] No se lanza proyectil físico. Speed: {data.projectileSpeed}, Prefab is null: {data.projectilePrefab == null}");
             }
 
             currentSlot.lastCastTime = Time.time;

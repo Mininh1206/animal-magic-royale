@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
 using AnimalMagicRoyale.Core;
 using AnimalMagicRoyale.Core.Data;
 
@@ -8,6 +9,10 @@ namespace AnimalMagicRoyale.Components.UI
     [RequireComponent(typeof(UIDocument))]
     public class SettingsManager : MonoBehaviour
     {
+        public static SettingsManager Instance { get; private set; }
+        
+        public bool IsOpen => settingsPanel != null && settingsPanel.style.display == DisplayStyle.Flex;
+
         private UIDocument uiDocument;
         private VisualElement root;
         private VisualElement settingsPanel;
@@ -16,15 +21,53 @@ namespace AnimalMagicRoyale.Components.UI
         private Button tabGraphics;
         private Button tabAudio;
         private Button tabControls;
+        private Button btnMainMenu;
 
         // Content Pages
         private VisualElement contentGraphics;
         private VisualElement contentAudio;
         private VisualElement contentControls;
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void AutoInitialize()
+        {
+            if (Instance != null) return;
+            GameObject prefab = Resources.Load<GameObject>("Settings");
+            if (prefab != null)
+            {
+                Instantiate(prefab);
+                Debug.Log("[SettingsManager] Auto-instantiated from Resources.");
+            }
+            else
+            {
+                Debug.LogWarning("[SettingsManager] Prefab not found in Resources! Please create one in Assets/_Project/Core/Prefabs/Resources/SettingsManager.");
+                GameObject temp = new GameObject("SettingsManager_Temp");
+                temp.AddComponent<UIDocument>();
+                temp.AddComponent<SettingsManager>();
+            }
+        }
+
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
         private void OnEnable()
         {
             uiDocument = GetComponent<UIDocument>();
+            if (uiDocument == null) return;
+            
+            // Forzar que el panel de ajustes se renderice siempre por encima del menú principal
+            uiDocument.sortingOrder = 100;
+            
             root = uiDocument.rootVisualElement;
 
             if (root != null)
@@ -43,6 +86,7 @@ namespace AnimalMagicRoyale.Components.UI
                 tabGraphics = root.Q<Button>("TabGraphics");
                 tabAudio = root.Q<Button>("TabAudio");
                 tabControls = root.Q<Button>("TabControls");
+                btnMainMenu = root.Q<Button>("BtnMainMenu");
 
                 contentGraphics = root.Q<VisualElement>("ContentGraphics");
                 contentAudio = root.Q<VisualElement>("ContentAudio");
@@ -51,11 +95,41 @@ namespace AnimalMagicRoyale.Components.UI
                 if (tabGraphics != null) tabGraphics.clicked += () => SwitchTab("Graphics");
                 if (tabAudio != null) tabAudio.clicked += () => SwitchTab("Audio");
                 if (tabControls != null) tabControls.clicked += () => SwitchTab("Controls");
+                
+                if (btnMainMenu != null)
+                {
+                    btnMainMenu.clicked += ReturnToMainMenu;
+                }
 
                 SwitchTab("Graphics"); // Default
             }
 
-            HideSettings();
+            // Start hidden
+            if (settingsPanel != null)
+            {
+                settingsPanel.style.display = DisplayStyle.None;
+            }
+        }
+
+        private void Update()
+        {
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                ToggleSettings();
+            }
+        }
+
+        public void ToggleSettings()
+        {
+            Debug.Log($"[SettingsManager] ToggleSettings called. Current state: IsOpen={IsOpen}");
+            if (IsOpen)
+            {
+                HideSettings();
+            }
+            else
+            {
+                ShowSettings();
+            }
         }
 
         private void SwitchTab(string tabName)
@@ -87,10 +161,25 @@ namespace AnimalMagicRoyale.Components.UI
 
         public void ShowSettings()
         {
+            Debug.Log("[SettingsManager] ShowSettings invoked.");
             if (settingsPanel != null)
             {
                 settingsPanel.style.display = DisplayStyle.Flex;
                 LoadSettings();
+
+                bool inGame = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Scene_MainMenu";
+
+                if (btnMainMenu != null)
+                {
+                    btnMainMenu.style.display = inGame ? DisplayStyle.Flex : DisplayStyle.None;
+                }
+
+                // If in game (not main menu), free the cursor
+                if (inGame)
+                {
+                    UnityEngine.Cursor.lockState = CursorLockMode.None;
+                    UnityEngine.Cursor.visible = true;
+                }
             }
         }
 
@@ -99,6 +188,21 @@ namespace AnimalMagicRoyale.Components.UI
             if (settingsPanel != null)
             {
                 settingsPanel.style.display = DisplayStyle.None;
+                
+                // If in game, restore cursor
+                if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Scene_MainMenu")
+                {
+                    if (GameManager.Instance != null && GameManager.Instance.StateMachine.CurrentState is GameOverState)
+                    {
+                        UnityEngine.Cursor.lockState = CursorLockMode.None;
+                        UnityEngine.Cursor.visible = true;
+                    }
+                    else
+                    {
+                        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+                        UnityEngine.Cursor.visible = false;
+                    }
+                }
             }
         }
 
@@ -107,7 +211,6 @@ namespace AnimalMagicRoyale.Components.UI
             if (PlayerPreferencesManager.Instance != null)
             {
                 // Read from PlayerPreferencesManager.Instance.currentData
-                // and update UI elements here
             }
         }
 
@@ -115,20 +218,29 @@ namespace AnimalMagicRoyale.Components.UI
         {
             if (PlayerPreferencesManager.Instance != null)
             {
-                // Update PlayerPreferencesManager.Instance.currentData from UI elements here
                 PlayerPreferencesManager.Instance.SavePreferences();
             }
 
-            // Apply graphics settings
             ApplyGraphics();
-
             HideSettings();
         }
 
         public void ApplyGraphics()
         {
-            // Apply QualitySettings, Screen.SetResolution, etc. based on saved PlayerPrefs
             Debug.Log("[SettingsManager] Graphics settings applied.");
+        }
+
+        private void ReturnToMainMenu()
+        {
+            HideSettings();
+            if (SceneLoader.Instance != null)
+            {
+                SceneLoader.Instance.LoadMainMenu();
+            }
+            else
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Scene_MainMenu");
+            }
         }
     }
 }

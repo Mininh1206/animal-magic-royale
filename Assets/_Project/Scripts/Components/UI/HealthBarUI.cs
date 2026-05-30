@@ -17,6 +17,11 @@ namespace AnimalMagicRoyale.Components.UI
         [Header("Events")]
         [SerializeField] private HealthChangedEvent onHealthChanged;
 
+        private void Awake()
+        {
+            if (onHealthChanged == null) onHealthChanged = Resources.Load<HealthChangedEvent>("Events/HealthChangedEvent");
+        }
+
         private void OnEnable()
         {
             if (onHealthChanged != null)

@@ -35,6 +35,7 @@ namespace AnimalMagicRoyale.Core
             if (Instance == null)
             {
                 Instance = this;
+                if (onZoneShrink == null) onZoneShrink = Resources.Load<ZoneShrinkEvent>("Events/ZoneShrinkEvent");
             }
             else
             {

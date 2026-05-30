@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: Pato
   icon: {fileID: 21300002, guid: 215687feeab0b7445b4a1cd86c82c2e1, type: 3}
   ability: {fileID: 11400000, guid: 6293a252bc48a1346bb1d16c0c127c49, type: 2}
+  animatorController: {fileID: 9100000, guid: ce7b42a7695f3b448aee02ef6cd9e966, type: 2}
   defaultSkin: {fileID: 11400000, guid: 05e398480a21e3540af99db79fd2878e, type: 2}
   availableSkins:
   - {fileID: 11400000, guid: 05e398480a21e3540af99db79fd2878e, type: 2}

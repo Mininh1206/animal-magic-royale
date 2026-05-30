@@ -55,6 +55,7 @@ namespace AnimalMagicRoyale.Player
         {
             if (playerController != null)
             {
+                if (AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen) return;
                 playerController.MoveInput = context.ReadValue<Vector2>();
             }
         }
@@ -63,6 +64,7 @@ namespace AnimalMagicRoyale.Player
         {
             if (playerController != null)
             {
+                if (AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen) return;
                 playerController.JumpRequested = true;
             }
         }
@@ -71,6 +73,7 @@ namespace AnimalMagicRoyale.Player
         {
             if (playerController != null)
             {
+                if (AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen) return;
                 playerController.IsSprinting = context.ReadValueAsButton();
             }
         }
@@ -79,12 +82,20 @@ namespace AnimalMagicRoyale.Player
         {
             if (playerController != null)
             {
+                if (AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen)
+                {
+                    playerController.MoveInput = Vector2.zero;
+                    playerController.LookInput = Vector2.zero;
+                    playerController.IsSprinting = false;
+                    return;
+                }
                 if (Mouse.current != null)
                 {
                     playerController.LookInput = Mouse.current.delta.ReadValue();
                     
-                    if (Mouse.current.leftButton.isPressed)
+                    if (Mouse.current.leftButton.wasPressedThisFrame)
                     {
+                        Debug.Log("[PlayerInputHandler] Attack requested via Mouse Left Button.");
                         playerController.AttackRequested = true;
                     }
                 }
@@ -102,7 +113,13 @@ namespace AnimalMagicRoyale.Player
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.SelectSlot1)) playerController.ActiveSlotChange = 0;
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.SelectSlot2)) playerController.ActiveSlotChange = 1;
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.SelectSlot3)) playerController.ActiveSlotChange = 2;
-                        if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.Ability)) playerController.AbilityRequested = true;
+                        
+                        if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.Ability))
+                        {
+                            Debug.Log("[PlayerInputHandler] Ability requested via Keyboard.");
+                            playerController.AbilityRequested = true;
+                        }
+                        
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.Interact)) playerController.InteractRequested = true;
 
                         // DEBUG

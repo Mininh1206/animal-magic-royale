@@ -54,10 +54,10 @@ namespace AnimalMagicRoyale.Core
                 Debug.LogWarning("[SkinManager] Cannot apply default skin. Animal or defaultSkin is null.");
                 return;
             }
-            ApplySkin(animal.defaultSkin);
+            ApplySkin(animal.defaultSkin, animal);
         }
 
-        public void ApplySkin(SkinData skin)
+        public void ApplySkin(SkinData skin, AnimalType animalType = null)
         {
             if (skin == null || skin.modelPrefab == null)
             {
@@ -88,26 +88,31 @@ namespace AnimalMagicRoyale.Core
             _currentModelInstance.transform.localPosition = Vector3.zero;
             _currentModelInstance.transform.localRotation = Quaternion.identity;
             _currentModelInstance.transform.localScale = Vector3.one;
+            
+            // Ensure the instantiated model matches the root object's layer so cameras/colliders work correctly
+            SetLayerRecursively(_currentModelInstance, gameObject.layer);
 
             _currentSkin = skin;
             Debug.Log($"[SkinManager] Applied skin: {skin.skinName} on {gameObject.name}");
 
             // Re-bind Animator to the CharacterAnimationHandler
             Animator newAnimator = _currentModelInstance.GetComponentInChildren<Animator>();
-            if (newAnimator != null && _animHandler != null)
+            if (newAnimator != null)
             {
-                // Assuming we can rebind or the CharacterAnimationHandler will pick it up
-                // We might need to make TargetAnimator public or add a SetAnimator method.
-                // Since TargetAnimator has a private setter natively probably, let's use reflection or if we can change CharacterAnimationHandler
-                // In CharacterAnimationHandler, TargetAnimator is just a property with get.
-                // Actually, let's modify CharacterAnimationHandler to have a SetAnimator method if it doesn't.
-                // Or we can just use the Animator component we found and if the handler doesn't support changing it, we need to modify the handler.
-                
-                var field = typeof(CharacterAnimationHandler).GetField("targetAnimator", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if(field != null)
+                if (animalType != null && animalType.animatorController != null)
                 {
-                     field.SetValue(_animHandler, newAnimator);
-                     Debug.Log($"[SkinManager] Re-bound Animator for {_currentModelInstance.name}");
+                    newAnimator.runtimeAnimatorController = animalType.animatorController;
+                    Debug.Log($"[SkinManager] Applied AnimatorController {animalType.animatorController.name}");
+                }
+
+                if (_animHandler != null)
+                {
+                    var field = typeof(CharacterAnimationHandler).GetField("targetAnimator", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    if(field != null)
+                    {
+                         field.SetValue(_animHandler, newAnimator);
+                         Debug.Log($"[SkinManager] Re-bound Animator for {_currentModelInstance.name}");
+                    }
                 }
             }
 
@@ -121,6 +126,61 @@ namespace AnimalMagicRoyale.Core
                 {
                     field.SetValue(_inventory, newFirePoint);
                     Debug.Log($"[SkinManager] Re-bound FirePoint for {_currentModelInstance.name}");
+                }
+            }
+
+            AdjustPhysicsBounds(_currentModelInstance);
+        }
+
+        private void AdjustPhysicsBounds(GameObject modelInstance)
+        {
+            var renderers = modelInstance.GetComponentsInChildren<Renderer>();
+            if (renderers.Length == 0) return;
+
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                bounds.Encapsulate(renderers[i].bounds);
+            }
+
+            float height = bounds.size.y;
+            // Add a small padding to radius
+            float radius = Mathf.Max(bounds.extents.x, bounds.extents.z) * 1.1f;
+            Vector3 localCenter = transform.InverseTransformPoint(bounds.center);
+            
+            // Keep center grounded and centered horizontally
+            localCenter.x = 0;
+            localCenter.z = 0;
+            
+            // Apply to CharacterController
+            var charController = GetComponent<CharacterController>();
+            if (charController != null)
+            {
+                charController.height = height;
+                charController.radius = radius;
+                charController.center = localCenter;
+                Debug.Log($"[SkinManager] Adjusted CharacterController. Height: {height:F2}, Radius: {radius:F2}");
+            }
+
+            // Apply to NavMeshAgent
+            var navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (navAgent != null)
+            {
+                navAgent.height = height;
+                navAgent.radius = radius;
+                Debug.Log($"[SkinManager] Adjusted NavMeshAgent. Height: {height:F2}, Radius: {radius:F2}");
+            }
+        }
+
+        private void SetLayerRecursively(GameObject obj, int newLayer)
+        {
+            if (obj == null) return;
+            obj.layer = newLayer;
+            foreach (Transform child in obj.transform)
+            {
+                if (child != null)
+                {
+                    SetLayerRecursively(child.gameObject, newLayer);
                 }
             }
         }

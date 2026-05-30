@@ -108,6 +108,14 @@ namespace AnimalMagicRoyale.AI
                     {
                         Debug.Log($"[BotActions] {ctx.Bot.gameObject.name} casted spell at distance {dist:F1}m");
                     }
+                    else
+                    {
+                        Debug.LogWarning($"[BotActions] {ctx.Bot.gameObject.name} intentó lanzar hechizo pero falló. Dist: {dist:F1}m");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"[BotActions] {ctx.Bot.gameObject.name} no puede atacar porque ctx.Bot.Inventory es NULL.");
                 }
 
                 return NodeStatus.Running;

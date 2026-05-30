@@ -26,6 +26,13 @@ namespace AnimalMagicRoyale.Components.UI
         [SerializeField] private GameStateEvent onGameStateChanged;
 
         private HealthBarUI healthBarUI;
+        private SpellInventoryUI spellInventoryUI;
+        private AbilityUI abilityUI;
+
+        private void Awake()
+        {
+            if (onGameStateChanged == null) onGameStateChanged = Resources.Load<GameStateEvent>("Events/GameStateEvent");
+        }
 
         private void OnEnable()
         {
@@ -41,14 +48,14 @@ namespace AnimalMagicRoyale.Components.UI
         
         private void Start()
         {
-            if (healthBarPanel != null)
-            {
-                healthBarUI = healthBarPanel.GetComponent<HealthBarUI>();
-            }
-            else
-            {
-                Debug.LogWarning("[HUDManager] healthBarPanel is not assigned in the Inspector!");
-            }
+            if (healthBarPanel != null) healthBarUI = healthBarPanel.GetComponent<HealthBarUI>();
+            if (spellInventoryPanel != null) spellInventoryUI = spellInventoryPanel.GetComponent<SpellInventoryUI>();
+            if (abilityPanel != null) abilityUI = abilityPanel.GetComponent<AbilityUI>();
+            
+            // Fallback just in case inspector references are missing
+            if (healthBarUI == null) healthBarUI = GetComponentInChildren<HealthBarUI>(true);
+            if (spellInventoryUI == null) spellInventoryUI = GetComponentInChildren<SpellInventoryUI>(true);
+            if (abilityUI == null) abilityUI = GetComponentInChildren<AbilityUI>(true);
             
             Debug.Log("[HUDManager] Start executed.");
             // Initial state based on typical GameManager startup (Waiting -> Playing)
@@ -78,17 +85,32 @@ namespace AnimalMagicRoyale.Components.UI
                     SetHUDActive(true);
                     if (gameOverPanel != null) gameOverPanel.SetActive(false);
 
-                    if (healthBarUI != null)
+                    if (healthBarUI != null || spellInventoryUI != null || abilityUI != null)
                     {
                         var player = FindAnyObjectByType<AnimalMagicRoyale.Player.PlayerController>();
                         if (player != null)
                         {
-                            healthBarUI.SetTrackedPlayer(player.gameObject);
+                            if (healthBarUI != null) healthBarUI.SetTrackedPlayer(player.gameObject);
+                            if (spellInventoryUI != null) spellInventoryUI.SetTrackedInventory(player.GetComponent<AnimalMagicRoyale.Components.SpellInventory>());
+                            
+                            if (abilityUI != null)
+                            {
+                                var abilityHolder = player.GetComponent<AnimalMagicRoyale.Components.AbilityHolder>();
+                                if (abilityHolder != null && AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedAnimal != null)
+                                {
+                                    abilityUI.SetTrackedAbility(abilityHolder, AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedAnimal.ability);
+                                }
+                                else if (abilityHolder != null && abilityHolder.Ability != null)
+                                {
+                                    abilityUI.SetTrackedAbility(abilityHolder, abilityHolder.Ability);
+                                }
+                            }
+                            
                             Debug.Log($"[HUDManager] Tracked player assigned: {player.gameObject.name}");
                         }
                         else
                         {
-                            Debug.LogWarning("[HUDManager] Could not find PlayerController to assign to HealthBarUI.");
+                            Debug.LogWarning("[HUDManager] Could not find PlayerController to assign to HUD.");
                         }
                     }
                     break;

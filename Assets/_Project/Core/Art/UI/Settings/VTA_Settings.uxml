@@ -3,19 +3,24 @@
     <ui:VisualElement name="SettingsPanel" class="settings-overlay" style="display: none;">
         <ui:VisualElement class="settings-modal">
             
-            <ui:Button name="CloseSettingsBtn" class="btn-close-settings" text="✖" />
+            <ui:Button name="CloseSettingsBtn" class="btn-close-settings" text="X" />
             
             <!-- Left Sidebar -->
             <ui:VisualElement class="settings-sidebar">
                 <ui:Label text="AJUSTES" class="settings-title"/>
                 <ui:Button name="TabGraphics" class="settings-tab settings-tab-active">
-                    <ui:Label text="📺 Gráficos" class="settings-tab-text"/>
+                    <ui:Label text="Gráficos" class="settings-tab-text"/>
                 </ui:Button>
                 <ui:Button name="TabAudio" class="settings-tab">
-                    <ui:Label text="🔊 Sonido" class="settings-tab-text"/>
+                    <ui:Label text="Sonido" class="settings-tab-text"/>
                 </ui:Button>
                 <ui:Button name="TabControls" class="settings-tab">
-                    <ui:Label text="🎮 Controles" class="settings-tab-text"/>
+                    <ui:Label text="Controles" class="settings-tab-text"/>
+                </ui:Button>
+                
+                <ui:VisualElement style="flex-grow: 1;" />
+                <ui:Button name="BtnMainMenu" class="settings-tab" style="background-color: #D32F2F; margin-bottom: 20px;">
+                    <ui:Label text="Volver al Menú" class="settings-tab-text" style="color: white;"/>
                 </ui:Button>
             </ui:VisualElement>
             
@@ -23,7 +28,7 @@
             <ui:VisualElement class="settings-content">
                 
                 <ui:VisualElement name="ContentGraphics" class="settings-page">
-                    <ui:Label text="📺 Gráficos" class="settings-page-title"/>
+                    <ui:Label text="Gráficos" class="settings-page-title"/>
                     
                     <ui:VisualElement class="setting-item">
                         <ui:VisualElement class="setting-item-info">
@@ -61,7 +66,7 @@
                 </ui:VisualElement>
 
                 <ui:VisualElement name="ContentAudio" class="settings-page" style="display: none;">
-                    <ui:Label text="🔊 Sonido" class="settings-page-title"/>
+                    <ui:Label text="Sonido" class="settings-page-title"/>
                     <ui:VisualElement class="setting-item">
                         <ui:VisualElement class="setting-item-info">
                             <ui:Label text="Volumen Maestro" class="setting-item-name"/>
@@ -71,7 +76,7 @@
                 </ui:VisualElement>
 
                 <ui:VisualElement name="ContentControls" class="settings-page" style="display: none;">
-                    <ui:Label text="🎮 Controles" class="settings-page-title"/>
+                    <ui:Label text="Controles" class="settings-page-title"/>
                 </ui:VisualElement>
 
                 <!-- Footer Actions -->

@@ -48,6 +48,13 @@ namespace AnimalMagicRoyale.Core
 
         private void InitializeStateMachine()
         {
+            // Fallback for events
+            if (onGameStateChanged == null) onGameStateChanged = Resources.Load<GameStateEvent>("Events/GameStateEvent");
+            if (onAliveCountChanged == null) onAliveCountChanged = Resources.Load<IntEvent>("Events/AliveCountEvent");
+            if (onPlayerDeath == null) onPlayerDeath = Resources.Load<DeathEvent>("Events/DeathEvent");
+            if (onMatchStart == null) onMatchStart = Resources.Load<MatchStartEvent>("Events/MatchStartEvent");
+            if (onPlayerEliminated == null) onPlayerEliminated = Resources.Load<PlayerEliminatedEvent>("Events/PlayerEliminatedEvent");
+
             StateMachine = new StateMachine();
             WaitingState = new WaitingState(this, StateMachine);
             PlayingState = new PlayingState(this, StateMachine);
@@ -58,8 +65,13 @@ namespace AnimalMagicRoyale.Core
         {
             StateMachine.Initialize(WaitingState);
             
-            // Only auto-start if we are directly in a test scene (not coming from Main Menu)
-            if (AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap == null)
+            if (AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap != null)
+            {
+                Debug.Log("[GameManager] Map selected from lobby. Initializing match...");
+                // Usamos Invoke para darle un pequeñísimo margen al resto de Awake/Starts de la escena
+                Invoke(nameof(InitializeFromLobby), 0.1f);
+            }
+            else
             {
                 Debug.Log($"[GameManager] Auto-starting match in {autoStartDelay} seconds...");
                 Invoke(nameof(StartMatch), autoStartDelay);
@@ -165,6 +177,12 @@ namespace AnimalMagicRoyale.Core
         {
             if (StateMachine.CurrentState == WaitingState)
             {
+                var spawner = FindFirstObjectByType<MatchSpawner>();
+                if (spawner != null)
+                {
+                    spawner.SpawnEntities();
+                }
+
                 isCountingDown = true;
                 countdownTimer = countdownDuration;
                 Debug.Log($"[GameManager] Match starting in {countdownDuration} seconds...");

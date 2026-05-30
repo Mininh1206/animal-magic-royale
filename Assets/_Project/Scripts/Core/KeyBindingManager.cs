@@ -10,7 +10,24 @@ namespace AnimalMagicRoyale.Core
     /// </summary>
     public class KeyBindingManager : MonoBehaviour
     {
-        public static KeyBindingManager Instance { get; private set; }
+        private static KeyBindingManager _instance;
+        public static KeyBindingManager Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = FindAnyObjectByType<KeyBindingManager>();
+                    if (_instance == null)
+                    {
+                        GameObject go = new GameObject("KeyBindingManager");
+                        _instance = go.AddComponent<KeyBindingManager>();
+                        DontDestroyOnLoad(go);
+                    }
+                }
+                return _instance;
+            }
+        }
 
         /// Acciones lógicas del juego.
         public enum GameAction
@@ -44,13 +61,13 @@ namespace AnimalMagicRoyale.Core
 
         private void Awake()
         {
-            if (Instance == null)
+            if (_instance == null)
             {
-                Instance = this;
+                _instance = this;
                 DontDestroyOnLoad(gameObject);
                 LoadBindings();
             }
-            else
+            else if (_instance != this)
             {
                 Destroy(gameObject);
             }
@@ -60,7 +77,12 @@ namespace AnimalMagicRoyale.Core
         public bool GetActionDown(GameAction action)
         {
             if (Keyboard.current == null) return false;
-            return _currentBindings.TryGetValue(action, out Key key) && Keyboard.current[key].wasPressedThisFrame;
+            if (_currentBindings.TryGetValue(action, out Key key))
+            {
+                var control = Keyboard.current[key];
+                return control != null && control.wasPressedThisFrame;
+            }
+            return false;
         }
 
         /// Cambia la tecla de una acción y persiste en PlayerPrefs.

@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/Core/Art/UI/GameOver/SS_GameOver.uss" />
+    <ui:VisualElement name="GameOverOverlay" class="gameover-overlay" style="display: none;">
+        <ui:VisualElement class="gameover-container">
+            <ui:Label name="GameOverTitle" text="GAME OVER" class="gameover-title"/>
+            <ui:Label name="GameOverMessage" text="A ganar a ganar, cerdo para cenar" class="gameover-subtitle"/>
+            <ui:Button name="BtnMainMenu" text="VOLVER AL MENÚ" class="btn-mainmenu" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -18,6 +18,9 @@ namespace AnimalMagicRoyale.Components
 
         public void Awake()
         {
+            if (onHealthChanged == null) onHealthChanged = Resources.Load<HealthChangedEvent>("Events/HealthChangedEvent");
+            if (onDeath == null) onDeath = Resources.Load<DeathEvent>("Events/DeathEvent");
+
             CurrentHealth = maxHealth;
             IsAlive = true;
             lastDamager = null;

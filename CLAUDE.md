@@ -86,12 +86,15 @@ animal-magic-royale/
 GameManager ──(EventBus)──► UI (HUD)
      │                       │
      ├──► ZoneManager         ├──► HealthBar
-     ├──► SpawnManager        ├──► SpellInventoryUI
+     ├──► MatchSpawner        ├──► SpellInventoryUI
      └──► AIController        └──► ZoneTimer
 
 PlayerController ──(FSM)──► States (Idle, Move, Attack, Stunned)
 BotController ────(FSM)──► States + BehaviorTree + FuzzyController
 
+* MatchSpawner: Extrae puntos de aparición anidados, asigna equipos con TeamManager e instancia entidades.
+* SkinManager: Aplica el modelo visual y ajusta automáticamente las cajas de colisión (CharacterController/NavMeshAgent) a la escala del modelo.
+* SettingsManager y GameOverManager: Singletons UI globales (auto-instanciados desde Resources) que bloquean inputs y gestionan el estado del cursor.
 * Ambos controladores delegan la animación al CharacterAnimationHandler.
 * Los inputs del jugador se leen vía KeyBindingManager utilizando el nuevo Input System (`UnityEngine.InputSystem.Key`).
 ```
@@ -282,25 +285,24 @@ BotController
 ### M5: UI, Persistencia y Pulido
 | Tarea | Prioridad | Estado |
 |---|---|---|
-| Flujo de Escenas y UI de Menús (Presentación, Configuración, Finalización) | 🟡 Normal | In Progress |
+| Flujo de Escenas y UI de Menús (Presentación, Configuración, Finalización) | 🟡 Normal | Done |
 | UI In-Game / HUD (barra de vida, inventario con cooldown radial, timer zona) | 🟡 Normal | Done |
 | Persistencia de Datos (JSON + Hash para Ajustes y Records) | 🔴 Alta | Done |
-| Persistencia de Configuración y Controles (KeyBindingManager) | 🔴 Alta | To Do |
+| Persistencia de Configuración y Controles (KeyBindingManager) | 🔴 Alta | Done |
 | Pulido, Arte y Efectos VFX/SFX (modelos Low-Poly, partículas, audio) | 🟡 Normal | To Do |
 | Refactorización Arquitectura (Animaciones compartidas, apuntado tipo shooter) | 🔴 Alta | Done |
+| Arquitectura UI Global y Spawners (Físicas Dinámicas, MatchSpawner Equipos) | 🔴 Alta | Done |
 
 ---
 
 ## 8. Convenciones de Código
 
-- **Idioma del código:** Inglés (nombres de clases, variables, métodos).
-- **Idioma de comentarios/documentación:** Español.
-- **Naming:**
-  - Clases/Enums: `PascalCase` (ej. `SpellData`, `HealthComponent`)
-  - Métodos: `PascalCase` (ej. `TakeDamage()`)
-  - Variables privadas: `_camelCase` con prefijo `_`
-  - Variables públicas/SerializeField: `camelCase`
-  - Constantes: `UPPER_SNAKE_CASE`
+### 3.1. Estilos y Estándares
+- **Nombres de Clases y Scripts**: PascalCase (`PlayerController`, `LootBoxSpawner`).
+- **Nombres de Variables y Campos**: camelCase (`currentHealth`, `maxSpeed`). Las variables privadas suelen usar un guion bajo `_privateVariable` o `camelCase`. Preferencia por `camelCase`.
+- **Emojis**: Está ESTRICTAMENTE PROHIBIDO usar emojis o emoticonos en comentarios, documentación técnica, cadenas de texto o en el código fuente y UI de Unity.
+- **Constantes**: `UPPER_SNAKE_CASE`
+
 - **Estructura de scripts:**
   1. Campos serializados
   2. Campos privados

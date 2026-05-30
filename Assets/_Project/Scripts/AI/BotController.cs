@@ -36,9 +36,13 @@ namespace AnimalMagicRoyale.AI
         {
             base.Start();
             
-            if (Inventory.GetActiveSpell() == null)
+            if (Inventory != null && Inventory.GetActiveSpell() == null)
             {
                 Debug.LogWarning($"[BotController] {gameObject.name} no tiene un hechizo activo asignado en su SpellInventory!");
+            }
+            else if (Inventory == null)
+            {
+                Debug.LogWarning($"[BotController] {gameObject.name} no tiene el componente SpellInventory!");
             }
         }
 
@@ -124,8 +128,11 @@ namespace AnimalMagicRoyale.AI
             {
                 logTimer = 0f;
                 int enemyCount = 0;
-                foreach(var t in Sensor.VisibleTargets) if(t.type == TargetType.Enemy) enemyCount++;
-                string activeSpell = Inventory.GetActiveSpell()?.spellName ?? "NONE";
+                if (Sensor != null)
+                {
+                    foreach(var t in Sensor.VisibleTargets) if(t.type == TargetType.Enemy) enemyCount++;
+                }
+                string activeSpell = (Inventory != null && Inventory.GetActiveSpell() != null) ? Inventory.GetActiveSpell().spellName : "NONE";
                 Debug.Log($"[BotController] {gameObject.name}: Enemies={enemyCount}, Fuzzy(A={context.FuzzyResult.attackScore:F2}, F={context.FuzzyResult.fleeScore:F2}, C={context.FuzzyResult.collectScore:F2}), Spell={activeSpell}");
             }
 
@@ -142,6 +149,8 @@ namespace AnimalMagicRoyale.AI
             context.NearestEnemy = null;
             context.NearestLootBox = null;
             
+            if (Sensor == null) return;
+
             float minEnemyDist = float.MaxValue;
             float minLootDist = float.MaxValue;
 

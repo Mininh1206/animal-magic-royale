@@ -28,6 +28,11 @@ namespace AnimalMagicRoyale.Core
         [Header("Events")]
         public LootBoxOpenedEvent onLootBoxOpened;
 
+        private void Awake()
+        {
+            if (onLootBoxOpened == null) onLootBoxOpened = Resources.Load<LootBoxOpenedEvent>("Events/LootBoxOpenedEvent");
+        }
+
         private void Start()
         {
             SpawnInitialBoxes();

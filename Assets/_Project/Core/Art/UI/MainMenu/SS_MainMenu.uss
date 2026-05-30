@@ -68,7 +68,7 @@
 .btn-customize-icon {
     width: 30px;
     height: 30px;
-    background-image: url('project://database/Assets/_Project/Core/Art/UI/MainMenu/hanger-icon.png');
+    background-image: url('project://database/Assets/_Project/Core/Art/UI/Icons/hanger-icon.png');
     -unity-background-scale-mode: scale-to-fit;
     -unity-background-image-tint-color: white;
     margin-right: 10px;
@@ -111,7 +111,7 @@
 .icon-settings {
     width: 100%;
     height: 100%;
-    background-image: url('project://database/Assets/_Project/Core/Art/UI/MainMenu/settings-icon.png');
+    background-image: url('project://database/Assets/_Project/Core/Art/UI/Icons/settings-icon.png');
     -unity-background-scale-mode: scale-to-fit;
     -unity-background-image-tint-color: #4A2C18;
 }
@@ -236,7 +236,7 @@
 .map-card-players-icon {
     width: 16px;
     height: 16px;
-    background-image: url('project://database/Assets/_Project/Core/Art/UI/MainMenu/max-player-icon.png');
+    background-image: url('project://database/Assets/_Project/Core/Art/UI/Icons/max-player-icon.png');
     -unity-background-scale-mode: scale-to-fit;
     -unity-background-image-tint-color: #00A859;
     margin-right: 4px;
@@ -352,7 +352,7 @@
 .icon-play {
     width: 40px;
     height: 40px;
-    background-image: url('project://database/Assets/_Project/Core/Art/UI/MainMenu/play-icon.png');
+    background-image: url('project://database/Assets/_Project/Core/Art/UI/Icons/play-icon.png');
     -unity-background-scale-mode: scale-to-fit;
     -unity-background-image-tint-color: #5C3100;
     margin-right: 15px;

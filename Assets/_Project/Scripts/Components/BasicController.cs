@@ -7,6 +7,7 @@ namespace AnimalMagicRoyale.Components
     [RequireComponent(typeof(SpellInventory))]
     [RequireComponent(typeof(CharacterAnimationHandler))]
     [RequireComponent(typeof(ZoneDamageTracker))]
+    [RequireComponent(typeof(SkinManager))]
     public abstract class BasicController : MonoBehaviour
     {
         public HealthComponent Health { get; protected set; }

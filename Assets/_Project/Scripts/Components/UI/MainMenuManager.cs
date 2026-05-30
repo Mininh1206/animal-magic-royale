@@ -14,7 +14,6 @@ namespace AnimalMagicRoyale.Components.UI
         [SerializeField] private AnimalType[] availableAnimals;
         
         [Header("References")]
-        [SerializeField] private SettingsManager settingsManager;
         [SerializeField] private CharacterPreview characterPreview;
 
         private UIDocument uiDocument;
@@ -99,6 +98,13 @@ namespace AnimalMagicRoyale.Components.UI
             {
                 characterPreview.BindToUI(previewArea);
             }
+        }
+
+        private void Start()
+        {
+            // Ensure cursor is visible and unlocked when returning from a game
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+            UnityEngine.Cursor.visible = true;
 
             InitializeData();
             SwitchToLobby();
@@ -193,9 +199,9 @@ namespace AnimalMagicRoyale.Components.UI
 
         private void OpenSettings()
         {
-            if (settingsManager != null)
+            if (SettingsManager.Instance != null)
             {
-                settingsManager.ShowSettings();
+                SettingsManager.Instance.ToggleSettings();
             }
         }
 
@@ -342,7 +348,7 @@ namespace AnimalMagicRoyale.Components.UI
 
             if (characterPreview != null)
             {
-                characterPreview.ShowPreview(skin);
+                characterPreview.ShowPreview(skin, currentAnimal);
             }
         }
 

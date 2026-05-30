@@ -24,6 +24,7 @@ namespace AnimalMagicRoyale.Core.Data
         public SpecialAbility ability;
         
         [Header("Customization")]
+        public RuntimeAnimatorController animatorController;
         public SkinData defaultSkin;
         public List<SkinData> availableSkins = new List<SkinData>();
     }

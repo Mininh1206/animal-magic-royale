@@ -6,17 +6,35 @@ namespace AnimalMagicRoyale.Core
 {
     public class ProjectilePoolManager : MonoBehaviour
     {
-        public static ProjectilePoolManager Instance { get; private set; }
+        private static ProjectilePoolManager _instance;
+        public static ProjectilePoolManager Instance 
+        { 
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = FindAnyObjectByType<ProjectilePoolManager>();
+                    if (_instance == null)
+                    {
+                        GameObject go = new GameObject("ProjectilePoolManager");
+                        _instance = go.AddComponent<ProjectilePoolManager>();
+                        DontDestroyOnLoad(go);
+                    }
+                }
+                return _instance;
+            }
+        }
 
         private Dictionary<GameObject, ObjectPool<Projectile>> pools = new Dictionary<GameObject, ObjectPool<Projectile>>();
 
         private void Awake()
         {
-            if (Instance == null)
+            if (_instance == null)
             {
-                Instance = this;
+                _instance = this;
+                DontDestroyOnLoad(gameObject);
             }
-            else
+            else if (_instance != this)
             {
                 Destroy(gameObject);
             }
