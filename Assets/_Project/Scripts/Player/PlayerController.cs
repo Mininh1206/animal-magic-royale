@@ -93,6 +93,10 @@ namespace AnimalMagicRoyale.Player
                 {
                     abilityHolder.TryActivate();
                 }
+                else
+                {
+                    Debug.LogError("[PlayerController] ERROR: AbilityRequested is true, but AbilityHolder component is NULL on the player!");
+                }
             }
 
             if (InteractRequested)
@@ -113,6 +117,13 @@ namespace AnimalMagicRoyale.Player
             StateMachine.Update();
             ApplyGravity();
             ApplyVerticalMovement();
+            
+            // Clear single-frame inputs AFTER they have been processed
+            JumpRequested = false;
+            AttackRequested = false;
+            ActiveSlotChange = -1;
+            AbilityRequested = false;
+            InteractRequested = false;
         }
 
         private void HandleMouseLook()
@@ -137,11 +148,6 @@ namespace AnimalMagicRoyale.Player
 
         private void LateUpdate()
         {
-            JumpRequested = false;
-            AttackRequested = false;
-            ActiveSlotChange = -1;
-            AbilityRequested = false;
-            InteractRequested = false;
         }
 
         private void GroundedCheck()

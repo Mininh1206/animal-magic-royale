@@ -21,6 +21,7 @@ namespace AnimalMagicRoyale.Player
         {
             if (player.AttackRequested)
             {
+                Debug.Log("[PlayerMoveState] AttackRequested is TRUE. Changing to AttackState.");
                 stateMachine.ChangeState(player.AttackState);
                 return;
             }

@@ -45,6 +45,25 @@ namespace AnimalMagicRoyale.Core
 
         private void Start()
         {
+            if (AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap != null && AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap.zonePhases != null && AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap.zonePhases.Count > 0)
+            {
+                phases = AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap.zonePhases.ToArray();
+            }
+            else if (phases == null || phases.Length == 0)
+            {
+                // Fallback para pruebas rápidas en escena
+                var phase1 = ScriptableObject.CreateInstance<ZonePhaseData>();
+                phase1.startRadius = 200f; phase1.endRadius = 100f; phase1.waitBeforeShrink = 10f; phase1.shrinkDuration = 20f; phase1.baseDamage = 5f;
+                var phase2 = ScriptableObject.CreateInstance<ZonePhaseData>();
+                phase2.startRadius = 100f; phase2.endRadius = 30f; phase2.waitBeforeShrink = 10f; phase2.shrinkDuration = 20f; phase2.baseDamage = 10f;
+                var phase3 = ScriptableObject.CreateInstance<ZonePhaseData>();
+                phase3.startRadius = 30f; phase3.endRadius = 5f; phase3.waitBeforeShrink = 10f; phase3.shrinkDuration = 20f; phase3.baseDamage = 20f;
+                var phase4 = ScriptableObject.CreateInstance<ZonePhaseData>();
+                phase4.startRadius = 5f; phase4.endRadius = 0f; phase4.waitBeforeShrink = 10f; phase4.shrinkDuration = 20f; phase4.baseDamage = 50f;
+                
+                phases = new ZonePhaseData[] { phase1, phase2, phase3, phase4 };
+            }
+
             if (phases.Length > 0)
             {
                 currentRadius = phases[0].startRadius;
