@@ -16,5 +16,8 @@ namespace AnimalMagicRoyale.Core.Data
         [Header("Game Settings")]
         [Tooltip("Maximum allowed players in this map")]
         public int maxPlayers = 20;
+
+        [Header("Zone Phases")]
+        public System.Collections.Generic.List<AnimalMagicRoyale.Core.ZonePhaseData> zonePhases = new System.Collections.Generic.List<AnimalMagicRoyale.Core.ZonePhaseData>();
     }
 }

@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/Core/Art/UI/Loading/SS_LoadingScreen.uss" />
+    <ui:VisualElement name="LoadingContainer" class="loading-container" style="display: none;">
+        <ui:Label text="CARGANDO..." class="loading-title"/>
+        
+        <ui:VisualElement class="progress-bar-container">
+            <ui:VisualElement name="ProgressBarFill" class="progress-bar-fill" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

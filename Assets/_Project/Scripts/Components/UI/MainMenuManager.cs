@@ -24,9 +24,10 @@ namespace AnimalMagicRoyale.Components.UI
         private VisualElement lobbyPanel;
         private VisualElement customizationPanel;
         private ScrollView mapSelector;
-        private VisualElement characterGrid;
+        private ScrollView animalGrid; // was VisualElement, changed to ScrollView in UXML
         private ScrollView skinGrid;
         private VisualElement previewArea;
+        private Label abilityText;
 
         // Top Bar Toggle
         private Button btnCustomize;
@@ -46,6 +47,8 @@ namespace AnimalMagicRoyale.Components.UI
 
         // State Tracking
         private List<VisualElement> generatedMapCards = new List<VisualElement>();
+        private List<VisualElement> generatedAnimalCards = new List<VisualElement>();
+        private List<VisualElement> generatedSkinCards = new List<VisualElement>();
         private AnimalType currentAnimal;
 
         private void OnEnable()
@@ -87,9 +90,10 @@ namespace AnimalMagicRoyale.Components.UI
                 btnPlay.clicked += OnPlayButtonClicked;
             }
 
-            characterGrid = root.Q<VisualElement>("AnimalGrid");
+            animalGrid = root.Q<ScrollView>("AnimalGrid");
             skinGrid = root.Q<ScrollView>("SkinSelector");
             previewArea = root.Q<VisualElement>("PreviewArea");
+            abilityText = root.Q<Label>("AbilityText");
 
             if (characterPreview != null && previewArea != null)
             {
@@ -125,14 +129,30 @@ namespace AnimalMagicRoyale.Components.UI
             }
 
             // Populate Animals
-            if (characterGrid != null && availableAnimals != null && availableAnimals.Length > 0)
+            generatedAnimalCards.Clear();
+            if (animalGrid != null && availableAnimals != null && availableAnimals.Length > 0)
             {
-                characterGrid.Clear();
-                foreach (var animal in availableAnimals)
+                animalGrid.Clear();
+                int defaultIndex = 0;
+                
+                for (int i = 0; i < availableAnimals.Length; i++)
                 {
-                    characterGrid.Add(UIElementBuilders.BuildAnimalCard(animal, SelectAnimal));
+                    var animal = availableAnimals[i];
+                    VisualElement card = UIElementBuilders.BuildAnimalCard(animal, SelectAnimal);
+                    animalGrid.Add(card);
+                    generatedAnimalCards.Add(card);
+                    
+                    if (PlayerPreferencesManager.Instance != null && 
+                        (int)animal.typeId == PlayerPreferencesManager.Instance.currentData.animalTypeId)
+                    {
+                        defaultIndex = i;
+                    }
+                    else if (animal.typeId == AnimalTypeId.Pig && PlayerPreferencesManager.Instance == null)
+                    {
+                        defaultIndex = i;
+                    }
                 }
-                SelectAnimal(availableAnimals[0]);
+                SelectAnimal(availableAnimals[defaultIndex], generatedAnimalCards[defaultIndex]);
             }
 
             // Default Team Mode (Solo)
@@ -218,7 +238,8 @@ namespace AnimalMagicRoyale.Components.UI
         {
             if (btnPlay == null) return;
 
-            bool canPlay = PlayerSetupData.SelectedMap != null && SceneLoader.Instance != null;
+            // Only check SelectedMap. SceneLoader might not be in this scene if testing from MainMenu.
+            bool canPlay = PlayerSetupData.SelectedMap != null;
 
             if (canPlay)
             {
@@ -235,32 +256,90 @@ namespace AnimalMagicRoyale.Components.UI
             }
         }
 
-        private void SelectAnimal(AnimalType animal)
+        private void SelectAnimal(AnimalType animal, VisualElement clickedCard)
         {
             currentAnimal = animal;
             PlayerSetupData.SelectedAnimal = animal;
             
+            if (PlayerPreferencesManager.Instance != null)
+            {
+                PlayerPreferencesManager.Instance.currentData.animalTypeId = (int)animal.typeId;
+                PlayerPreferencesManager.Instance.SavePreferences();
+            }
+            
+            // Highlight logic
+            foreach (var card in generatedAnimalCards)
+            {
+                card.RemoveFromClassList("animal-card-selected");
+            }
+            if (clickedCard != null)
+            {
+                clickedCard.AddToClassList("animal-card-selected");
+            }
+
+            // Update ability text
+            if (abilityText != null)
+            {
+                abilityText.text = animal.ability != null ? animal.ability.abilityName : "Sin Habilidad";
+            }
+            
+            generatedSkinCards.Clear();
+            int defaultSkinIndex = -1;
             if (skinGrid != null)
             {
                 skinGrid.Clear();
                 if (animal.availableSkins != null)
                 {
-                    foreach (var skin in animal.availableSkins)
+                    for (int i = 0; i < animal.availableSkins.Count; i++)
                     {
-                        skinGrid.Add(UIElementBuilders.BuildSkinCard(skin, SelectSkin));
+                        var skin = animal.availableSkins[i];
+                        VisualElement scard = UIElementBuilders.BuildSkinCard(skin, SelectSkin);
+                        skinGrid.Add(scard);
+                        generatedSkinCards.Add(scard);
+                        
+                        if (PlayerPreferencesManager.Instance != null && 
+                            skin.skinName == PlayerPreferencesManager.Instance.currentData.skinName)
+                        {
+                            defaultSkinIndex = i;
+                        }
                     }
                 }
             }
 
-            if (animal.defaultSkin != null)
+            if (defaultSkinIndex != -1 && defaultSkinIndex < generatedSkinCards.Count)
             {
-                SelectSkin(animal.defaultSkin);
+                SelectSkin(animal.availableSkins[defaultSkinIndex], generatedSkinCards[defaultSkinIndex]);
+            }
+            else if (animal.defaultSkin != null && generatedSkinCards.Count > 0)
+            {
+                SelectSkin(animal.defaultSkin, generatedSkinCards[0]);
+            }
+            else if (animal.availableSkins != null && animal.availableSkins.Count > 0)
+            {
+                SelectSkin(animal.availableSkins[0], generatedSkinCards[0]);
             }
         }
 
-        private void SelectSkin(SkinData skin)
+        private void SelectSkin(SkinData skin, VisualElement clickedCard)
         {
             PlayerSetupData.SelectedSkin = skin;
+            
+            if (PlayerPreferencesManager.Instance != null)
+            {
+                PlayerPreferencesManager.Instance.currentData.skinName = skin.skinName;
+                PlayerPreferencesManager.Instance.SavePreferences();
+            }
+            
+            // Highlight logic
+            foreach (var card in generatedSkinCards)
+            {
+                card.RemoveFromClassList("skin-card-selected");
+            }
+            if (clickedCard != null)
+            {
+                clickedCard.AddToClassList("skin-card-selected");
+            }
+
             if (characterPreview != null)
             {
                 characterPreview.ShowPreview(skin);

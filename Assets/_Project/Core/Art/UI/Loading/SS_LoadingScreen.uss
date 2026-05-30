@@ -1,0 +1,40 @@
+.loading-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(20, 20, 33, 0.98);
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-title {
+    color: #F7B538;
+    font-size: 50px;
+    -unity-font-style: bold;
+    margin-bottom: 40px;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+    -unity-text-align: middle-center;
+}
+
+.progress-bar-container {
+    width: 60%;
+    max-width: 800px;
+    height: 40px;
+    background-color: #2a2a3d;
+    border-radius: 20px;
+    border-width: 4px;
+    border-color: #4A2C18;
+    overflow: hidden;
+    padding: 2px;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #FFC107;
+    border-radius: 14px;
+    transition-property: width;
+    transition-duration: 0.1s;
+}

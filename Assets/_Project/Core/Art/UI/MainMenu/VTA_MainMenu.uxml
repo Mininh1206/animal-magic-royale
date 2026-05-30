@@ -59,17 +59,26 @@
             <!-- Customization Panel (Hidden initially) -->
             <ui:VisualElement name="CustomizationPanel" class="customization-panel" style="display: none;">
                 <ui:VisualElement class="customization-left">
-                    <ui:VisualElement name="AnimalGrid" class="animal-grid" />
+                    <ui:Label text="TIPO DE ANIMAL" class="column-title"/>
+                    <ui:ScrollView name="AnimalGrid" class="animal-grid" style="flex-grow: 1;" />
+                    <!-- Ability info -->
+                    <ui:VisualElement class="ability-container">
+                        <ui:Label text="HABILIDAD" class="ability-title"/>
+                        <ui:Label name="AbilityText" text="-" class="ability-text"/>
+                    </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement class="customization-center">
+                    <ui:Label text="VISTA PREVIA" class="column-title"/>
                     <ui:VisualElement name="PreviewArea" class="preview-area" />
                 </ui:VisualElement>
                 <ui:VisualElement class="customization-right">
-                    <ui:Label text="SKINS" class="skins-title"/>
-                    <ui:ScrollView name="SkinSelector" class="skin-selector" mode="Vertical" />
+                    <ui:Label text="SKINS" class="column-title"/>
+                    <ui:ScrollView name="SkinSelector" class="skin-selector" style="flex-grow: 1;" mode="Vertical" />
                 </ui:VisualElement>
             </ui:VisualElement>
 
         </ui:VisualElement>
+
+
     </ui:Image>
 </ui:UXML>

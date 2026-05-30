@@ -1,0 +1,86 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/Core/Art/UI/Settings/SS_Settings.uss" />
+    <ui:VisualElement name="SettingsPanel" class="settings-overlay" style="display: none;">
+        <ui:VisualElement class="settings-modal">
+            
+            <ui:Button name="CloseSettingsBtn" class="btn-close-settings" text="✖" />
+            
+            <!-- Left Sidebar -->
+            <ui:VisualElement class="settings-sidebar">
+                <ui:Label text="AJUSTES" class="settings-title"/>
+                <ui:Button name="TabGraphics" class="settings-tab settings-tab-active">
+                    <ui:Label text="📺 Gráficos" class="settings-tab-text"/>
+                </ui:Button>
+                <ui:Button name="TabAudio" class="settings-tab">
+                    <ui:Label text="🔊 Sonido" class="settings-tab-text"/>
+                </ui:Button>
+                <ui:Button name="TabControls" class="settings-tab">
+                    <ui:Label text="🎮 Controles" class="settings-tab-text"/>
+                </ui:Button>
+            </ui:VisualElement>
+            
+            <!-- Right Content Area -->
+            <ui:VisualElement class="settings-content">
+                
+                <ui:VisualElement name="ContentGraphics" class="settings-page">
+                    <ui:Label text="📺 Gráficos" class="settings-page-title"/>
+                    
+                    <ui:VisualElement class="setting-item">
+                        <ui:VisualElement class="setting-item-info">
+                            <ui:Label text="Resolución" class="setting-item-name"/>
+                            <ui:Label text="Calidad de imagen vs rendimiento" class="setting-item-desc"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-item-control">
+                            <ui:Button class="setting-dropdown" text="1920 x 1080 (1080p)  ▼" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    
+                    <ui:VisualElement class="setting-item">
+                        <ui:VisualElement class="setting-item-info">
+                            <ui:Label text="Brillo" class="setting-item-name"/>
+                            <ui:Label text="Ajusta la luminosidad general" class="setting-item-desc"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-item-control" style="flex-direction: row; align-items: center;">
+                            <ui:VisualElement class="setting-slider-track">
+                                <ui:VisualElement class="setting-slider-fill" style="width: 75%;"/>
+                            </ui:VisualElement>
+                            <ui:Label text="75%" class="setting-slider-value"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="setting-item">
+                        <ui:VisualElement class="setting-item-info">
+                            <ui:Label text="Pantalla Completa" class="setting-item-name"/>
+                            <ui:Label text="Modo ventana sin bordes" class="setting-item-desc"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-item-control">
+                            <ui:Label text="[ ON ]" style="color: #F7B538; font-size: 16px; -unity-font-style: bold;"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    
+                </ui:VisualElement>
+
+                <ui:VisualElement name="ContentAudio" class="settings-page" style="display: none;">
+                    <ui:Label text="🔊 Sonido" class="settings-page-title"/>
+                    <ui:VisualElement class="setting-item">
+                        <ui:VisualElement class="setting-item-info">
+                            <ui:Label text="Volumen Maestro" class="setting-item-name"/>
+                            <ui:Label text="Ajusta el volumen de todo el juego" class="setting-item-desc"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="ContentControls" class="settings-page" style="display: none;">
+                    <ui:Label text="🎮 Controles" class="settings-page-title"/>
+                </ui:VisualElement>
+
+                <!-- Footer Actions -->
+                <ui:VisualElement class="settings-footer">
+                    <ui:Button name="ResetBtn" class="btn-settings-secondary" text="Restablecer" />
+                    <ui:Button name="ApplyBtn" class="btn-settings-primary" text="Aplicar" />
+                </ui:VisualElement>
+                
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

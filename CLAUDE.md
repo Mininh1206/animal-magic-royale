@@ -208,10 +208,10 @@ Cada personaje tiene soporte para **skins** (cambio de color/texturas).
 
 | Sistema | Tecnología | Datos |
 |---|---|---|
-| Configuración | `PlayerPrefs` | Volumen, gráficos, controles |
+| Configuración/Preferencias | `JSON + Hash` (`PlayerPreferencesManager`) | Animal favorito, skin favorito, volumen, gráficos |
 | Records/Estadísticas | JSON + Hash | Nombre, bajas totales, bajas récord, victorias (Top 1), Top 10 histórico |
 
-- Los archivos JSON incluyen verificación por **Hash** para evitar edición manual.
+- Los archivos JSON incluyen verificación por **Hash (MD5)** para evitar edición manual de progreso o ajustes externos (guardados en `Application.persistentDataPath`).
 
 ---
 
@@ -282,10 +282,10 @@ BotController
 ### M5: UI, Persistencia y Pulido
 | Tarea | Prioridad | Estado |
 |---|---|---|
-| Flujo de Escenas y UI de Menús (Presentación, Configuración, Finalización) | 🟡 Normal | Done |
+| Flujo de Escenas y UI de Menús (Presentación, Configuración, Finalización) | 🟡 Normal | In Progress |
 | UI In-Game / HUD (barra de vida, inventario con cooldown radial, timer zona) | 🟡 Normal | Done |
-| Persistencia de Datos (JSON + Hash) | 🔴 Alta | Done |
-| Persistencia de Configuración y Controles (KeyBindingManager / PlayerPrefs) | 🔴 Alta | Done |
+| Persistencia de Datos (JSON + Hash para Ajustes y Records) | 🔴 Alta | Done |
+| Persistencia de Configuración y Controles (KeyBindingManager) | 🔴 Alta | To Do |
 | Pulido, Arte y Efectos VFX/SFX (modelos Low-Poly, partículas, audio) | 🟡 Normal | To Do |
 | Refactorización Arquitectura (Animaciones compartidas, apuntado tipo shooter) | 🔴 Alta | Done |
 

@@ -53,7 +53,7 @@ namespace AnimalMagicRoyale.Components.UI
             return card;
         }
 
-        public static VisualElement BuildAnimalCard(AnimalType data, Action<AnimalType> onClick)
+        public static VisualElement BuildAnimalCard(AnimalType data, Action<AnimalType, VisualElement> onClick)
         {
             Button card = new Button();
             card.AddToClassList("animal-card");
@@ -68,12 +68,12 @@ namespace AnimalMagicRoyale.Components.UI
             card.Add(icon);
             card.Add(name);
 
-            card.clicked += () => onClick?.Invoke(data);
+            card.clicked += () => onClick?.Invoke(data, card);
 
             return card;
         }
 
-        public static VisualElement BuildSkinCard(SkinData data, Action<SkinData> onClick)
+        public static VisualElement BuildSkinCard(SkinData data, Action<SkinData, VisualElement> onClick)
         {
             Button card = new Button();
             card.AddToClassList("skin-card");
@@ -88,7 +88,7 @@ namespace AnimalMagicRoyale.Components.UI
             card.Add(preview);
             card.Add(name);
 
-            card.clicked += () => onClick?.Invoke(data);
+            card.clicked += () => onClick?.Invoke(data, card);
 
             return card;
         }

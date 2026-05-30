@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using AnimalMagicRoyale.Core;
+using AnimalMagicRoyale.Core.Data;
 
 namespace AnimalMagicRoyale.Components.UI
 {
@@ -11,7 +12,17 @@ namespace AnimalMagicRoyale.Components.UI
         private VisualElement root;
         private VisualElement settingsPanel;
 
-        private void Awake()
+        // Tabs
+        private Button tabGraphics;
+        private Button tabAudio;
+        private Button tabControls;
+
+        // Content Pages
+        private VisualElement contentGraphics;
+        private VisualElement contentAudio;
+        private VisualElement contentControls;
+
+        private void OnEnable()
         {
             uiDocument = GetComponent<UIDocument>();
             root = uiDocument.rootVisualElement;
@@ -22,17 +33,56 @@ namespace AnimalMagicRoyale.Components.UI
                 
                 Button btnClose = root.Q<Button>("CloseSettingsBtn");
                 Button btnApply = root.Q<Button>("ApplyBtn");
-                Button btnCancel = root.Q<Button>("CancelBtn");
+                Button btnReset = root.Q<Button>("ResetBtn");
 
                 if (btnClose != null) btnClose.clicked += HideSettings;
                 if (btnApply != null) btnApply.clicked += SaveAndApply;
-                if (btnCancel != null) btnCancel.clicked += HideSettings;
+                if (btnReset != null) btnReset.clicked += LoadSettings;
 
-                // Bind other UI elements for graphics, sound, controls...
+                // Bind tabs
+                tabGraphics = root.Q<Button>("TabGraphics");
+                tabAudio = root.Q<Button>("TabAudio");
+                tabControls = root.Q<Button>("TabControls");
+
+                contentGraphics = root.Q<VisualElement>("ContentGraphics");
+                contentAudio = root.Q<VisualElement>("ContentAudio");
+                contentControls = root.Q<VisualElement>("ContentControls");
+
+                if (tabGraphics != null) tabGraphics.clicked += () => SwitchTab("Graphics");
+                if (tabAudio != null) tabAudio.clicked += () => SwitchTab("Audio");
+                if (tabControls != null) tabControls.clicked += () => SwitchTab("Controls");
+
+                SwitchTab("Graphics"); // Default
             }
 
-            // Initially hidden
             HideSettings();
+        }
+
+        private void SwitchTab(string tabName)
+        {
+            if (tabGraphics != null) tabGraphics.RemoveFromClassList("settings-tab-active");
+            if (tabAudio != null) tabAudio.RemoveFromClassList("settings-tab-active");
+            if (tabControls != null) tabControls.RemoveFromClassList("settings-tab-active");
+
+            if (contentGraphics != null) contentGraphics.style.display = DisplayStyle.None;
+            if (contentAudio != null) contentAudio.style.display = DisplayStyle.None;
+            if (contentControls != null) contentControls.style.display = DisplayStyle.None;
+
+            if (tabName == "Graphics")
+            {
+                if (tabGraphics != null) tabGraphics.AddToClassList("settings-tab-active");
+                if (contentGraphics != null) contentGraphics.style.display = DisplayStyle.Flex;
+            }
+            else if (tabName == "Audio")
+            {
+                if (tabAudio != null) tabAudio.AddToClassList("settings-tab-active");
+                if (contentAudio != null) contentAudio.style.display = DisplayStyle.Flex;
+            }
+            else if (tabName == "Controls")
+            {
+                if (tabControls != null) tabControls.AddToClassList("settings-tab-active");
+                if (contentControls != null) contentControls.style.display = DisplayStyle.Flex;
+            }
         }
 
         public void ShowSettings()
@@ -54,13 +104,20 @@ namespace AnimalMagicRoyale.Components.UI
 
         private void LoadSettings()
         {
-            // Load from PlayerPrefs and update UI elements
+            if (PlayerPreferencesManager.Instance != null)
+            {
+                // Read from PlayerPreferencesManager.Instance.currentData
+                // and update UI elements here
+            }
         }
 
         private void SaveAndApply()
         {
-            // Save to PlayerPrefs from UI elements
-            PlayerPrefs.Save();
+            if (PlayerPreferencesManager.Instance != null)
+            {
+                // Update PlayerPreferencesManager.Instance.currentData from UI elements here
+                PlayerPreferencesManager.Instance.SavePreferences();
+            }
 
             // Apply graphics settings
             ApplyGraphics();
