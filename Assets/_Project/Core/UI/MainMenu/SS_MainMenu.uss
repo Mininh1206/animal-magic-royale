@@ -1,0 +1,327 @@
+/* Globals */
+.background-image {
+    width: 100%;
+    height: 100%;
+}
+
+.main-container {
+    flex-grow: 1;
+    justify-content: space-between;
+    padding: 30px;
+}
+
+/* Top Bar */
+.top-bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 100px;
+}
+
+.top-left {
+    flex-direction: row;
+    align-items: center;
+}
+
+.logo-container {
+    width: 90px;
+    height: 90px;
+    background-color: white;
+    border-radius: 50%;
+    border-width: 4px;
+    border-color: #4A2C18;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.logo-image {
+    width: 80%;
+    height: 80%;
+}
+
+.btn-customize {
+    background-color: #0088ff;
+    border-color: #003366;
+    border-width: 3px;
+    border-radius: 25px;
+    color: white;
+    font-size: 22px;
+    -unity-font-style: bold;
+    padding: 12px 30px;
+    border-bottom-width: 6px;
+    margin: 0;
+    transition-duration: 0.1s;
+}
+
+.btn-customize:hover {
+    background-color: #1a9cff;
+}
+
+.btn-customize:active {
+    border-bottom-width: 3px;
+    margin-top: 3px;
+}
+
+.top-right {
+    flex-direction: row;
+}
+
+.btn-icon {
+    width: 65px;
+    height: 65px;
+    background-color: white;
+    border-color: #4A2C18;
+    border-width: 4px;
+    border-radius: 50%;
+    margin-left: 15px;
+    font-size: 30px;
+    -unity-font-style: bold;
+    color: #4A2C18;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    transition-duration: 0.1s;
+}
+
+.btn-icon:hover {
+    background-color: #f0f0f0;
+}
+
+.btn-icon:active {
+    background-color: #e0e0e0;
+}
+
+/* Lobby Panel (Bottom Content) */
+.lobby-panel {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+/* Arena Panel */
+.arena-panel {
+    background-color: #784B2B;
+    border-color: #4A2C18;
+    border-width: 5px;
+    border-radius: 20px;
+    padding: 20px;
+    width: 450px;
+    height: 380px;
+}
+
+.arena-title {
+    color: white;
+    font-size: 32px;
+    -unity-font-style: bold;
+    margin-bottom: 15px;
+    margin-top: 0;
+    margin-left: 5px;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+}
+
+.map-selector {
+    flex-grow: 1;
+}
+
+.map-selector .unity-scroll-view__content-container {
+    flex-direction: row;
+}
+
+/* Map Cards */
+.map-card {
+    width: 200px;
+    height: 250px;
+    border-radius: 12px;
+    border-width: 4px;
+    margin-right: 15px;
+    margin-left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 6px;
+    flex-direction: column;
+    background-color: white;
+    border-color: #d0d0d0;
+}
+
+.map-card-selected {
+    border-color: #F7B538;
+}
+
+.map-card-locked {
+    background-color: #D3D3D3;
+    border-color: #A0A0A0;
+}
+
+.map-card-preview-container {
+    flex-grow: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #72C1EB;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.map-card-preview-container-locked {
+    flex-grow: 1;
+    border-radius: 8px;
+    background-color: #B0B0B0;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.map-card-preview-placeholder {
+    width: 100%;
+    height: 100%;
+}
+
+.locked-icon {
+    font-size: 40px;
+    color: #666;
+}
+
+.map-card-info {
+    height: 60px;
+    justify-content: center;
+    align-items: center;
+}
+
+.map-card-name {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: black;
+    margin: 0;
+    padding: 0;
+}
+
+.map-card-players {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: #00A859;
+    margin: 0;
+    margin-top: 2px;
+    padding: 0;
+}
+
+.map-card-locked-text {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: #666;
+    margin: 0;
+    padding: 0;
+}
+
+/* Right Actions */
+.right-actions {
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* Team Selector */
+.team-selector {
+    flex-direction: row;
+    background-color: white;
+    border-color: #4A2C18;
+    border-width: 4px;
+    border-radius: 35px;
+    padding: 5px;
+    margin-bottom: 20px;
+}
+
+.team-btn {
+    background-color: transparent;
+    border-width: 0;
+    color: black;
+    font-size: 18px;
+    -unity-font-style: bold;
+    padding: 15px 30px;
+    border-radius: 25px;
+    margin: 0;
+    transition-duration: 0.1s;
+}
+
+.team-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.team-btn-selected {
+    background-color: #804324;
+    color: white;
+}
+
+.team-btn-selected:hover {
+    background-color: #905334;
+}
+
+/* Play Button */
+.play-btn {
+    background-color: #FFC107;
+    border-color: #5C3100;
+    border-width: 4px;
+    border-radius: 30px;
+    border-bottom-width: 12px;
+    width: 320px;
+    height: 100px;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    transition-duration: 0.1s;
+}
+
+.play-btn:hover {
+    background-color: #FFD54F;
+}
+
+.play-btn:active {
+    border-bottom-width: 4px;
+    margin-top: 8px;
+}
+
+.play-btn-text {
+    font-size: 45px;
+    -unity-font-style: bold;
+    color: #5C3100;
+    margin: 0;
+    padding: 0;
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.4);
+}
+
+/* Customization Panel layout */
+.customization-panel {
+    flex-grow: 1;
+    flex-direction: row;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    border-radius: 20px;
+    margin-top: 20px;
+}
+
+.customization-left {
+    width: 30%;
+    border-right-width: 2px;
+    border-color: rgba(255, 255, 255, 0.2);
+    padding-right: 20px;
+}
+
+.customization-center {
+    width: 40%;
+    justify-content: center;
+    align-items: center;
+}
+
+.customization-right {
+    width: 30%;
+    border-left-width: 2px;
+    border-color: rgba(255, 255, 255, 0.2);
+    padding-left: 20px;
+}
+
+.skins-title {
+    color: white;
+    font-size: 24px;
+    -unity-font-style: bold;
+    margin-bottom: 10px;
+}

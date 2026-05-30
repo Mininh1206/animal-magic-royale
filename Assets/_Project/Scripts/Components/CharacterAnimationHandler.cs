@@ -31,7 +31,11 @@ namespace AnimalMagicRoyale.Components
             
             if (targetAnimator == null)
             {
-                Debug.LogWarning($"[CharacterAnimationHandler] No se encontró Animator en {gameObject.name}");
+                bool isPreview = gameObject.name.Contains("SpawnPoint") || gameObject.name.Contains("Preview");
+                if (!isPreview)
+                {
+                    Debug.LogWarning($"[CharacterAnimationHandler] No se encontró Animator en {gameObject.name}");
+                }
             }
         }
         

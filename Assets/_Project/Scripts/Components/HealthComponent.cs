@@ -27,6 +27,15 @@ namespace AnimalMagicRoyale.Components
         {
             if (!IsAlive || amount <= 0) return;
 
+            // Fuego amigo protection: don't damage teammates
+            if (source != null && AnimalMagicRoyale.Core.TeamManager.Instance != null)
+            {
+                if (AnimalMagicRoyale.Core.TeamManager.Instance.AreTeammates(gameObject, source))
+                {
+                    return; // Ignorar daño de aliados
+                }
+            }
+
             // Prevent damage if the game is not in Playing state
             if (AnimalMagicRoyale.Core.GameManager.Instance != null && 
                 !(AnimalMagicRoyale.Core.GameManager.Instance.StateMachine.CurrentState is AnimalMagicRoyale.Core.PlayingState))

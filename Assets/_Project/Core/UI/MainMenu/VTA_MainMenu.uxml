@@ -1,0 +1,75 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/Core/Art/UI/MainMenu/SS_MainMenu.uss" />
+    <ui:Image source="project://database/Assets/_Project/Core/Art/UI/MainMenu/background.png" scale-mode="ScaleAndCrop" name="Background" class="background-image">
+        
+        <ui:VisualElement name="Main" class="main-container">
+            
+            <!-- Top Bar -->
+            <ui:VisualElement name="TopBar" class="top-bar">
+                <ui:VisualElement class="top-left">
+                    <ui:VisualElement class="logo-container">
+                        <ui:Image name="Logo" source="project://database/Assets/_Project/Core/Art/UI/Shared/logo.png" class="logo-image"/>
+                    </ui:VisualElement>
+                    <ui:Button name="CustomizeButton" class="btn-customize">
+                        <ui:VisualElement name="CustomizeIcon" class="btn-customize-icon" />
+                        <ui:Label name="CustomizeLabel" text="CUSTOMIZE" class="btn-customize-label" />
+                    </ui:Button>
+                </ui:VisualElement>
+                
+                <ui:VisualElement class="top-right">
+                    <ui:Button name="SettingsButton" class="btn-icon">
+                        <ui:VisualElement class="icon-settings" />
+                    </ui:Button>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Bottom Content (Lobby Panel) -->
+            <ui:VisualElement name="LobbyPanel" class="lobby-panel">
+                
+                <!-- Left: Arena Panel -->
+                <ui:VisualElement class="arena-panel">
+                    <ui:Label text="ARENA" class="arena-title"/>
+                    
+                    <ui:ScrollView name="MapSelector" class="map-selector" mode="Horizontal">
+                        <!-- Template handled by script, but we keep the structure here for reference in UI Builder -->
+                        <!-- The UIElementBuilders will generate this exact structure -->
+                    </ui:ScrollView>
+                </ui:VisualElement>
+
+                <!-- Right: Actions -->
+                <ui:VisualElement class="right-actions">
+                    <!-- Team Mode Selector -->
+                    <ui:VisualElement class="team-selector">
+                        <ui:Button name="BtnSolo" text="SOLO" class="team-btn team-btn-selected" />
+                        <ui:Button name="BtnDuos" text="DÚOS" class="team-btn" />
+                        <ui:Button name="BtnSquads" text="SQUADS" class="team-btn" />
+                    </ui:VisualElement>
+
+                    <!-- Play Button -->
+                    <ui:Button name="PlayButton" class="play-btn">
+                        <ui:VisualElement class="play-btn-content">
+                            <ui:VisualElement class="icon-play" />
+                            <ui:Label text="JUGAR" class="play-btn-text"/>
+                        </ui:VisualElement>
+                    </ui:Button>
+                </ui:VisualElement>
+                
+            </ui:VisualElement>
+            
+            <!-- Customization Panel (Hidden initially) -->
+            <ui:VisualElement name="CustomizationPanel" class="customization-panel" style="display: none;">
+                <ui:VisualElement class="customization-left">
+                    <ui:VisualElement name="AnimalGrid" class="animal-grid" />
+                </ui:VisualElement>
+                <ui:VisualElement class="customization-center">
+                    <ui:VisualElement name="PreviewArea" class="preview-area" />
+                </ui:VisualElement>
+                <ui:VisualElement class="customization-right">
+                    <ui:Label text="SKINS" class="skins-title"/>
+                    <ui:ScrollView name="SkinSelector" class="skin-selector" mode="Vertical" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+    </ui:Image>
+</ui:UXML>

@@ -57,8 +57,25 @@ namespace AnimalMagicRoyale.Core
         private void Start()
         {
             StateMachine.Initialize(WaitingState);
-            Debug.Log($"[GameManager] Auto-starting match in {autoStartDelay} seconds...");
-            Invoke(nameof(StartMatch), autoStartDelay);
+            
+            // Only auto-start if we are directly in a test scene (not coming from Main Menu)
+            if (AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap == null)
+            {
+                Debug.Log($"[GameManager] Auto-starting match in {autoStartDelay} seconds...");
+                Invoke(nameof(StartMatch), autoStartDelay);
+            }
+        }
+
+        public void InitializeFromLobby()
+        {
+            if (TeamManager.Instance != null && AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap != null)
+            {
+                TeamManager.Instance.SetTeamConfig(
+                    AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedTeamMode, 
+                    AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap.maxPlayers
+                );
+            }
+            StartMatch();
         }
 
         private void OnEnable()
