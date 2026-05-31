@@ -16,6 +16,8 @@ namespace AnimalMagicRoyale.Components.UI
         private Label message;
         private Button btnMainMenu;
 
+        private GameStateEvent onGameStateChanged;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void AutoInitialize()
         {
@@ -41,6 +43,8 @@ namespace AnimalMagicRoyale.Components.UI
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
+                
+                onGameStateChanged = Resources.Load<GameStateEvent>("Events/GameStateEvent");
             }
             else
             {
@@ -73,17 +77,17 @@ namespace AnimalMagicRoyale.Components.UI
                 overlay.style.display = DisplayStyle.None;
             }
 
-            if (GameManager.Instance != null && GameManager.Instance.onGameStateChanged != null)
+            if (onGameStateChanged != null)
             {
-                GameManager.Instance.onGameStateChanged.RegisterListener(HandleGameStateChanged);
+                onGameStateChanged.RegisterListener(HandleGameStateChanged);
             }
         }
 
         private void OnDisable()
         {
-            if (GameManager.Instance != null && GameManager.Instance.onGameStateChanged != null)
+            if (onGameStateChanged != null)
             {
-                GameManager.Instance.onGameStateChanged.UnregisterListener(HandleGameStateChanged);
+                onGameStateChanged.UnregisterListener(HandleGameStateChanged);
             }
         }
 
@@ -133,9 +137,9 @@ namespace AnimalMagicRoyale.Components.UI
         private void ReturnToMainMenu()
         {
             HideGameOver();
-            if (SceneLoader.Instance != null)
+            if (SceneLoaderManager.Instance != null)
             {
-                SceneLoader.Instance.LoadMainMenu();
+                SceneLoaderManager.Instance.LoadMainMenu();
             }
             else
             {

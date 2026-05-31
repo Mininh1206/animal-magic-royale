@@ -233,9 +233,9 @@ namespace AnimalMagicRoyale.Components.UI
         private void ReturnToMainMenu()
         {
             HideSettings();
-            if (SceneLoader.Instance != null)
+            if (SceneLoaderManager.Instance != null)
             {
-                SceneLoader.Instance.LoadMainMenu();
+                SceneLoaderManager.Instance.LoadMainMenu();
             }
             else
             {

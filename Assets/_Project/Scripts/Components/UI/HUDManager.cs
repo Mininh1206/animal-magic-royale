@@ -19,9 +19,6 @@ namespace AnimalMagicRoyale.Components.UI
         [SerializeField] private GameObject killFeedPanel;
         [SerializeField] private GameObject zoneTimerPanel;
         
-        [Header("Game Over / Lobby")]
-        [SerializeField] private GameObject gameOverPanel;
-
         [Header("Events")]
         [SerializeField] private GameStateEvent onGameStateChanged;
 
@@ -67,9 +64,6 @@ namespace AnimalMagicRoyale.Components.UI
             {
                 SetHUDActive(true);
             }
-            
-            if (gameOverPanel != null)
-                gameOverPanel.SetActive(false);
         }
 
         private void HandleGameStateChanged(GameState state)
@@ -79,11 +73,9 @@ namespace AnimalMagicRoyale.Components.UI
             {
                 case GameState.Waiting:
                     SetHUDActive(true);
-                    if (gameOverPanel != null) gameOverPanel.SetActive(false);
                     break;
                 case GameState.Playing:
                     SetHUDActive(true);
-                    if (gameOverPanel != null) gameOverPanel.SetActive(false);
 
                     if (healthBarUI != null || spellInventoryUI != null || abilityUI != null)
                     {
@@ -116,7 +108,6 @@ namespace AnimalMagicRoyale.Components.UI
                     break;
                 case GameState.GameOver:
                     SetHUDActive(false);
-                    if (gameOverPanel != null) gameOverPanel.SetActive(true);
                     break;
             }
         }

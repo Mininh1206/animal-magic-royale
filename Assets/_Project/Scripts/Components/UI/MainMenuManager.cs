@@ -364,9 +364,9 @@ namespace AnimalMagicRoyale.Components.UI
                 return;
             }
 
-            if (PlayerSetupData.SelectedMap != null && SceneLoader.Instance != null)
+            if (PlayerSetupData.SelectedMap != null && SceneLoaderManager.Instance != null)
             {
-                SceneLoader.Instance.LoadMap(PlayerSetupData.SelectedMap);
+                SceneLoaderManager.Instance.LoadMap(PlayerSetupData.SelectedMap);
             }
             else
             {

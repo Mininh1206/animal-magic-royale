@@ -7,9 +7,9 @@ using AnimalMagicRoyale.Core.Data;
 namespace AnimalMagicRoyale.Core
 {
     [RequireComponent(typeof(UIDocument))]
-    public class SceneLoader : MonoBehaviour
+    public class SceneLoaderManager : MonoBehaviour
     {
-        public static SceneLoader Instance { get; private set; }
+        public static SceneLoaderManager Instance { get; private set; }
 
         private UIDocument uiDocument;
         private VisualElement loadingContainer;
@@ -33,7 +33,7 @@ namespace AnimalMagicRoyale.Core
                 // Create a temporary one just so it doesn't break
                 GameObject temp = new GameObject("SceneLoader_Temp");
                 temp.AddComponent<UIDocument>();
-                temp.AddComponent<SceneLoader>();
+                temp.AddComponent<SceneLoaderManager>();
             }
         }
 
