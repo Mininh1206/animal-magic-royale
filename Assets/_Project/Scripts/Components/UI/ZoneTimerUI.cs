@@ -8,12 +8,14 @@ namespace AnimalMagicRoyale.Components.UI
     {
         private Label timerText;
         private Label phaseText;
+        private VisualElement progressFill;
         [SerializeField] private ZoneShrinkEvent onZoneShrink;
         
         public void Initialize(VisualElement root)
         {
             timerText = root.Q<Label>("lbl-zone-time");
             phaseText = root.Q<Label>("lbl-zone-status");
+            progressFill = root.Q<VisualElement>("radar-progress-fill");
         }
 
         private void Awake()
@@ -32,7 +34,17 @@ namespace AnimalMagicRoyale.Components.UI
 
                 if (ZoneManager.Instance.IsShrinking)
                 {
-                    if (timerText != null) timerText.text = "¡La zona se está cerrando!";
+                    if (timerText != null) timerText.text = "Cerrando";
+                    
+                    if (progressFill != null)
+                    {
+                        var phase = ZoneManager.Instance.GetCurrentPhase();
+                        if (phase != null && phase.shrinkDuration > 0)
+                        {
+                            float perc = ZoneManager.Instance.PhaseTimer / phase.shrinkDuration;
+                            progressFill.style.width = Length.Percent(perc * 100f);
+                        }
+                    }
                 }
                 else
                 {
@@ -41,6 +53,16 @@ namespace AnimalMagicRoyale.Components.UI
                     {
                         int seconds = Mathf.CeilToInt(time);
                         timerText.text = $"00:{seconds:00}";
+                    }
+                    
+                    if (progressFill != null)
+                    {
+                        var phase = ZoneManager.Instance.GetCurrentPhase();
+                        if (phase != null && phase.waitBeforeShrink > 0)
+                        {
+                            float perc = ZoneManager.Instance.PhaseTimer / phase.waitBeforeShrink;
+                            progressFill.style.width = Length.Percent(perc * 100f);
+                        }
                     }
                 }
             }

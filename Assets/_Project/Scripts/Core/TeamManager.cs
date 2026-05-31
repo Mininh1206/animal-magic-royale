@@ -17,7 +17,6 @@ namespace AnimalMagicRoyale.Core
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
             else
             {
@@ -48,7 +47,14 @@ namespace AnimalMagicRoyale.Core
             {
                 playerTeams.Add(player, teamId);
             }
-            Debug.Log($"[TeamManager] Assigned {player.name} to Team {teamId}");
+            
+            // Debug how many players are in this team
+            int countInTeam = 0;
+            foreach (var kvp in playerTeams)
+            {
+                if (kvp.Value == teamId) countInTeam++;
+            }
+            Debug.Log($"[TeamManager] Assigned {player.name} to Team {teamId}. Team {teamId} now has {countInTeam} members.");
         }
 
         public int GetTeam(GameObject player)

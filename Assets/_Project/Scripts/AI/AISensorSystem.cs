@@ -119,18 +119,30 @@ namespace AnimalMagicRoyale.AI
         private void ProcessHit(GameObject obj, float dist, TargetType defaultType)
         {
             if (obj == this.gameObject) return; // Ignore self
+            
+            // Check if it's a living entity first to ignore our own children (like ModelContainer)
+            var health = obj.GetComponentInParent<HealthComponent>();
+            if (health != null)
+            {
+                if (health.gameObject == this.gameObject) return; // It's us!
+
+                // Filtrar companeros de equipo usando el root (health.gameObject)
+                if (TeamManager.Instance != null && 
+                    TeamManager.Instance.AreTeammates(gameObject, health.gameObject))
+                {
+                    return;
+                }
+            }
 
             TargetType type = defaultType;
 
             // Check if it's a loot box
-            if (obj.GetComponent<LootBox>() != null)
+            if (obj.GetComponentInParent<LootBox>() != null)
             {
                 type = TargetType.LootBox;
             }
             else
             {
-                // Check if it's a living enemy
-                var health = obj.GetComponentInParent<HealthComponent>();
                 if (health == null || !health.IsAlive)
                 {
                     return; // Ignoramos si no tiene vida o está muerto

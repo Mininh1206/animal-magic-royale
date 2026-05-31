@@ -21,6 +21,9 @@ namespace AnimalMagicRoyale.Core
         private float currentRadius;
         private float targetRadius;
         private Vector3 zoneCenter;
+        
+        public float CurrentRadius => currentRadius;
+        public Vector3 ZoneCenter => zoneCenter;
         private bool isActive = false;
         private bool isShrinking = false;
         private float damageTimer = 0f;
@@ -46,6 +49,9 @@ namespace AnimalMagicRoyale.Core
                     zoneCollider.height = 20f; // Multiplicado por localScale.y (100) = 2000 de altura
                     zoneCollider.radius = 0.5f; // Multiplicado por localScale.x (currentRadius * 2) = currentRadius
                     zoneCollider.direction = 1; // Y-Axis
+                    
+                    var proxy = zoneVisual.gameObject.AddComponent<ZoneDamageColliderProxy>();
+                    proxy.Initialize(this);
                 }
             }
             else
@@ -138,6 +144,7 @@ namespace AnimalMagicRoyale.Core
                 }
             }
 
+            UpdateTrackers();
             ApplyZoneDamage(currentPhase);
         }
 
@@ -176,6 +183,19 @@ namespace AnimalMagicRoyale.Core
             }
         }
 
+        private void UpdateTrackers()
+        {
+            if (GameManager.Instance != null)
+            {
+                var trackers = FindObjectsByType<ZoneDamageTracker>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+                foreach (var tracker in trackers)
+                {
+                    bool inside = IsInsideZone(tracker.transform.position);
+                    tracker.UpdateZoneStatus(inside);
+                }
+            }
+        }
+
         private void ApplyZoneDamage(ZonePhaseData phase)
         {
             damageTimer -= Time.deltaTime;
@@ -202,7 +222,7 @@ namespace AnimalMagicRoyale.Core
             }
         }
 
-        private void OnTriggerExit(Collider other)
+        public void HandleTriggerExit(Collider other)
         {
             if (other.TryGetComponent<ZoneDamageTracker>(out var tracker))
             {
@@ -210,7 +230,7 @@ namespace AnimalMagicRoyale.Core
             }
         }
 
-        private void OnTriggerEnter(Collider other)
+        public void HandleTriggerEnter(Collider other)
         {
             if (other.TryGetComponent<ZoneDamageTracker>(out var tracker))
             {

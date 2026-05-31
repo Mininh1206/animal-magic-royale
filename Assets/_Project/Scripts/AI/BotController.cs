@@ -126,7 +126,15 @@ namespace AnimalMagicRoyale.AI
                 return;
             }
 
-            // Ensure agent is never left in a stopped state from a previous action
+            // No ejecutar IA hasta que el juego este en estado Playing
+            if (GameManager.Instance == null || 
+                !(GameManager.Instance.StateMachine.CurrentState is PlayingState))
+            {
+                if (Agent.isOnNavMesh) Agent.isStopped = true;
+                return;
+            }
+
+            // Ensure agent is never left in a stopped state accidentally
             if (Agent.isStopped)
             {
                 Agent.isStopped = false;

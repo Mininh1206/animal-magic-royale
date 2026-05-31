@@ -53,33 +53,38 @@
             <!-- Bottom Center: Player Status (Ability, Spells, Health) -->
             <ui:VisualElement name="player-status-container" class="player-status-column column-align-center">
                 
-                <!-- Ability Slot (Top) -->
-                <ui:VisualElement name="ability-container" class="ability-wrapper">
-                    <ui:VisualElement name="ability-icon" class="status-icon-slot">
-                        <ui:Label name="key" text="Q" class="slot-key-floating" />
-                        <ui:Label name="lbl-ability-cooldown" text="" class="cooldown-text" />
+                <ui:VisualElement class="action-slots-row row" style="margin-bottom: 10px; align-items: flex-end;">
+                    <!-- Spells (Left) -->
+                    <ui:VisualElement name="spell-inventory-container" class="spells-row row">
+                        <ui:VisualElement name="spell-slot-0" class="status-icon-slot">
+                            <ui:Label name="key" text="1" class="slot-key-floating" />
+                            <ui:VisualElement name="bg" class="slot-bg" />
+                            <ui:VisualElement name="icon" class="slot-icon" />
+                            <ui:VisualElement name="cooldown" class="slot-cooldown" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="spell-slot-1" class="status-icon-slot">
+                            <ui:Label name="key" text="2" class="slot-key-floating" />
+                            <ui:VisualElement name="bg" class="slot-bg" />
+                            <ui:VisualElement name="icon" class="slot-icon" />
+                            <ui:VisualElement name="cooldown" class="slot-cooldown" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="spell-slot-2" class="status-icon-slot">
+                            <ui:Label name="key" text="3" class="slot-key-floating" />
+                            <ui:VisualElement name="bg" class="slot-bg" />
+                            <ui:VisualElement name="icon" class="slot-icon" />
+                            <ui:VisualElement name="cooldown" class="slot-cooldown" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
-                </ui:VisualElement>
 
-                <!-- Spells (Middle) -->
-                <ui:VisualElement name="spell-inventory-container" class="spells-row row">
-                    <ui:VisualElement name="spell-slot-0" class="status-icon-slot">
-                        <ui:Label name="key" text="1" class="slot-key-floating" />
-                        <ui:VisualElement name="bg" class="slot-bg" />
-                        <ui:VisualElement name="icon" class="slot-icon" />
-                        <ui:VisualElement name="cooldown" class="slot-cooldown" />
-                    </ui:VisualElement>
-                    <ui:VisualElement name="spell-slot-1" class="status-icon-slot">
-                        <ui:Label name="key" text="2" class="slot-key-floating" />
-                        <ui:VisualElement name="bg" class="slot-bg" />
-                        <ui:VisualElement name="icon" class="slot-icon" />
-                        <ui:VisualElement name="cooldown" class="slot-cooldown" />
-                    </ui:VisualElement>
-                    <ui:VisualElement name="spell-slot-2" class="status-icon-slot">
-                        <ui:Label name="key" text="3" class="slot-key-floating" />
-                        <ui:VisualElement name="bg" class="slot-bg" />
-                        <ui:VisualElement name="icon" class="slot-icon" />
-                        <ui:VisualElement name="cooldown" class="slot-cooldown" />
+                    <!-- Divider -->
+                    <ui:VisualElement style="width: 20px;" />
+
+                    <!-- Ability Slot (Right) -->
+                    <ui:VisualElement name="ability-container" class="ability-wrapper">
+                        <ui:VisualElement name="ability-icon" class="status-icon-slot" style="border-color: #ffaa55; width: 60px; height: 60px;">
+                            <ui:Label name="key" text="Q" class="slot-key-floating" style="background-color: #ffaa55; color: black;" />
+                            <ui:Label name="lbl-ability-cooldown" text="" class="cooldown-text" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
 

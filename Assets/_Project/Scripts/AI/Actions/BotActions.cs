@@ -12,7 +12,7 @@ namespace AnimalMagicRoyale.AI
             {
                 if (ZoneManager.Instance != null)
                 {
-                    Vector3 center = ZoneManager.Instance.transform.position;
+                    Vector3 center = ZoneManager.Instance.ZoneCenter;
                     // Get slightly random point near center to avoid clustering
                     Vector3 randomOffset = new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-5f, 5f));
                     if (ctx.Bot.Agent.isStopped) ctx.Bot.Agent.isStopped = false;
@@ -47,7 +47,7 @@ namespace AnimalMagicRoyale.AI
                 if (ZoneManager.Instance != null && !ZoneManager.Instance.IsInsideZone(fleeDest))
                 {
                     // Steer towards zone center if fleeing pushes us out
-                    Vector3 centerDir = (ZoneManager.Instance.transform.position - ctx.Bot.transform.position).normalized;
+                    Vector3 centerDir = (ZoneManager.Instance.ZoneCenter - ctx.Bot.transform.position).normalized;
                     fleeDest = ctx.Bot.transform.position + (fleeDir + centerDir).normalized * 10f;
                 }
 
@@ -56,7 +56,7 @@ namespace AnimalMagicRoyale.AI
                 ctx.Bot.Agent.SetDestination(fleeDest);
 
                 // Disparo en huida (Kiting)
-                if (ctx.Bot.Inventory != null)
+                if (ctx.Bot.Inventory != null && Time.time >= ctx.NextAttackTime)
                 {
                     // Seleccionamos el primer hechizo sin cooldown
                     bool canShoot = false;
@@ -79,7 +79,10 @@ namespace AnimalMagicRoyale.AI
                             aimDir.y = 0;
                             // Girar instantáneamente hacia atrás para lanzar el hechizo
                             ctx.Bot.transform.rotation = Quaternion.LookRotation(aimDir);
-                            ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, aimDir);
+                            if (ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, aimDir))
+                            {
+                                ctx.NextAttackTime = Time.time + 1.5f; // Añadir un cooldown global para no dejar rastro
+                            }
                         }
                     }
                 }
@@ -155,7 +158,7 @@ namespace AnimalMagicRoyale.AI
                 }
 
                 // Intentar disparar siempre (si hay hechizo y no está en cooldown)
-                if (ctx.Bot.Inventory != null)
+                if (ctx.Bot.Inventory != null && Time.time >= ctx.NextAttackTime)
                 {
                     // Seleccionar el mejor hechizo disponible
                     for (int i = 0; i < ctx.Bot.Inventory.slots.Length; i++)
@@ -170,6 +173,7 @@ namespace AnimalMagicRoyale.AI
                     bool castSuccess = ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, aimDir);
                     if (castSuccess)
                     {
+                        ctx.NextAttackTime = Time.time + 1.0f; // Pequeño retraso entre disparos
                         Debug.Log($"[BotActions] {ctx.Bot.gameObject.name} casted spell at dist {dist:F1}m (Predicted)");
                     }
                 }
@@ -222,12 +226,14 @@ namespace AnimalMagicRoyale.AI
                 if (!ctx.Bot.Agent.pathPending && ctx.Bot.Agent.remainingDistance < 1.5f)
                 {
                     Vector3 center = ctx.Bot.transform.position;
-                    if (ZoneManager.Instance != null)
+                    float patrolRadius = 15f;
+                    if (ZoneManager.Instance != null && ZoneManager.Instance.IsActive)
                     {
-                        center = ZoneManager.Instance.transform.position;
+                        center = ZoneManager.Instance.ZoneCenter;
+                        patrolRadius = Mathf.Max(10f, ZoneManager.Instance.CurrentRadius * 0.7f);
                     }
                     
-                    Vector2 rand = Random.insideUnitCircle * 20f;
+                    Vector2 rand = Random.insideUnitCircle * patrolRadius;
                     Vector3 dest = center + new Vector3(rand.x, 0, rand.y);
                     
                     // Comprobar que el punto es válido en el NavMesh

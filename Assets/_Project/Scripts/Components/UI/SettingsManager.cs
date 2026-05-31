@@ -28,6 +28,14 @@ namespace AnimalMagicRoyale.Components.UI
         private VisualElement contentAudio;
         private VisualElement contentControls;
 
+        // UI Controls
+        private DropdownField dropdownResolution;
+        private Toggle toggleFullscreen;
+        private Slider sliderGlobal;
+        private Slider sliderMusic;
+        private Slider sliderSpells;
+        private Slider sliderEnvironment;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void AutoInitialize()
         {
@@ -80,7 +88,7 @@ namespace AnimalMagicRoyale.Components.UI
 
                 if (btnClose != null) btnClose.clicked += HideSettings;
                 if (btnApply != null) btnApply.clicked += SaveAndApply;
-                if (btnReset != null) btnReset.clicked += LoadSettings;
+                if (btnReset != null) btnReset.clicked += ResetToDefaults;
 
                 // Bind tabs
                 tabGraphics = root.Q<Button>("TabGraphics");
@@ -100,6 +108,13 @@ namespace AnimalMagicRoyale.Components.UI
                 {
                     btnMainMenu.clicked += ReturnToMainMenu;
                 }
+
+                dropdownResolution = root.Q<DropdownField>("dropdown-resolution");
+                toggleFullscreen = root.Q<Toggle>("toggle-fullscreen");
+                sliderGlobal = root.Q<Slider>("slider-global");
+                sliderMusic = root.Q<Slider>("slider-music");
+                sliderSpells = root.Q<Slider>("slider-spells");
+                sliderEnvironment = root.Q<Slider>("slider-environment");
 
                 SwitchTab("Graphics"); // Default
             }
@@ -171,7 +186,10 @@ namespace AnimalMagicRoyale.Components.UI
 
                 if (btnMainMenu != null)
                 {
-                    btnMainMenu.style.display = inGame ? DisplayStyle.Flex : DisplayStyle.None;
+                    btnMainMenu.style.display = DisplayStyle.Flex;
+                    var btnLabel = btnMainMenu.Q<Label>();
+                    if (btnLabel != null) btnLabel.text = inGame ? "Volver al Menú Principal" : "Salir del Juego";
+                    else btnMainMenu.text = inGame ? "Volver al Menú Principal" : "Salir del Juego";
                 }
 
                 // If in game (not main menu), free the cursor
@@ -208,9 +226,60 @@ namespace AnimalMagicRoyale.Components.UI
 
         private void LoadSettings()
         {
-            if (PlayerPreferencesManager.Instance != null)
+            var data = PlayerPreferencesManager.Instance?.currentData;
+            
+            if (toggleFullscreen != null) toggleFullscreen.value = data != null ? data.isFullscreen : Screen.fullScreen;
+            if (sliderGlobal != null) sliderGlobal.value = data != null ? data.masterVolume / 100f : AudioListener.volume;
+            
+            // Temporary default logic for other sliders
+            if (sliderMusic != null) sliderMusic.value = 1f;
+            if (sliderSpells != null) sliderSpells.value = 1f;
+            if (sliderEnvironment != null) sliderEnvironment.value = 1f;
+            
+            PopulateResolutions();
+            if (dropdownResolution != null && data != null && dropdownResolution.choices.Count > 0)
             {
-                // Read from PlayerPreferencesManager.Instance.currentData
+                if (data.resolutionIndex >= 0 && data.resolutionIndex < dropdownResolution.choices.Count)
+                {
+                    dropdownResolution.index = data.resolutionIndex;
+                }
+            }
+        }
+
+        private void ResetToDefaults()
+        {
+            if (toggleFullscreen != null) toggleFullscreen.value = true;
+            if (sliderGlobal != null) sliderGlobal.value = 1f;
+            if (sliderMusic != null) sliderMusic.value = 1f;
+            if (sliderSpells != null) sliderSpells.value = 1f;
+            if (sliderEnvironment != null) sliderEnvironment.value = 1f;
+            
+            PopulateResolutions();
+            if (dropdownResolution != null && dropdownResolution.choices.Count > 0)
+            {
+                // Set native resolution (usually the last in the populated list)
+                dropdownResolution.index = dropdownResolution.choices.Count - 1;
+            }
+            SaveAndApply();
+        }
+
+        private void PopulateResolutions()
+        {
+            if (dropdownResolution == null) return;
+            var resolutions = Screen.resolutions;
+            var choices = new System.Collections.Generic.List<string>();
+            foreach (var res in resolutions)
+            {
+                string label = $"{res.width}x{res.height}";
+                if (!choices.Contains(label)) choices.Add(label);
+            }
+            if (choices.Count > 0)
+            {
+                dropdownResolution.choices = choices;
+            }
+            else
+            {
+                dropdownResolution.choices = new System.Collections.Generic.List<string> { $"{Screen.width}x{Screen.height}" };
             }
         }
 
@@ -218,20 +287,61 @@ namespace AnimalMagicRoyale.Components.UI
         {
             if (PlayerPreferencesManager.Instance != null)
             {
+                var data = PlayerPreferencesManager.Instance.currentData;
+                if (toggleFullscreen != null) data.isFullscreen = toggleFullscreen.value;
+                if (sliderGlobal != null) data.masterVolume = sliderGlobal.value * 100f;
+                if (dropdownResolution != null && dropdownResolution.index >= 0) data.resolutionIndex = dropdownResolution.index;
                 PlayerPreferencesManager.Instance.SavePreferences();
             }
 
             ApplyGraphics();
+            ApplyAudio();
             HideSettings();
         }
 
         public void ApplyGraphics()
         {
+            if (toggleFullscreen != null)
+            {
+                Screen.fullScreen = toggleFullscreen.value;
+            }
+            
+            if (dropdownResolution != null)
+            {
+                string resStr = dropdownResolution.value;
+                if (!string.IsNullOrEmpty(resStr) && resStr.Contains("x"))
+                {
+                    string[] parts = resStr.Split('x');
+                    if (parts.Length == 2 && int.TryParse(parts[0], out int w) && int.TryParse(parts[1], out int h))
+                    {
+                        Screen.SetResolution(w, h, Screen.fullScreen);
+                    }
+                }
+            }
             Debug.Log("[SettingsManager] Graphics settings applied.");
+        }
+
+        public void ApplyAudio()
+        {
+            if (sliderGlobal != null)
+            {
+                AudioListener.volume = sliderGlobal.value;
+            }
+            // Logic for Music, Spells, Environment Mixers will go here
+            Debug.Log("[SettingsManager] Audio settings applied.");
         }
 
         private void ReturnToMainMenu()
         {
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Scene_MainMenu")
+            {
+                Application.Quit();
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#endif
+                return;
+            }
+
             HideSettings();
             if (SceneLoaderManager.Instance != null)
             {

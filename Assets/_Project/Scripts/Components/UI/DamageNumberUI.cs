@@ -1,0 +1,133 @@
+using UnityEngine;
+using UnityEngine.UIElements;
+using AnimalMagicRoyale.Core;
+using System.Collections.Generic;
+
+namespace AnimalMagicRoyale.Components.UI
+{
+    public class DamageNumberUI : MonoBehaviour
+    {
+        [SerializeField] private HealthChangedEvent onHealthChanged;
+        
+        private VisualElement root;
+        private List<DamageLabel> activeLabels = new List<DamageLabel>();
+
+        private class DamageLabel
+        {
+            public Label label;
+            public Vector3 worldPos;
+            public float spawnTime;
+            public float duration = 1.0f;
+        }
+
+        private void Awake()
+        {
+            if (onHealthChanged == null) onHealthChanged = Resources.Load<HealthChangedEvent>("Events/HealthChangedEvent");
+        }
+
+        private void OnEnable()
+        {
+            if (onHealthChanged != null) onHealthChanged.RegisterListener(HandleHealthChanged);
+        }
+
+        private void OnDisable()
+        {
+            if (onHealthChanged != null) onHealthChanged.UnregisterListener(HandleHealthChanged);
+        }
+
+        public void Initialize(VisualElement rootElement)
+        {
+            this.root = rootElement;
+        }
+
+        private void HandleHealthChanged(HealthChangedPayload payload)
+        {
+            // Only show negative delta (damage)
+            if (payload.delta >= 0 || root == null || payload.target == null) return;
+
+            // Ignorar al jugador local (no queremos ver los números del daño que recibimos nosotros mismos)
+            if (payload.target.GetComponent<AnimalMagicRoyale.Player.PlayerInputHandler>() != null) return;
+
+            // Damage style
+            Color dmgColor = new Color(1f, 0.6f, 0f); // Orange
+            if (Mathf.Abs(payload.delta) > 25f || payload.source == null) 
+            {
+                dmgColor = Color.red; // Critical or Zone damage
+            }
+
+            var label = new Label(Mathf.RoundToInt(Mathf.Abs(payload.delta)).ToString());
+            label.style.position = Position.Absolute;
+            label.style.color = dmgColor;
+            label.style.fontSize = 28;
+            label.style.unityFontStyleAndWeight = FontStyle.Bold;
+            label.style.textShadow = new TextShadow { color = Color.black, offset = new Vector2(2, 2), blurRadius = 1f };
+
+            root.Add(label);
+
+            var dmgLabel = new DamageLabel
+            {
+                label = label,
+                worldPos = payload.target.transform.position + Vector3.up * 2f,
+                spawnTime = Time.time
+            };
+
+            activeLabels.Add(dmgLabel);
+            UpdateLabelPosition(dmgLabel);
+        }
+
+        private void Update()
+        {
+            if (root == null || UnityEngine.Camera.main == null) return;
+
+            for (int i = activeLabels.Count - 1; i >= 0; i--)
+            {
+                var dmg = activeLabels[i];
+                float t = (Time.time - dmg.spawnTime) / dmg.duration;
+
+                if (t >= 1f)
+                {
+                    if (root.Contains(dmg.label)) root.Remove(dmg.label);
+                    activeLabels.RemoveAt(i);
+                    continue;
+                }
+
+                // Animate
+                dmg.worldPos += Vector3.up * Time.deltaTime * 2.5f;
+                UpdateLabelPosition(dmg);
+
+                // Fade out
+                dmg.label.style.opacity = 1f - (t * t); // ease-in fade
+            }
+        }
+
+        private void UpdateLabelPosition(DamageLabel dmg)
+        {
+            if (UnityEngine.Camera.main == null || dmg.label.panel == null) return;
+            
+            Vector3 screenPos = UnityEngine.Camera.main.WorldToScreenPoint(dmg.worldPos);
+            if (screenPos.z < 0)
+            {
+                dmg.label.style.display = DisplayStyle.None;
+                return;
+            }
+
+            dmg.label.style.display = DisplayStyle.Flex;
+            
+            // Convert to panel coordinates
+            float rootWidth = root.resolvedStyle.width;
+            float rootHeight = root.resolvedStyle.height;
+            
+            if (rootWidth == 0 || rootHeight == 0)
+            {
+                rootWidth = Screen.width;
+                rootHeight = Screen.height;
+            }
+            
+            float x = (screenPos.x / Screen.width) * rootWidth;
+            float y = ((Screen.height - screenPos.y) / Screen.height) * rootHeight;
+
+            dmg.label.style.left = x;
+            dmg.label.style.top = y;
+        }
+    }
+}

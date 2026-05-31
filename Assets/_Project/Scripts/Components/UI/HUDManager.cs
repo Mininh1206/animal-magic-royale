@@ -1,5 +1,6 @@
 using UnityEngine;
 using AnimalMagicRoyale.Core;
+using System.Collections;
 
 namespace AnimalMagicRoyale.Components.UI
 {
@@ -15,6 +16,7 @@ namespace AnimalMagicRoyale.Components.UI
     [RequireComponent(typeof(MinimapUI))]
     [RequireComponent(typeof(PlayerCountUI))]
     [RequireComponent(typeof(TeamUI))]
+    [RequireComponent(typeof(DamageNumberUI))]
     public class HUDManager : MonoBehaviour
     {
         [Header("Events")]
@@ -28,6 +30,7 @@ namespace AnimalMagicRoyale.Components.UI
         private MinimapUI minimapUI;
         private PlayerCountUI playerCountUI;
         private TeamUI teamUI;
+        private DamageNumberUI damageNumberUI;
         
         private UnityEngine.UIElements.UIDocument uiDocument;
 
@@ -60,6 +63,7 @@ namespace AnimalMagicRoyale.Components.UI
             minimapUI = GetComponent<MinimapUI>();
             playerCountUI = GetComponent<PlayerCountUI>();
             teamUI = GetComponent<TeamUI>();
+            damageNumberUI = GetComponent<DamageNumberUI>();
             
             if (uiDocument != null && uiDocument.rootVisualElement != null)
             {
@@ -72,6 +76,7 @@ namespace AnimalMagicRoyale.Components.UI
                 if (minimapUI != null) minimapUI.Initialize(root);
                 if (playerCountUI != null) playerCountUI.Initialize(root);
                 if (teamUI != null) teamUI.Initialize(root);
+                if (damageNumberUI != null) damageNumberUI.Initialize(root);
             }
 
             Debug.Log("[HUDManager] Start executed (UI Toolkit).");
@@ -116,7 +121,7 @@ namespace AnimalMagicRoyale.Components.UI
                                     abilityUI.SetTrackedAbility(abilityHolder, abilityHolder.Ability);
                                 }
                             }
-                            if (teamUI != null) teamUI.SetupTeam(player.gameObject);
+                            if (teamUI != null) StartCoroutine(SetupTeamDelayed(player.gameObject));
                             
                             Debug.Log($"[HUDManager] Tracked player assigned: {player.gameObject.name}");
                         }
@@ -138,6 +143,15 @@ namespace AnimalMagicRoyale.Components.UI
             if (uiDocument != null && uiDocument.rootVisualElement != null)
             {
                 uiDocument.rootVisualElement.style.display = isActive ? UnityEngine.UIElements.DisplayStyle.Flex : UnityEngine.UIElements.DisplayStyle.None;
+            }
+        }
+
+        private IEnumerator SetupTeamDelayed(GameObject player)
+        {
+            yield return new WaitForSeconds(0.5f);
+            if (teamUI != null && player != null)
+            {
+                teamUI.SetupTeam(player);
             }
         }
     }

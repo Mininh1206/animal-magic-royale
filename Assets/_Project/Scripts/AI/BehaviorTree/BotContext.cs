@@ -13,5 +13,6 @@ namespace AnimalMagicRoyale.AI
         public Vector3 FleeDestination;
         public SensorTarget? NearestEnemy;
         public SensorTarget? NearestLootBox;
+        public float NextAttackTime;
     }
 }

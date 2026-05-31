@@ -111,13 +111,15 @@ namespace AnimalMagicRoyale.Components.UI
 
                 if (title != null && GameManager.Instance != null)
                 {
-                    if (GameManager.Instance.Winner != null)
+                    if (GameManager.Instance.Winner != null && GameManager.Instance.Winner.GetComponent<AnimalMagicRoyale.Player.PlayerController>() != null)
                     {
-                        title.text = "¡FIN DE LA PARTIDA!";
+                        title.text = "¡VICTORIA!";
+                        message.text = "A ganar a ganar, cerdo para cenar";
                     }
                     else
                     {
-                        title.text = "GAME OVER";
+                        title.text = "HAS SIDO ELIMINADO";
+                        message.text = "Mejor suerte la próxima vez";
                     }
                 }
 

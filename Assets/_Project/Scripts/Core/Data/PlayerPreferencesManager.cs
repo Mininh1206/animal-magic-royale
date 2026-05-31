@@ -32,6 +32,18 @@ namespace AnimalMagicRoyale.Core.Data
         // Secret key to mix in the hash so players can't just generate a new MD5
         private const string SALT = "AMR_PREFS_SALT_2026";
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void AutoInitialize()
+        {
+            if (Instance != null) return;
+            GameObject temp = new GameObject("PlayerPreferencesManager");
+            Instance = temp.AddComponent<PlayerPreferencesManager>();
+            DontDestroyOnLoad(temp);
+            Instance.LoadPreferences();
+            Instance.ApplyPreferences();
+            Debug.Log("[PlayerPreferences] Auto-instantiated BeforeSceneLoad.");
+        }
+
         private void Awake()
         {
             if (Instance == null)
@@ -71,6 +83,22 @@ namespace AnimalMagicRoyale.Core.Data
                 // No file exists
                 currentData = new PlayerPreferencesData();
                 SavePreferences();
+            }
+        }
+
+        public void ApplyPreferences()
+        {
+            Screen.fullScreen = currentData.isFullscreen;
+            AudioListener.volume = currentData.masterVolume / 100f;
+            
+            var resolutions = Screen.resolutions;
+            if (resolutions != null && resolutions.Length > 0)
+            {
+                if (currentData.resolutionIndex >= 0 && currentData.resolutionIndex < resolutions.Length)
+                {
+                    var res = resolutions[currentData.resolutionIndex];
+                    Screen.SetResolution(res.width, res.height, currentData.isFullscreen);
+                }
             }
         }
         

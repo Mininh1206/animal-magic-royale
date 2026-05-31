@@ -19,6 +19,7 @@ namespace AnimalMagicRoyale.Components.UI
             if (teamContainer != null)
             {
                 teamContainer.Clear();
+                teamContainer.style.visibility = Visibility.Hidden;
             }
         }
 
@@ -29,9 +30,15 @@ namespace AnimalMagicRoyale.Components.UI
             teammateVisuals.Clear();
             if (teamContainer != null) teamContainer.Clear();
 
-            if (TeamManager.Instance == null || GameManager.Instance == null || localPlayer == null) return;
+            if (TeamManager.Instance == null || GameManager.Instance == null || localPlayer == null) 
+            {
+                Debug.LogWarning("[TeamUI] Cannot setup team: missing managers or local player is null.");
+                return;
+            }
 
             int myTeam = TeamManager.Instance.GetTeam(localPlayer);
+            Debug.Log($"[TeamUI] SetupTeam called for localPlayer {localPlayer.name}. Assigned teamId: {myTeam}. Total AlivePlayers: {GameManager.Instance.AlivePlayersCount}");
+            
             if (myTeam == -1) return;
 
             foreach (var p in GameManager.Instance.AlivePlayers)
@@ -52,8 +59,10 @@ namespace AnimalMagicRoyale.Components.UI
             // Hide container if no teammates
             if (teamContainer != null)
             {
-                teamContainer.style.display = teammates.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+                teamContainer.style.visibility = teammates.Count > 0 ? Visibility.Visible : Visibility.Hidden;
             }
+            
+            Debug.Log($"[TeamUI] Found {teammates.Count} teammates for teamId {myTeam}. Team container visibility set to {(teammates.Count > 0 ? "Visible" : "Hidden")}");
         }
 
         private void CreateTeammateVisual(GameObject teammate)

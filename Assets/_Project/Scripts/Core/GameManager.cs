@@ -38,7 +38,17 @@ namespace AnimalMagicRoyale.Core
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
+                if (transform.parent != null)
+                {
+                    transform.SetParent(null);
+                }
+
+                if (TeamManager.Instance == null)
+                {
+                    GameObject tmObj = new GameObject("TeamManager");
+                    tmObj.AddComponent<TeamManager>();
+                }
+
                 InitializeStateMachine();
             }
             else
@@ -226,24 +236,21 @@ namespace AnimalMagicRoyale.Core
             GameObject teammate = GetAliveTeammate(localPlayer);
             if (teammate != null)
             {
-                Transform cameraSetup = localPlayer.transform.Find("CameraSetup");
-                if (cameraSetup != null)
+                var vcam = localPlayer.GetComponentInChildren<Unity.Cinemachine.CinemachineCamera>(true);
+                if (vcam != null && vcam.transform.parent != null)
                 {
                     // Desvincular para que no se desactive cuando localPlayer.SetActive(false) ocurra
-                    cameraSetup.SetParent(null);
+                    vcam.transform.parent.SetParent(null);
                     
-                    var vcam = cameraSetup.GetComponentInChildren<Unity.Cinemachine.CinemachineCamera>();
-                    if (vcam != null)
-                    {
-                        Debug.Log($"[Spectator] Local player died. Spectating teammate: {teammate.name}");
-                        vcam.Follow = teammate.transform;
-                        vcam.LookAt = teammate.transform;
-                    }
+                    Debug.Log($"[Spectator] Local player died. Spectating teammate: {teammate.name}");
+                    vcam.Follow = teammate.transform;
+                    vcam.LookAt = teammate.transform;
                 }
             }
             else
             {
-                Debug.Log("[Spectator] No alive teammates found. Skipping spectator camera unparent, directly proceeding to Game Over.");
+                Debug.Log("[Spectator] No alive teammates found. Proceeding to Game Over.");
+                StateMachine.ChangeState(GameOverState);
             }
         }
 

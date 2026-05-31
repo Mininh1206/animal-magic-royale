@@ -49,15 +49,31 @@ namespace AnimalMagicRoyale.Components.UI
                 
                 if (payload.killer != null && payload.killer != payload.eliminated)
                 {
-                    string killerName = payload.killer.name;
-                    var killerLabel = new Label(killerName);
-                    killerLabel.AddToClassList("killfeed-text");
-                    killerLabel.AddToClassList("killfeed-text-killer");
-                    killItem.Add(killerLabel);
+                    bool isZone = payload.killer.GetComponent<AnimalMagicRoyale.Core.ZoneManager>() != null;
+                    if (isZone)
+                    {
+                        var zoneLabel = new Label("La Zona");
+                        zoneLabel.AddToClassList("killfeed-text");
+                        zoneLabel.AddToClassList("killfeed-text-killer");
+                        zoneLabel.style.color = new StyleColor(new Color(1f, 0.2f, 0.2f)); // Rojo zona
+                        killItem.Add(zoneLabel);
 
-                    var icon = new VisualElement();
-                    icon.AddToClassList("killfeed-icon");
-                    killItem.Add(icon);
+                        var icon = new VisualElement();
+                        icon.AddToClassList("killfeed-icon");
+                        killItem.Add(icon);
+                    }
+                    else
+                    {
+                        string killerName = payload.killer.name;
+                        var killerLabel = new Label(killerName);
+                        killerLabel.AddToClassList("killfeed-text");
+                        killerLabel.AddToClassList("killfeed-text-killer");
+                        killItem.Add(killerLabel);
+
+                        var icon = new VisualElement();
+                        icon.AddToClassList("killfeed-icon");
+                        killItem.Add(icon);
+                    }
                 }
 
                 var victimLabel = new Label(victimName);

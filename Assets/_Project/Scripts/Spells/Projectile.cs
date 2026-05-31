@@ -52,7 +52,18 @@ namespace AnimalMagicRoyale.Spells
         private void OnTriggerEnter(Collider other)
         {
             if (!isInitialized) return;
-            if (other.gameObject == caster) return;
+            if (other.gameObject == caster || other.transform.IsChildOf(caster.transform)) return;
+            
+            // Check for teammates
+            var targetHealth = other.GetComponentInParent<AnimalMagicRoyale.Components.HealthComponent>();
+            if (targetHealth != null && targetHealth.gameObject == caster) return; // Failsafe for caster
+            
+            if (AnimalMagicRoyale.Core.TeamManager.Instance != null && caster != null && targetHealth != null)
+            {
+                int casterTeam = AnimalMagicRoyale.Core.TeamManager.Instance.GetTeam(caster);
+                int targetTeam = AnimalMagicRoyale.Core.TeamManager.Instance.GetTeam(targetHealth.gameObject);
+                if (casterTeam == targetTeam) return; // Mismo equipo, ignorar
+            }
             
             // Ignorar choques entre otros proyectiles a menos que sea para reaccionar
             var otherProj = other.GetComponent<Projectile>();
