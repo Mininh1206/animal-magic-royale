@@ -18,10 +18,16 @@ namespace AnimalMagicRoyale.Components
             footstepSource = gameObject.AddComponent<AudioSource>();
             footstepSource.spatialBlend = 1f; // 3D sound
             footstepSource.playOnAwake = false;
+            footstepSource.rolloffMode = AudioRolloffMode.Linear;
+            footstepSource.minDistance = 2f;
+            footstepSource.maxDistance = 20f; // Distancia máxima de escucha para pasos
 
             attackSource = gameObject.AddComponent<AudioSource>();
             attackSource.spatialBlend = 1f; // 3D sound
             attackSource.playOnAwake = false;
+            attackSource.rolloffMode = AudioRolloffMode.Linear;
+            attackSource.minDistance = 3f;
+            attackSource.maxDistance = 35f; // Distancia máxima de escucha para ataques
         }
 
         public void SetAudioData(CharacterAudioData newData)
@@ -29,16 +35,27 @@ namespace AnimalMagicRoyale.Components
             audioData = newData;
         }
 
-        public void PlayFootstep()
+        public void SetFootstepsActive(bool active)
         {
             if (audioData == null || audioData.footstepClips == null || audioData.footstepClips.Length == 0) return;
 
-            // Reproducir un sonido de paso aleatorio
-            AudioClip clip = audioData.footstepClips[Random.Range(0, audioData.footstepClips.Length)];
-            
-            // Usar variacion de pitch para que no suene repetitivo
-            footstepSource.pitch = Random.Range(0.9f, 1.1f);
-            footstepSource.PlayOneShot(clip);
+            if (active)
+            {
+                if (!footstepSource.isPlaying)
+                {
+                    footstepSource.clip = audioData.footstepClips[0];
+                    footstepSource.loop = true; // Looping the footstep file
+                    footstepSource.pitch = Random.Range(0.95f, 1.05f);
+                    footstepSource.Play();
+                }
+            }
+            else
+            {
+                if (footstepSource.isPlaying)
+                {
+                    footstepSource.Stop();
+                }
+            }
         }
 
         public void PlayAttackSound()

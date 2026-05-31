@@ -183,14 +183,10 @@ namespace AnimalMagicRoyale.AI
                 AnimHandler.UpdateLocomotion(botSpeed, botRunning);
                 
                 // Pasos
-                if (SFXHandler != null && botSpeed > 0.1f)
+                if (SFXHandler != null)
                 {
-                    footstepTimer += Time.deltaTime;
-                    if (footstepTimer >= SFXHandler.GetFootstepInterval() / (botRunning ? 1.5f : 1f))
-                    {
-                        SFXHandler.PlayFootstep();
-                        footstepTimer = 0f;
-                    }
+                    bool isMoving = botSpeed > 0.1f;
+                    SFXHandler.SetFootstepsActive(isMoving);
                 }
             }
         }

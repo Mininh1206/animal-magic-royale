@@ -16,7 +16,18 @@ namespace AnimalMagicRoyale.Player
         public override void Enter()
         {
             Debug.Log("[FSM] Entering MoveState");
-            footstepTimer = 0f;
+            if (player.SFXHandler != null)
+            {
+                player.SFXHandler.SetFootstepsActive(true);
+            }
+        }
+
+        public override void Exit()
+        {
+            if (player.SFXHandler != null)
+            {
+                player.SFXHandler.SetFootstepsActive(false);
+            }
         }
 
         public override void Update()
@@ -53,17 +64,6 @@ namespace AnimalMagicRoyale.Player
 
             // Aplicar movimiento
             player.CharacterController.Move(targetDirection * (targetSpeed * Time.deltaTime));
-
-            // Pasos
-            if (player.SFXHandler != null)
-            {
-                footstepTimer += Time.deltaTime;
-                if (footstepTimer >= player.SFXHandler.GetFootstepInterval() / (effectiveSprinting ? 1.5f : 1f))
-                {
-                    player.SFXHandler.PlayFootstep();
-                    footstepTimer = 0f;
-                }
-            }
         }
     }
 }
