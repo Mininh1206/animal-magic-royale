@@ -87,6 +87,14 @@ namespace AnimalMagicRoyale.Components
 
             currentSlot.lastCastTime = Time.time;
             Debug.Log($"[SpellInventory] {caster.name} fired {data.spellName} from slot {activeSlotIndex}");
+            
+            // Reproducir sonido de ataque
+            var sfxHandler = caster.GetComponent<CharacterSFXHandler>();
+            if (sfxHandler != null)
+            {
+                sfxHandler.PlayAttackSound();
+            }
+
             return true;
         }
 

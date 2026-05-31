@@ -23,6 +23,9 @@ namespace AnimalMagicRoyale.Core.Data
         [Header("Abilities")]
         public SpecialAbility ability;
         
+        [Header("Audio")]
+        public CharacterAudioData audioData;
+        
         [Header("Customization")]
         public RuntimeAnimatorController animatorController;
         public SkinData defaultSkin;

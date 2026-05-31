@@ -74,6 +74,13 @@ namespace AnimalMagicRoyale.Core
             SetupFirePoint(modelBounds);
             UpdateCollisionComponents(modelBounds);
 
+            // Assign audio data
+            var sfxHandler = GetComponent<CharacterSFXHandler>();
+            if (sfxHandler != null && animalType != null && animalType.audioData != null)
+            {
+                sfxHandler.SetAudioData(animalType.audioData);
+            }
+
             _currentSkin = skin;
             Debug.Log($"[SkinManager] Applied skin: {skin.skinName} on {gameObject.name}");
         }

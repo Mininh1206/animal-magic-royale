@@ -6,6 +6,7 @@ namespace AnimalMagicRoyale.Player
     public class PlayerMoveState : State
     {
         private PlayerController player;
+        private float footstepTimer;
 
         public PlayerMoveState(PlayerController player, StateMachine stateMachine) : base(stateMachine)
         {
@@ -15,6 +16,7 @@ namespace AnimalMagicRoyale.Player
         public override void Enter()
         {
             Debug.Log("[FSM] Entering MoveState");
+            footstepTimer = 0f;
         }
 
         public override void Update()
@@ -51,6 +53,17 @@ namespace AnimalMagicRoyale.Player
 
             // Aplicar movimiento
             player.CharacterController.Move(targetDirection * (targetSpeed * Time.deltaTime));
+
+            // Pasos
+            if (player.SFXHandler != null)
+            {
+                footstepTimer += Time.deltaTime;
+                if (footstepTimer >= player.SFXHandler.GetFootstepInterval() / (effectiveSprinting ? 1.5f : 1f))
+                {
+                    player.SFXHandler.PlayFootstep();
+                    footstepTimer = 0f;
+                }
+            }
         }
     }
 }

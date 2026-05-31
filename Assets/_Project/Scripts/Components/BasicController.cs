@@ -8,17 +8,20 @@ namespace AnimalMagicRoyale.Components
     [RequireComponent(typeof(CharacterAnimationHandler))]
     [RequireComponent(typeof(ZoneDamageTracker))]
     [RequireComponent(typeof(SkinManager))]
+    [RequireComponent(typeof(CharacterSFXHandler))]
     public abstract class BasicController : MonoBehaviour
     {
         public HealthComponent Health { get; protected set; }
         public SpellInventory Inventory { get; protected set; }
         public CharacterAnimationHandler AnimHandler { get; protected set; }
+        public CharacterSFXHandler SFXHandler { get; protected set; }
 
         protected virtual void Awake()
         {
             Health = GetComponent<HealthComponent>();
             Inventory = GetComponent<SpellInventory>();
             AnimHandler = GetComponent<CharacterAnimationHandler>();
+            SFXHandler = GetComponent<CharacterSFXHandler>();
         }
 
         protected virtual void Start()

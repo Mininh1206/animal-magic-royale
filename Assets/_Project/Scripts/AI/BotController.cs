@@ -19,6 +19,7 @@ namespace AnimalMagicRoyale.AI
         private BTNode behaviorTree;
         private BotContext context;
         private float logTimer = 0f;
+        private float footstepTimer = 0f;
 
         protected override void Awake()
         {
@@ -180,6 +181,17 @@ namespace AnimalMagicRoyale.AI
                 float botSpeed = Agent.velocity.magnitude;
                 bool botRunning = botSpeed > 6.5f; // Umbral para correr (Walk=5, Run=8)
                 AnimHandler.UpdateLocomotion(botSpeed, botRunning);
+                
+                // Pasos
+                if (SFXHandler != null && botSpeed > 0.1f)
+                {
+                    footstepTimer += Time.deltaTime;
+                    if (footstepTimer >= SFXHandler.GetFootstepInterval() / (botRunning ? 1.5f : 1f))
+                    {
+                        SFXHandler.PlayFootstep();
+                        footstepTimer = 0f;
+                    }
+                }
             }
         }
 
