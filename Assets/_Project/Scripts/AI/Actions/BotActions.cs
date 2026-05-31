@@ -54,6 +54,36 @@ namespace AnimalMagicRoyale.AI
                 if (ctx.Bot.Agent.isStopped) ctx.Bot.Agent.isStopped = false;
                 ctx.Bot.Agent.speed = 8f; // Correr
                 ctx.Bot.Agent.SetDestination(fleeDest);
+
+                // Disparo en huida (Kiting)
+                if (ctx.Bot.Inventory != null)
+                {
+                    // Seleccionamos el primer hechizo sin cooldown
+                    bool canShoot = false;
+                    for (int i = 0; i < ctx.Bot.Inventory.slots.Length; i++)
+                    {
+                        if (!ctx.Bot.Inventory.slots[i].IsEmpty && !ctx.Bot.Inventory.slots[i].IsOnCooldown)
+                        {
+                            ctx.Bot.Inventory.SelectSlot(i);
+                            canShoot = true;
+                            break;
+                        }
+                    }
+
+                    if (canShoot)
+                    {
+                        float dist = Vector3.Distance(ctx.Bot.transform.position, enemyPos);
+                        if (dist > 8f) // Distancia prudente para detenerse un frame a disparar
+                        {
+                            Vector3 aimDir = (enemyPos - ctx.Bot.transform.position).normalized;
+                            aimDir.y = 0;
+                            // Girar instantáneamente hacia atrás para lanzar el hechizo
+                            ctx.Bot.transform.rotation = Quaternion.LookRotation(aimDir);
+                            ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, aimDir);
+                        }
+                    }
+                }
+
                 return NodeStatus.Running;
             });
         }
@@ -66,13 +96,33 @@ namespace AnimalMagicRoyale.AI
                 
                 Transform target = ctx.NearestEnemy.Value.transform;
                 float dist = Vector3.Distance(ctx.Bot.transform.position, target.position);
-                Vector3 dirToTarget = (target.position - ctx.Bot.transform.position).normalized;
-                dirToTarget.y = 0;
-
-                // Siempre rotar hacia el enemigo
-                if (dirToTarget.sqrMagnitude > 0)
+                
+                // 1. Aim Prediction
+                Vector3 targetVelocity = Vector3.zero;
+                var targetCC = target.GetComponent<CharacterController>();
+                if (targetCC != null) targetVelocity = targetCC.velocity;
+                else 
                 {
-                    Quaternion lookRot = Quaternion.LookRotation(dirToTarget);
+                    var targetAgent = target.GetComponent<UnityEngine.AI.NavMeshAgent>();
+                    if (targetAgent != null) targetVelocity = targetAgent.velocity;
+                }
+
+                float projSpeed = 20f;
+                if (ctx.Bot.Inventory != null && ctx.Bot.Inventory.GetActiveSpell() != null)
+                {
+                    projSpeed = ctx.Bot.Inventory.GetActiveSpell().projectileSpeed;
+                }
+
+                float timeToTarget = dist / Mathf.Max(projSpeed, 1f);
+                Vector3 predictedPos = target.position + (targetVelocity * timeToTarget);
+                
+                Vector3 aimDir = (predictedPos - ctx.Bot.transform.position).normalized;
+                aimDir.y = 0;
+
+                // Siempre rotar hacia el enemigo (posición predicha)
+                if (aimDir.sqrMagnitude > 0)
+                {
+                    Quaternion lookRot = Quaternion.LookRotation(aimDir);
                     ctx.Bot.transform.rotation = Quaternion.Slerp(
                         ctx.Bot.transform.rotation, lookRot, Time.deltaTime * 10f);
                 }
@@ -85,9 +135,23 @@ namespace AnimalMagicRoyale.AI
                 }
                 else
                 {
-                    // En rango: detenerse
-                    ctx.Bot.Agent.isStopped = true;
-                    // Opcional: ctx.Bot.Agent.ResetPath() para que no reanude hacia donde iba al salir del combate
+                    // 2. Strafing (Movimiento lateral en lugar de quedarse estático)
+                    if (ctx.Bot.Agent.isStopped) ctx.Bot.Agent.isStopped = false;
+                    ctx.Bot.Agent.speed = 5f;
+                    
+                    if (!ctx.Bot.Agent.pathPending && ctx.Bot.Agent.remainingDistance < 1f)
+                    {
+                        // Vector perpendicular a la mirada
+                        Vector3 right = Vector3.Cross(aimDir, Vector3.up).normalized;
+                        // Dirección aleatoria
+                        float sign = Random.value > 0.5f ? 1f : -1f;
+                        Vector3 strafeDest = ctx.Bot.transform.position + (right * sign * 4f);
+                        
+                        if (UnityEngine.AI.NavMesh.SamplePosition(strafeDest, out UnityEngine.AI.NavMeshHit hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
+                        {
+                            ctx.Bot.Agent.SetDestination(hit.position);
+                        }
+                    }
                 }
 
                 // Intentar disparar siempre (si hay hechizo y no está en cooldown)
@@ -103,19 +167,11 @@ namespace AnimalMagicRoyale.AI
                             break;
                         }
                     }
-                    bool castSuccess = ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, dirToTarget);
+                    bool castSuccess = ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, aimDir);
                     if (castSuccess)
                     {
-                        Debug.Log($"[BotActions] {ctx.Bot.gameObject.name} casted spell at distance {dist:F1}m");
+                        Debug.Log($"[BotActions] {ctx.Bot.gameObject.name} casted spell at dist {dist:F1}m (Predicted)");
                     }
-                    else
-                    {
-                        Debug.LogWarning($"[BotActions] {ctx.Bot.gameObject.name} intentó lanzar hechizo pero falló. Dist: {dist:F1}m");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning($"[BotActions] {ctx.Bot.gameObject.name} no puede atacar porque ctx.Bot.Inventory es NULL.");
                 }
 
                 return NodeStatus.Running;

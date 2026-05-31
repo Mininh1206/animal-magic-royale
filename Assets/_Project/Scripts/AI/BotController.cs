@@ -46,6 +46,37 @@ namespace AnimalMagicRoyale.AI
             }
         }
 
+        private void OnEnable()
+        {
+            if (Health != null && Health.onHealthChanged != null)
+            {
+                Health.onHealthChanged.RegisterListener(HandleDamage);
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (Health != null && Health.onHealthChanged != null)
+            {
+                Health.onHealthChanged.UnregisterListener(HandleDamage);
+            }
+        }
+
+        private void HandleDamage(HealthChangedPayload payload)
+        {
+            if (payload.target == gameObject && payload.delta < 0 && payload.source != null)
+            {
+                Vector3 dir = payload.source.transform.position - transform.position;
+                dir.y = 0; // Evitar que el bot mire hacia arriba/abajo
+                if (dir.sqrMagnitude > 0.01f)
+                {
+                    // Forzamos el giro instantáneo hacia el atacante para meterlo en el sensor
+                    transform.rotation = Quaternion.LookRotation(dir);
+                    Debug.Log($"[BotController] {gameObject.name} reaccionó al daño y se giró hacia {payload.source.name}");
+                }
+            }
+        }
+
         private void BuildBehaviorTree()
         {
             // Flee Sequence

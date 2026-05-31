@@ -1,0 +1,111 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="SS_HUD.uss" />
+    <ui:VisualElement name="hud-container" class="hud-container">
+        
+        <!-- Top Section -->
+        <ui:VisualElement class="hud-top-section row-space-between">
+            
+            <!-- Top Left: Radar/Minimap Module -->
+            <ui:VisualElement name="radar-module" class="radar-panel row">
+                <!-- Minimap Image -->
+                <ui:VisualElement name="minimap-container" class="minimap-container">
+                    <ui:VisualElement name="minimap-image" class="minimap-render" />
+                    <ui:VisualElement class="radar-overlay-icon" />
+                </ui:VisualElement>
+                
+                <!-- Zone & Player Info -->
+                <ui:VisualElement class="radar-info-column column">
+                    <ui:VisualElement class="radar-stats-row row-space-between">
+                        <ui:VisualElement class="row">
+                            <ui:VisualElement class="icon-alive" />
+                            <ui:Label text="20 ALIVE" name="lbl-player-count" class="radar-text-accent" />
+                        </ui:VisualElement>
+                        <ui:Label text="4 KILLS" name="lbl-kill-count" class="radar-text-accent" />
+                    </ui:VisualElement>
+                    
+                    <ui:VisualElement class="radar-divider" />
+                    
+                    <ui:VisualElement class="radar-phase-row row-space-between">
+                        <ui:Label text="PHASE 1" name="lbl-zone-status" class="radar-text-normal" />
+                        <ui:Label text="00:45" name="lbl-zone-time" class="radar-text-normal" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="radar-progress-bg">
+                        <ui:VisualElement name="radar-progress-fill" class="radar-progress-fill" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Top Right: Kill Feed -->
+            <ui:VisualElement name="killfeed-container" class="killfeed-container column-reverse">
+                <!-- Items inyectados por KillFeedUI.cs -->
+            </ui:VisualElement>
+            
+        </ui:VisualElement>
+
+        <!-- Bottom Section -->
+        <ui:VisualElement class="hud-bottom-section row-space-between align-bottom">
+            
+            <!-- Bottom Left: Team UI -->
+            <ui:VisualElement name="team-ui-container" class="team-panel column">
+                <!-- Items inyectados por TeamUI.cs -->
+            </ui:VisualElement>
+
+            <!-- Bottom Center: Player Status (Ability, Spells, Health) -->
+            <ui:VisualElement name="player-status-container" class="player-status-column column-align-center">
+                
+                <!-- Ability Slot (Top) -->
+                <ui:VisualElement name="ability-container" class="ability-wrapper">
+                    <ui:VisualElement name="ability-icon" class="status-icon-slot">
+                        <ui:Label name="key" text="Q" class="slot-key-floating" />
+                        <ui:Label name="lbl-ability-cooldown" text="" class="cooldown-text" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Spells (Middle) -->
+                <ui:VisualElement name="spell-inventory-container" class="spells-row row">
+                    <ui:VisualElement name="spell-slot-0" class="status-icon-slot">
+                        <ui:Label name="key" text="1" class="slot-key-floating" />
+                        <ui:VisualElement name="bg" class="slot-bg" />
+                        <ui:VisualElement name="icon" class="slot-icon" />
+                        <ui:VisualElement name="cooldown" class="slot-cooldown" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="spell-slot-1" class="status-icon-slot">
+                        <ui:Label name="key" text="2" class="slot-key-floating" />
+                        <ui:VisualElement name="bg" class="slot-bg" />
+                        <ui:VisualElement name="icon" class="slot-icon" />
+                        <ui:VisualElement name="cooldown" class="slot-cooldown" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="spell-slot-2" class="status-icon-slot">
+                        <ui:Label name="key" text="3" class="slot-key-floating" />
+                        <ui:VisualElement name="bg" class="slot-bg" />
+                        <ui:VisualElement name="icon" class="slot-icon" />
+                        <ui:VisualElement name="cooldown" class="slot-cooldown" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Health Bar (Bottom) -->
+                <ui:VisualElement name="health-container" class="health-wrapper column">
+                    <ui:VisualElement class="row-space-between">
+                        <ui:Label text="HEALTH" class="health-label" />
+                        <ui:Label text="100" name="lbl-health-value" class="health-value" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="health-bar-bg-segmented row">
+                        <ui:VisualElement name="health-bar-fill" class="health-bar-fill-segmented" />
+                        <!-- Decorators for segmentation could be added here or in background -->
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+            </ui:VisualElement>
+
+            <!-- Bottom Right (Empty / Placeholder to keep flex-between balanced) -->
+            <ui:VisualElement class="bottom-right-placeholder" />
+            
+        </ui:VisualElement>
+
+        <!-- Center: Crosshair -->
+        <ui:VisualElement name="crosshair-container" class="center-crosshair">
+            <ui:VisualElement class="crosshair-dot" />
+        </ui:VisualElement>
+        
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using AnimalMagicRoyale.Core;
+using UnityEngine.UIElements;
 
 namespace AnimalMagicRoyale.Components.UI
 {
@@ -10,9 +11,9 @@ namespace AnimalMagicRoyale.Components.UI
     /// </summary>
     public class HealthBarUI : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] private Image healthFillImage;
-        [SerializeField] private GameObject trackedPlayer;
+        private GameObject trackedPlayer;
+        private UnityEngine.UIElements.VisualElement healthFill;
+        private UnityEngine.UIElements.Label healthLabel;
 
         [Header("Events")]
         [SerializeField] private HealthChangedEvent onHealthChanged;
@@ -34,22 +35,34 @@ namespace AnimalMagicRoyale.Components.UI
                 onHealthChanged.UnregisterListener(HandleHealthChanged);
         }
 
-        private void Start()
+        public void Initialize(VisualElement root)
         {
-            // Inicializar al 100%
-            if (healthFillImage != null)
-                healthFillImage.fillAmount = 1f;
+            healthFill = root.Q<VisualElement>("health-bar-fill");
+            healthLabel = root.Q<Label>("lbl-health-value");
+            
+            if (healthFill != null)
+            {
+                healthFill.style.width = Length.Percent(100f);
+            }
+            if (healthLabel != null)
+            {
+                healthLabel.text = "100";
+            }
         }
 
         private void HandleHealthChanged(HealthChangedPayload payload)
         {
-            // Solo actualizar si es nuestro jugador (o si no hay filtro)
             if (trackedPlayer != null && payload.target != trackedPlayer)
                 return;
 
-            if (healthFillImage != null && payload.maxHealth > 0)
+            if (healthFill != null && payload.maxHealth > 0)
             {
-                healthFillImage.fillAmount = payload.currentHealth / payload.maxHealth;
+                float percent = (payload.currentHealth / payload.maxHealth) * 100f;
+                healthFill.style.width = Length.Percent(percent);
+            }
+            if (healthLabel != null)
+            {
+                healthLabel.text = Mathf.Max(0, (int)payload.currentHealth).ToString();
             }
         }
 
@@ -60,9 +73,11 @@ namespace AnimalMagicRoyale.Components.UI
         {
             trackedPlayer = player;
             var health = player.GetComponent<HealthComponent>();
-            if (health != null && healthFillImage != null)
+            if (health != null)
             {
-                healthFillImage.fillAmount = health.CurrentHealth / health.maxHealth;
+                float percent = (health.CurrentHealth / health.maxHealth) * 100f;
+                if (healthFill != null) healthFill.style.width = Length.Percent(percent);
+                if (healthLabel != null) healthLabel.text = Mathf.Max(0, (int)health.CurrentHealth).ToString();
             }
         }
     }

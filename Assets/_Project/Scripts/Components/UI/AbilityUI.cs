@@ -1,37 +1,53 @@
 using UnityEngine;
-using UnityEngine.UI;
 using AnimalMagicRoyale.Core;
-using TMPro;
+using UnityEngine.UIElements;
 
 namespace AnimalMagicRoyale.Components.UI
 {
     public class AbilityUI : MonoBehaviour
     {
-        [SerializeField] private Image iconImage;
-        [SerializeField] private Image cooldownOverlay; // Filled image for radial cooldown
+        private VisualElement iconImage;
+        private VisualElement cooldownOverlay;
+        private Label keyText;
+
         [SerializeField] private AbilityHolder trackedAbility;
         [SerializeField] private SpecialAbility defaultIconSource; // Optional
-        [SerializeField] private TextMeshProUGUI keyText;
         [SerializeField] private KeyBindingManager.GameAction slotAction = KeyBindingManager.GameAction.Ability;
         
-        private void Awake()
+        public void Initialize(VisualElement root)
         {
-            if (iconImage == null)
+            var container = root.Q<VisualElement>("ability-icon");
+            if (container != null)
             {
-                iconImage = GetComponent<Image>();
+                // Let's assume the UXML will have these children or we create them
+                iconImage = container.Q<VisualElement>("icon");
+                if (iconImage == null) { iconImage = new VisualElement { name = "icon" }; iconImage.AddToClassList("slot-icon"); container.Add(iconImage); }
+                
+                cooldownOverlay = container.Q<VisualElement>("cooldown");
+                if (cooldownOverlay == null) { cooldownOverlay = new VisualElement { name = "cooldown" }; cooldownOverlay.AddToClassList("slot-cooldown"); container.Add(cooldownOverlay); }
+                
+                keyText = container.Q<Label>("key");
+                if (keyText == null) { keyText = new Label { name = "key", text = "Q" }; keyText.AddToClassList("slot-key"); container.Add(keyText); }
+            }
+            
+            UpdateIcon();
+        }
+
+        private void UpdateIcon()
+        {
+            if (iconImage != null && defaultIconSource != null && trackedAbility == null)
+            {
+                iconImage.style.backgroundImage = new UnityEngine.UIElements.StyleBackground(defaultIconSource.icon);
+            }
+            else if (iconImage != null && trackedAbility != null && trackedAbility.Ability != null)
+            {
+                iconImage.style.backgroundImage = new UnityEngine.UIElements.StyleBackground(trackedAbility.Ability.icon);
             }
         }
 
         private void Start()
         {
-            if (iconImage != null && defaultIconSource != null && trackedAbility == null)
-            {
-                iconImage.sprite = defaultIconSource.icon;
-            }
-            else if (iconImage != null && trackedAbility != null)
-            {
-                iconImage.sprite = trackedAbility.Ability.icon;
-            }
+            UpdateIcon();
         }
 
         private void Update()
@@ -40,8 +56,7 @@ namespace AnimalMagicRoyale.Components.UI
             {
                 string keyName = KeyBindingManager.Instance.GetBinding(slotAction).ToString();
                 keyText.text = keyName.Replace("Digit", "");
-                // Mostrar en verde si está lista, blanco si no (o viceversa)
-                keyText.color = (trackedAbility != null && trackedAbility.IsReady) ? Color.green : Color.white;
+                keyText.style.color = (trackedAbility != null && trackedAbility.IsReady) ? Color.green : Color.white;
             }
 
             if (trackedAbility == null) return;
@@ -50,20 +65,21 @@ namespace AnimalMagicRoyale.Components.UI
             {
                 if (!trackedAbility.IsReady)
                 {
+                    cooldownOverlay.style.display = DisplayStyle.Flex;
                     float remaining = trackedAbility.GetCooldownRemaining();
                     float total = trackedAbility.TotalCooldown;
                     if (total > 0f)
                     {
-                        cooldownOverlay.fillAmount = remaining / total;
+                        cooldownOverlay.style.height = Length.Percent((remaining / total) * 100f);
                     }
                     else
                     {
-                        cooldownOverlay.fillAmount = remaining > 0 ? 1f : 0f; 
+                        cooldownOverlay.style.height = Length.Percent(remaining > 0 ? 100f : 0f); 
                     }
                 }
                 else
                 {
-                    cooldownOverlay.fillAmount = 0f;
+                    cooldownOverlay.style.display = DisplayStyle.None;
                 }
             }
         }
@@ -73,7 +89,7 @@ namespace AnimalMagicRoyale.Components.UI
             trackedAbility = holder;
             if (iconImage != null && currentAbilityData != null)
             {
-                iconImage.sprite = currentAbilityData.icon;
+                iconImage.style.backgroundImage = new StyleBackground(currentAbilityData.icon);
             }
         }
     }

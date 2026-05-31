@@ -1,14 +1,20 @@
 using UnityEngine;
 using AnimalMagicRoyale.Core;
-using TMPro;
+using UnityEngine.UIElements;
 
 namespace AnimalMagicRoyale.Components.UI
 {
     public class PlayerCountUI : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI countText;
+        private Label countText;
         [SerializeField] private IntEvent onAliveCountChanged;
         
+        public void Initialize(VisualElement root)
+        {
+            countText = root.Q<Label>("lbl-player-count");
+            UpdateCountText(GameManager.Instance != null ? GameManager.Instance.AlivePlayersCount : 0);
+        }
+
         private void Awake()
         {
             if (onAliveCountChanged == null) onAliveCountChanged = Resources.Load<IntEvent>("Events/AliveCountEvent");
@@ -28,17 +34,22 @@ namespace AnimalMagicRoyale.Components.UI
         
         private void Start()
         {
-            if (GameManager.Instance != null && countText != null)
+            if (GameManager.Instance != null)
             {
-                countText.text = GameManager.Instance.AlivePlayersCount.ToString();
+                UpdateCountText(GameManager.Instance.AlivePlayersCount);
             }
         }
 
         private void HandleAliveCountChanged(int count)
         {
+            UpdateCountText(count);
+        }
+
+        private void UpdateCountText(int count)
+        {
             if (countText != null)
             {
-                countText.text = "Jugadores restantes: " + count.ToString();
+                countText.text = "Alive: " + count.ToString();
             }
         }
     }

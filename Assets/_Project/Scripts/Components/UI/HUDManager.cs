@@ -4,27 +4,32 @@ using AnimalMagicRoyale.Core;
 namespace AnimalMagicRoyale.Components.UI
 {
     /// <summary>
-    /// Controlador central del HUD in-game. Gestiona la visibilidad de los
-    /// paneles según el estado de la partida y coordina los sub-componentes UI.
+    /// Controlador central del HUD in-game. Gestiona la visibilidad global usando UI Toolkit.
     /// </summary>
+    [RequireComponent(typeof(UnityEngine.UIElements.UIDocument))]
+    [RequireComponent(typeof(HealthBarUI))]
+    [RequireComponent(typeof(SpellInventoryUI))]
+    [RequireComponent(typeof(AbilityUI))]
+    [RequireComponent(typeof(KillFeedUI))]
+    [RequireComponent(typeof(ZoneTimerUI))]
+    [RequireComponent(typeof(MinimapUI))]
+    [RequireComponent(typeof(PlayerCountUI))]
+    [RequireComponent(typeof(TeamUI))]
     public class HUDManager : MonoBehaviour
     {
-        [Header("Panel References")]
-        [SerializeField] private GameObject hudContainer; // The main container holding all in-game HUD elements
-        [SerializeField] private GameObject healthBarPanel;
-        [SerializeField] private GameObject spellInventoryPanel;
-        [SerializeField] private GameObject abilityPanel;
-        [SerializeField] private GameObject minimapPanel;
-        [SerializeField] private GameObject playerCountPanel;
-        [SerializeField] private GameObject killFeedPanel;
-        [SerializeField] private GameObject zoneTimerPanel;
-        
         [Header("Events")]
         [SerializeField] private GameStateEvent onGameStateChanged;
 
         private HealthBarUI healthBarUI;
         private SpellInventoryUI spellInventoryUI;
         private AbilityUI abilityUI;
+        private KillFeedUI killFeedUI;
+        private ZoneTimerUI zoneTimerUI;
+        private MinimapUI minimapUI;
+        private PlayerCountUI playerCountUI;
+        private TeamUI teamUI;
+        
+        private UnityEngine.UIElements.UIDocument uiDocument;
 
         private void Awake()
         {
@@ -45,17 +50,31 @@ namespace AnimalMagicRoyale.Components.UI
         
         private void Start()
         {
-            if (healthBarPanel != null) healthBarUI = healthBarPanel.GetComponent<HealthBarUI>();
-            if (spellInventoryPanel != null) spellInventoryUI = spellInventoryPanel.GetComponent<SpellInventoryUI>();
-            if (abilityPanel != null) abilityUI = abilityPanel.GetComponent<AbilityUI>();
+            uiDocument = GetComponent<UnityEngine.UIElements.UIDocument>();
             
-            // Fallback just in case inspector references are missing
-            if (healthBarUI == null) healthBarUI = GetComponentInChildren<HealthBarUI>(true);
-            if (spellInventoryUI == null) spellInventoryUI = GetComponentInChildren<SpellInventoryUI>(true);
-            if (abilityUI == null) abilityUI = GetComponentInChildren<AbilityUI>(true);
+            healthBarUI = GetComponent<HealthBarUI>();
+            spellInventoryUI = GetComponent<SpellInventoryUI>();
+            abilityUI = GetComponent<AbilityUI>();
+            killFeedUI = GetComponent<KillFeedUI>();
+            zoneTimerUI = GetComponent<ZoneTimerUI>();
+            minimapUI = GetComponent<MinimapUI>();
+            playerCountUI = GetComponent<PlayerCountUI>();
+            teamUI = GetComponent<TeamUI>();
             
-            Debug.Log("[HUDManager] Start executed.");
-            // Initial state based on typical GameManager startup (Waiting -> Playing)
+            if (uiDocument != null && uiDocument.rootVisualElement != null)
+            {
+                var root = uiDocument.rootVisualElement;
+                if (healthBarUI != null) healthBarUI.Initialize(root);
+                if (spellInventoryUI != null) spellInventoryUI.Initialize(root);
+                if (abilityUI != null) abilityUI.Initialize(root);
+                if (killFeedUI != null) killFeedUI.Initialize(root);
+                if (zoneTimerUI != null) zoneTimerUI.Initialize(root);
+                if (minimapUI != null) minimapUI.Initialize(root);
+                if (playerCountUI != null) playerCountUI.Initialize(root);
+                if (teamUI != null) teamUI.Initialize(root);
+            }
+
+            Debug.Log("[HUDManager] Start executed (UI Toolkit).");
             if (GameManager.Instance != null && GameManager.Instance.StateMachine.CurrentState is WaitingState)
             {
                 SetHUDActive(false);
@@ -97,6 +116,7 @@ namespace AnimalMagicRoyale.Components.UI
                                     abilityUI.SetTrackedAbility(abilityHolder, abilityHolder.Ability);
                                 }
                             }
+                            if (teamUI != null) teamUI.SetupTeam(player.gameObject);
                             
                             Debug.Log($"[HUDManager] Tracked player assigned: {player.gameObject.name}");
                         }
@@ -115,20 +135,9 @@ namespace AnimalMagicRoyale.Components.UI
         private void SetHUDActive(bool isActive)
         {
             Debug.Log($"[HUDManager] Setting HUD active state to: {isActive}");
-            if (hudContainer != null && hudContainer != this.gameObject)
+            if (uiDocument != null && uiDocument.rootVisualElement != null)
             {
-                hudContainer.SetActive(isActive);
-            }
-            else
-            {
-                // Fallback si no hay un contenedor global, desactivamos panel por panel
-                if (healthBarPanel != null) healthBarPanel.SetActive(isActive);
-                if (spellInventoryPanel != null) spellInventoryPanel.SetActive(isActive);
-                if (abilityPanel != null) abilityPanel.SetActive(isActive);
-                if (minimapPanel != null) minimapPanel.SetActive(isActive);
-                if (playerCountPanel != null) playerCountPanel.SetActive(isActive);
-                if (killFeedPanel != null) killFeedPanel.SetActive(isActive);
-                if (zoneTimerPanel != null) zoneTimerPanel.SetActive(isActive);
+                uiDocument.rootVisualElement.style.display = isActive ? UnityEngine.UIElements.DisplayStyle.Flex : UnityEngine.UIElements.DisplayStyle.None;
             }
         }
     }

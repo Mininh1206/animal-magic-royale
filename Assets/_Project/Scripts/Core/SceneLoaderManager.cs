@@ -94,13 +94,17 @@ namespace AnimalMagicRoyale.Core
 
                 if (asyncLoad.progress >= 0.9f)
                 {
-                    // Small artificial delay to see the full bar if it loads too fast
-                    yield return new WaitForSeconds(0.5f); 
                     asyncLoad.allowSceneActivation = true;
                 }
                 
                 yield return null;
             }
+
+            // Small delay to ensure initialization
+            yield return new WaitForSeconds(0.5f);
+            
+            // Wait for main camera to exist (player/spectator instantiated)
+            yield return new WaitUntil(() => UnityEngine.Camera.main != null);
             
             if (loadingContainer != null) 
             {

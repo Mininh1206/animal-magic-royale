@@ -1,18 +1,25 @@
 using UnityEngine;
 using AnimalMagicRoyale.Core;
-using TMPro;
 using System.Collections;
+using UnityEngine.UIElements;
 
 namespace AnimalMagicRoyale.Components.UI
 {
     public class KillFeedUI : MonoBehaviour
     {
-        [SerializeField] private GameObject bannerPanel;
-        [SerializeField] private TextMeshProUGUI killText;
+        private VisualElement feedContainer;
         [SerializeField] private float displayDuration = 3f;
+        [SerializeField] private float fadeDuration = 0.5f;
         [SerializeField] private PlayerEliminatedEvent onPlayerEliminated;
         
-        private Coroutine hideCoroutine;
+        public void Initialize(VisualElement root)
+        {
+            feedContainer = root.Q<VisualElement>("killfeed-container");
+            if (feedContainer != null)
+            {
+                feedContainer.Clear();
+            }
+        }
 
         private void Awake()
         {
@@ -31,49 +38,51 @@ namespace AnimalMagicRoyale.Components.UI
                 onPlayerEliminated.UnregisterListener(HandlePlayerEliminated);
         }
 
-        private void Start()
-        {
-            if (bannerPanel != null)
-            {
-                bannerPanel.SetActive(false);
-            }
-        }
-
         private void HandlePlayerEliminated(PlayerEliminatedPayload payload)
         {
-            Debug.Log($"[KillFeedUI] HandlePlayerEliminated called for {payload.eliminated?.name}");
-            if (bannerPanel != null && killText != null)
+            if (feedContainer != null)
             {
-                string playerName = payload.eliminated != null ? payload.eliminated.name : "Un jugador";
-                string outputText = "";
-                if (payload.killer != null)
+                string victimName = payload.eliminated != null ? payload.eliminated.name : "Un jugador";
+                
+                var killItem = new VisualElement();
+                killItem.AddToClassList("killfeed-item");
+                
+                if (payload.killer != null && payload.killer != payload.eliminated)
                 {
-                    outputText = $"{payload.killer.name} ha eliminado a {playerName}";
-                }
-                else
-                {
-                    outputText = $"{playerName} ha sido eliminado";
+                    string killerName = payload.killer.name;
+                    var killerLabel = new Label(killerName);
+                    killerLabel.AddToClassList("killfeed-text");
+                    killerLabel.AddToClassList("killfeed-text-killer");
+                    killItem.Add(killerLabel);
+
+                    var icon = new VisualElement();
+                    icon.AddToClassList("killfeed-icon");
+                    killItem.Add(icon);
                 }
 
-                killText.text = outputText;
+                var victimLabel = new Label(victimName);
+                victimLabel.AddToClassList("killfeed-text");
+                killItem.Add(victimLabel);
                 
-                bannerPanel.SetActive(true);
-                Debug.Log($"[KillFeedUI] Banner activated with text: {killText.text}");
+                feedContainer.Add(killItem);
                 
-                if (hideCoroutine != null)
-                {
-                    StopCoroutine(hideCoroutine);
-                }
-                hideCoroutine = StartCoroutine(HideBannerAfterDelay());
+                StartCoroutine(FadeAndRemove(killItem));
             }
         }
         
-        private IEnumerator HideBannerAfterDelay()
+        private IEnumerator FadeAndRemove(VisualElement item)
         {
             yield return new WaitForSeconds(displayDuration);
-            if (bannerPanel != null)
+            
+            if (item != null)
             {
-                bannerPanel.SetActive(false);
+                item.style.opacity = 0f;
+                yield return new WaitForSeconds(fadeDuration);
+                
+                if (feedContainer != null && feedContainer.Contains(item))
+                {
+                    feedContainer.Remove(item);
+                }
             }
         }
     }

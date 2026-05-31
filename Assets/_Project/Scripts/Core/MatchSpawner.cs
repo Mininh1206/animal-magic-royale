@@ -79,12 +79,36 @@ namespace AnimalMagicRoyale.Core
                 {
                     if (spawnedCount >= maxPlayers) break;
 
-                    // Calculate offset for teammates
+                    // Calculate offset for teammates and avoid overlaps
                     Vector3 spawnPos = teamSpawnBase.position;
-                    if (p > 0)
+                    float baseRadius = 1.5f;
+                    int maxAttempts = 20;
+                    bool foundValidPosition = false;
+
+                    for (int attempt = 0; attempt < maxAttempts; attempt++)
                     {
-                        Vector2 randomCircle = Random.insideUnitCircle * 1.5f;
-                        spawnPos += new Vector3(randomCircle.x, 0, randomCircle.y);
+                        Vector3 testPos = teamSpawnBase.position;
+                        if (p > 0 || attempt > 0)
+                        {
+                            Vector2 randomCircle = Random.insideUnitCircle * (baseRadius + attempt * 0.5f);
+                            testPos += new Vector3(randomCircle.x, 0, randomCircle.y);
+                        }
+
+                        // Comprobar colisiones elevando el punto ligeramente para no chocar con el suelo
+                        if (!Physics.CheckSphere(testPos + Vector3.up * 1f, 0.5f))
+                        {
+                            if (UnityEngine.AI.NavMesh.SamplePosition(testPos, out UnityEngine.AI.NavMeshHit hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
+                            {
+                                spawnPos = hit.position;
+                                foundValidPosition = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!foundValidPosition)
+                    {
+                        Debug.LogWarning($"[MatchSpawner] No se pudo encontrar un punto de aparición válido sin solapamiento para la entidad {spawnedCount}. Usando fallback.");
                     }
 
                     GameObject newEntity = null;

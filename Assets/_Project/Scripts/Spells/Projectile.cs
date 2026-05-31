@@ -16,6 +16,11 @@ namespace AnimalMagicRoyale.Spells
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
+            var col = GetComponent<Collider>();
+            if (col != null)
+            {
+                col.isTrigger = true;
+            }
         }
 
         public void Initialize(SpellData data, GameObject caster, Vector3 direction)
@@ -49,8 +54,20 @@ namespace AnimalMagicRoyale.Spells
             if (!isInitialized) return;
             if (other.gameObject == caster) return;
             
-            // Ignorar choques entre otros proyectiles
-            if (other.GetComponent<Projectile>() != null) return;
+            // Ignorar choques entre otros proyectiles a menos que sea para reaccionar
+            var otherProj = other.GetComponent<Projectile>();
+            if (otherProj != null)
+            {
+                OnProjectileClash(otherProj);
+                return;
+            }
+
+            // Ignorar el colisionador visual de la zona
+            if (AnimalMagicRoyale.Core.ZoneManager.Instance != null && 
+                other.transform == AnimalMagicRoyale.Core.ZoneManager.Instance.zoneVisual)
+            {
+                return;
+            }
 
             // Debug para saber contra qué choca
             Debug.Log($"[Projectile] Chocó contra: {other.gameObject.name}");
@@ -74,6 +91,17 @@ namespace AnimalMagicRoyale.Spells
             isInitialized = false;
             rb.linearVelocity = Vector3.zero;
             AnimalMagicRoyale.Core.ProjectilePoolManager.Instance.ReleaseProjectile(spellData.projectilePrefab, this);
+        }
+
+        protected virtual void OnProjectileClash(Projectile other)
+        {
+            Debug.Log($"[Projectile] Choque mágico detectado entre {gameObject.name} y {other.gameObject.name}");
+            
+            // TODO: Futuro: Aquí se puede comprobar si spellData es Fuego y el otro es Agua,
+            // instanciar un VFX de explosión o humo en el punto medio, etc.
+            
+            // Por defecto, ambos proyectiles se anulan y vuelven al pool
+            ReturnToPool();
         }
     }
 }

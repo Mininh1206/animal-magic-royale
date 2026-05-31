@@ -1,15 +1,21 @@
 using UnityEngine;
 using AnimalMagicRoyale.Core;
-using TMPro;
+using UnityEngine.UIElements;
 
 namespace AnimalMagicRoyale.Components.UI
 {
     public class ZoneTimerUI : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI timerText;
-        [SerializeField] private TextMeshProUGUI phaseText;
+        private Label timerText;
+        private Label phaseText;
         [SerializeField] private ZoneShrinkEvent onZoneShrink;
         
+        public void Initialize(VisualElement root)
+        {
+            timerText = root.Q<Label>("lbl-zone-time");
+            phaseText = root.Q<Label>("lbl-zone-status");
+        }
+
         private void Awake()
         {
             if (onZoneShrink == null) onZoneShrink = Resources.Load<ZoneShrinkEvent>("Events/ZoneShrinkEvent");

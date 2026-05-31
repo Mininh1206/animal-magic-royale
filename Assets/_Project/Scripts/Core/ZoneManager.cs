@@ -24,6 +24,7 @@ namespace AnimalMagicRoyale.Core
         private bool isActive = false;
         private bool isShrinking = false;
         private float damageTimer = 0f;
+        private CapsuleCollider zoneCollider;
 
         public bool IsActive => isActive;
         public bool IsShrinking => isShrinking;
@@ -36,6 +37,16 @@ namespace AnimalMagicRoyale.Core
             {
                 Instance = this;
                 if (onZoneShrink == null) onZoneShrink = Resources.Load<ZoneShrinkEvent>("Events/ZoneShrinkEvent");
+                
+                // Asegurarse de que el visual existe antes de asignarle el collider
+                if (zoneVisual != null)
+                {
+                    zoneCollider = zoneVisual.gameObject.AddComponent<CapsuleCollider>();
+                    zoneCollider.isTrigger = true;
+                    zoneCollider.height = 20f; // Multiplicado por localScale.y (100) = 2000 de altura
+                    zoneCollider.radius = 0.5f; // Multiplicado por localScale.x (currentRadius * 2) = currentRadius
+                    zoneCollider.direction = 1; // Y-Axis
+                }
             }
             else
             {
@@ -172,33 +183,38 @@ namespace AnimalMagicRoyale.Core
             {
                 damageTimer = damageTickInterval;
                 
-                // We'll iterate through all players registered in GameManager
                 if (GameManager.Instance != null)
                 {
-                    // This is slightly inefficient if we could get the alive list directly, but we don't have access to the private list.
-                    // We'll have to rely on objects with ZoneDamageTracker for now.
                     var trackers = FindObjectsByType<ZoneDamageTracker>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-                    if (trackers.Length == 0)
-                    {
-                        Debug.LogWarning("[ZoneManager] WARNING: No ZoneDamageTrackers found in scene!");
-                    }
                     foreach (var tracker in trackers)
                     {
-                        bool isInside = IsInsideZone(tracker.transform.position);
-                        tracker.UpdateZoneStatus(isInside);
-
-                        if (!isInside)
+                        if (tracker.isOutside)
                         {
                             var health = tracker.GetComponent<HealthComponent>();
                             if (health != null && health.IsAlive)
                             {
                                 float damage = phase.baseDamage * tracker.GetDamageMultiplier(phase.damageMultiplier);
                                 health.TakeDamage(damage, gameObject); // Pass ZoneManager gameObject as source
-                                Debug.Log($"[ZoneManager] {tracker.gameObject.name} outside zone, dealt {damage} damage.");
                             }
                         }
                     }
                 }
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.TryGetComponent<ZoneDamageTracker>(out var tracker))
+            {
+                tracker.UpdateZoneStatus(false); // No está dentro
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.TryGetComponent<ZoneDamageTracker>(out var tracker))
+            {
+                tracker.UpdateZoneStatus(true); // Está dentro
             }
         }
 
@@ -213,7 +229,7 @@ namespace AnimalMagicRoyale.Core
         {
             if (zoneVisual != null)
             {
-                // Assuming cylinder has radius 0.5 when scale is 1
+                // El collider hereda esta escala. Al tener radio 0.5, el radio físico se ajusta a currentRadius exactamente.
                 zoneVisual.localScale = new Vector3(currentRadius * 2, 100f, currentRadius * 2);
             }
         }

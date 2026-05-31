@@ -1,16 +1,26 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 namespace AnimalMagicRoyale.Components.UI
 {
     public class MinimapUI : MonoBehaviour
     {
-        [SerializeField] private RawImage minimapImage;
         [SerializeField] private UnityEngine.Camera minimapCamera;
         [SerializeField] private Transform trackedTarget;
+        [SerializeField] private RenderTexture minimapRenderTexture;
         
-        // This script serves as a placeholder to be expanded when the minimap RenderTexture is created.
+        private VisualElement minimapImage;
         
+        public void Initialize(VisualElement root)
+        {
+            minimapImage = root.Q<VisualElement>("minimap-image");
+            if (minimapImage != null && minimapRenderTexture != null)
+            {
+                minimapImage.style.backgroundImage = new StyleBackground(
+                    Background.FromRenderTexture(minimapRenderTexture));
+            }
+        }
+
         private void LateUpdate()
         {
             if (minimapCamera != null && trackedTarget != null)

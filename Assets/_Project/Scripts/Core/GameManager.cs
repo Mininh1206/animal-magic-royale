@@ -26,6 +26,7 @@ namespace AnimalMagicRoyale.Core
         private List<GameObject> alivePlayers = new List<GameObject>();
         public int AlivePlayersCount => alivePlayers.Count;
         public int TotalPlayers { get; private set; }
+        public IReadOnlyList<GameObject> AlivePlayers => alivePlayers;
 
         public GameObject Winner { get; set; }
 
@@ -155,13 +156,49 @@ namespace AnimalMagicRoyale.Core
                     });
                 }
 
-                if (StateMachine.CurrentState == PlayingState && alivePlayers.Count <= 1)
+                if (StateMachine.CurrentState == PlayingState)
                 {
-                    if (alivePlayers.Count == 1)
+                    CheckWinCondition();
+                }
+            }
+        }
+
+        private void CheckWinCondition()
+        {
+            if (alivePlayers.Count == 0)
+            {
+                Debug.Log($"[GameManager] Match Ended! Draw!");
+                StateMachine.ChangeState(GameOverState);
+                return;
+            }
+
+            if (TeamManager.Instance != null)
+            {
+                int firstTeamId = TeamManager.Instance.GetTeam(alivePlayers[0]);
+                bool allSameTeam = true;
+                
+                foreach (var p in alivePlayers)
+                {
+                    if (TeamManager.Instance.GetTeam(p) != firstTeamId)
                     {
-                        Winner = alivePlayers[0];
+                        allSameTeam = false;
+                        break;
                     }
-                    Debug.Log($"[GameManager] Match Ended! Winner: {(Winner != null ? Winner.name : "None")}");
+                }
+
+                if (allSameTeam)
+                {
+                    Winner = alivePlayers[0];
+                    Debug.Log($"[GameManager] Match Ended! Winning Team: {firstTeamId}");
+                    StateMachine.ChangeState(GameOverState);
+                }
+            }
+            else
+            {
+                if (alivePlayers.Count == 1)
+                {
+                    Winner = alivePlayers[0];
+                    Debug.Log($"[GameManager] Match Ended! Winner: {Winner.name}");
                     StateMachine.ChangeState(GameOverState);
                 }
             }
@@ -170,7 +207,61 @@ namespace AnimalMagicRoyale.Core
         private void HandlePlayerDeath(DeathPayload payload)
         {
             Debug.Log($"[GameManager] HandlePlayerDeath received: {payload.victim?.name} killed by {payload.killer?.name ?? "environment"}");
+            
+            if (payload.victim != null)
+            {
+                // Lógica de espectador si muere el jugador local
+                var playerController = payload.victim.GetComponent<AnimalMagicRoyale.Player.PlayerController>();
+                if (playerController != null)
+                {
+                    HandleLocalPlayerDeathSpectator(payload.victim);
+                }
+            }
+            
             UnregisterPlayer(payload.victim, payload.killer);
+        }
+
+        private void HandleLocalPlayerDeathSpectator(GameObject localPlayer)
+        {
+            GameObject teammate = GetAliveTeammate(localPlayer);
+            if (teammate != null)
+            {
+                Transform cameraSetup = localPlayer.transform.Find("CameraSetup");
+                if (cameraSetup != null)
+                {
+                    // Desvincular para que no se desactive cuando localPlayer.SetActive(false) ocurra
+                    cameraSetup.SetParent(null);
+                    
+                    var vcam = cameraSetup.GetComponentInChildren<Unity.Cinemachine.CinemachineCamera>();
+                    if (vcam != null)
+                    {
+                        Debug.Log($"[Spectator] Local player died. Spectating teammate: {teammate.name}");
+                        vcam.Follow = teammate.transform;
+                        vcam.LookAt = teammate.transform;
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("[Spectator] No alive teammates found. Skipping spectator camera unparent, directly proceeding to Game Over.");
+            }
+        }
+
+        private GameObject GetAliveTeammate(GameObject player)
+        {
+            if (TeamManager.Instance == null) return null;
+
+            int myTeam = TeamManager.Instance.GetTeam(player);
+            if (myTeam == -1) return null;
+
+            foreach (var alivePlayer in alivePlayers)
+            {
+                if (alivePlayer != player && TeamManager.Instance.GetTeam(alivePlayer) == myTeam)
+                {
+                    return alivePlayer;
+                }
+            }
+            return null;
         }
 
         public void StartMatch()
