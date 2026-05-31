@@ -48,6 +48,31 @@ namespace AnimalMagicRoyale.Components.UI
             // Ignorar al jugador local (no queremos ver los números del daño que recibimos nosotros mismos)
             if (payload.target.GetComponent<AnimalMagicRoyale.Player.PlayerInputHandler>() != null) return;
 
+            // Comprobar si el jugador objetivo está visible para la cámara
+            if (UnityEngine.Camera.main != null)
+            {
+                Vector3 targetPos = payload.target.transform.position;
+                Vector3 screenPos = UnityEngine.Camera.main.WorldToScreenPoint(targetPos);
+                
+                // 1. Detrás de la cámara o muy lejos
+                if (screenPos.z < 0 || screenPos.z > 80f) return;
+                
+                // 2. Fuera de los límites de la pantalla
+                if (screenPos.x < 0 || screenPos.x > Screen.width || screenPos.y < 0 || screenPos.y > Screen.height) return;
+                
+                // 3. Comprobar línea de visión (oclusión por paredes)
+                Vector3 camPos = UnityEngine.Camera.main.transform.position;
+                Vector3 dir = (targetPos + Vector3.up * 1f) - camPos;
+                if (Physics.Raycast(camPos, dir.normalized, out RaycastHit hit, dir.magnitude, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                {
+                    // Si choca con algo que no es el objetivo (ej. pared u otro objeto sólido), no mostramos el texto
+                    if (hit.collider.gameObject != payload.target && !hit.collider.transform.IsChildOf(payload.target.transform))
+                    {
+                        return;
+                    }
+                }
+            }
+
             // Damage style
             Color dmgColor = new Color(1f, 0.6f, 0f); // Orange
             if (Mathf.Abs(payload.delta) > 25f || payload.source == null) 
@@ -105,7 +130,8 @@ namespace AnimalMagicRoyale.Components.UI
             if (UnityEngine.Camera.main == null || dmg.label.panel == null) return;
             
             Vector3 screenPos = UnityEngine.Camera.main.WorldToScreenPoint(dmg.worldPos);
-            if (screenPos.z < 0)
+            // Ocultar si está detrás de la cámara o muy fuera de la pantalla
+            if (screenPos.z < 0 || screenPos.x < -100 || screenPos.x > Screen.width + 100 || screenPos.y < -100 || screenPos.y > Screen.height + 100)
             {
                 dmg.label.style.display = DisplayStyle.None;
                 return;

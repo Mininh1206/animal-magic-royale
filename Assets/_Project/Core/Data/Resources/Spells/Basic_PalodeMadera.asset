@@ -20,5 +20,6 @@ MonoBehaviour:
   projectileSpeed: 20
   projectileCount: 1
   projectilePrefab: {fileID: 8349761922293664815, guid: 848e099678108084e90bb9235cfb1d9b, type: 3}
+  spellColor: {r: 0.5450981, g: 0.2705882, b: 0.07450981, a: 1}
   effects:
   - {fileID: 11400000, guid: 14b8467453ee8e94d97b86fe8faf2a87, type: 2}

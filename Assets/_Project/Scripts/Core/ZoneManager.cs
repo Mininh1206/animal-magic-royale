@@ -26,7 +26,7 @@ namespace AnimalMagicRoyale.Core
         public Vector3 ZoneCenter => zoneCenter;
         private bool isActive = false;
         private bool isShrinking = false;
-        private float damageTimer = 0f;
+        private float damageTimer = 1f; // Dar un pequeño margen (1s) antes del primer tick de daño
         private CapsuleCollider zoneCollider;
 
         public bool IsActive => isActive;
@@ -44,6 +44,12 @@ namespace AnimalMagicRoyale.Core
                 // Asegurarse de que el visual existe antes de asignarle el collider
                 if (zoneVisual != null)
                 {
+                    // Destruir colliders que pudieran venir por defecto en el modelo (ej. cilindro de Unity) para que no sean obstáculos físicos
+                    foreach (var col in zoneVisual.gameObject.GetComponents<Collider>())
+                    {
+                        Destroy(col);
+                    }
+
                     zoneCollider = zoneVisual.gameObject.AddComponent<CapsuleCollider>();
                     zoneCollider.isTrigger = true;
                     zoneCollider.height = 20f; // Multiplicado por localScale.y (100) = 2000 de altura
@@ -86,7 +92,9 @@ namespace AnimalMagicRoyale.Core
                 currentRadius = phases[0].startRadius;
                 targetRadius = phases[0].startRadius;
             }
-            zoneCenter = transform.position;
+
+            // Usar la posición del visual de la zona como centro (por si el manager está en otra parte)
+            zoneCenter = zoneVisual != null ? zoneVisual.position : transform.position;
             UpdateVisuals();
         }
 
