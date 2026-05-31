@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: Cerdo
   icon: {fileID: -9160987577138628238, guid: 215687feeab0b7445b4a1cd86c82c2e1, type: 3}
   ability: {fileID: 11400000, guid: 5f146846c675cf2459ffd9c54773dfe5, type: 2}
+  audioData: {fileID: 11400000, guid: 0f911911af233e7468224ad7cd5a3269, type: 2}
   animatorController: {fileID: 9100000, guid: 8c39832461d2fe44d9fc0f24ec53ee9b, type: 2}
   defaultSkin: {fileID: 11400000, guid: e8ee2176e7fc7c14c82abfe1771cc601, type: 2}
   availableSkins:

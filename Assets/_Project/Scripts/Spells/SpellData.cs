@@ -23,6 +23,7 @@ namespace AnimalMagicRoyale.Spells
 
         [Header("Visuals & Logic")]
         public GameObject projectilePrefab;
+        public Color spellColor = Color.white; // Added for ray color
         
         [Header("Effects")]
         public List<SpellEffect> effects = new List<SpellEffect>();

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AudioData_Pato
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.Data.CharacterAudioData
   footstepClips:
-  - {fileID: 8300000, guid: 8c9f29188ac25b2428886a54393d2ee6, type: 3}
+  - {fileID: 8300000, guid: 943797148632d2a478317b6050735348, type: 3}
   attackClips:
   - {fileID: 8300000, guid: c675981bbce42cc4b91fa628aff999e4, type: 3}
   - {fileID: 8300000, guid: 9ac4f44cb18dc4340b239268ce1136b2, type: 3}

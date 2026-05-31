@@ -13,6 +13,9 @@ namespace AnimalMagicRoyale.Spells
         private float spawnTime;
         private bool isInitialized = false;
 
+        private TrailRenderer trail;
+        private Renderer[] childRenderers;
+
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
@@ -21,6 +24,23 @@ namespace AnimalMagicRoyale.Spells
             {
                 col.isTrigger = true;
             }
+
+            trail = GetComponent<TrailRenderer>();
+            if (trail == null)
+            {
+                trail = gameObject.AddComponent<TrailRenderer>();
+                trail.time = 0.15f; // Estela corta como un rayo o láser
+                trail.startWidth = 0.4f;
+                trail.endWidth = 0f;
+                trail.autodestruct = false;
+                trail.emitting = false;
+                
+                // Material por defecto compatible con color
+                Material defaultMat = new Material(Shader.Find("Sprites/Default"));
+                trail.material = defaultMat;
+            }
+
+            childRenderers = GetComponentsInChildren<Renderer>();
         }
 
         public void Initialize(SpellData data, GameObject caster, Vector3 direction)
@@ -34,6 +54,30 @@ namespace AnimalMagicRoyale.Spells
             if (direction != Vector3.zero)
             {
                 transform.rotation = Quaternion.LookRotation(direction);
+            }
+
+            if (trail != null)
+            {
+                trail.Clear(); // Limpiar estela de uso previo (Object Pooling)
+                trail.emitting = true;
+                
+                // Asignar el color del hechizo
+                Color c = data.spellColor;
+                trail.startColor = c;
+                c.a = 0f; // Fade out hacia el final de la estela
+                trail.endColor = c;
+            }
+
+            // Ocultar mallas (MeshRenderer) para que solo se vea la estela/rayo
+            if (childRenderers != null)
+            {
+                foreach (var r in childRenderers)
+                {
+                    if (r != trail && r != null) 
+                    {
+                        r.enabled = false;
+                    }
+                }
             }
 
             isInitialized = true;
@@ -101,6 +145,10 @@ namespace AnimalMagicRoyale.Spells
         {
             isInitialized = false;
             rb.linearVelocity = Vector3.zero;
+            if (trail != null)
+            {
+                trail.emitting = false;
+            }
             AnimalMagicRoyale.Core.ProjectilePoolManager.Instance.ReleaseProjectile(spellData.projectilePrefab, this);
         }
 
