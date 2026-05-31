@@ -414,7 +414,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.UI.MainMenuManager
   availableMaps:
-  - {fileID: 11400000, guid: cf0c7d0f56f759148bf647fe32500158, type: 2}
+  - {fileID: 11400000, guid: 997f23c8f1b70374f985a9f7fe645159, type: 2}
   - {fileID: 0}
   availableAnimals:
   - {fileID: 11400000, guid: 54aad67496bc59f499b8355b4922b896, type: 2}
