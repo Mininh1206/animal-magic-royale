@@ -59,5 +59,13 @@ namespace AnimalMagicRoyale.Components
             if (targetAnimator != null)
                 targetAnimator.SetBool(ANIM_IS_ATTACKING, attacking);
         }
+
+        /// <summary>
+        /// Asigna un nuevo Animator (útil cuando SkinManager cambia el modelo en ejecución).
+        /// </summary>
+        public void SetAnimator(Animator newAnimator)
+        {
+            targetAnimator = newAnimator;
+        }
     }
 }

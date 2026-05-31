@@ -6,6 +6,7 @@ namespace AnimalMagicRoyale.Player
 {
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(AnimalMagicRoyale.Components.AbilityHolder))]
+    [RequireComponent(typeof(PlayerInputHandler))]
     public class PlayerController : BasicController
     {
         [Header("Movement Settings")]

@@ -93,7 +93,7 @@ namespace AnimalMagicRoyale.Player
                 {
                     playerController.LookInput = Mouse.current.delta.ReadValue();
                     
-                    if (Mouse.current.leftButton.wasPressedThisFrame)
+                    if (Mouse.current.leftButton.isPressed)
                     {
                         Debug.Log("[PlayerInputHandler] Attack requested via Mouse Left Button.");
                         playerController.AttackRequested = true;

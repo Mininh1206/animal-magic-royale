@@ -567,7 +567,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.SpellInventory
   basicStickSpell: {fileID: 11400000, guid: ca09857129a60e4468a99a8f20f06cef, type: 2}
-  firePoint: {fileID: 8992843760660394698}
+  firePoint: {fileID: 0}
   slots:
   - spellData: {fileID: 0}
     lastCastTime: -100
@@ -614,8 +614,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b480bf139fab6a4cb9d39f8713c68dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.SkinManager
-  modelParent: {fileID: 986432126872561698}
-  firePointParent: {fileID: 8992843760660394698}
+  modelParent: {fileID: 0}
+  firePointParent: {fileID: 0}
 --- !u!114 &5421794067464134127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -652,7 +652,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8eec32adc065d42a128401c23496e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Player.PlayerInputHandler
-  playerController: {fileID: 5421794067464134127}
+  playerController: {fileID: 0}
 --- !u!1 &1194187288847742658
 GameObject:
   m_ObjectHideFlags: 0
@@ -2978,8 +2978,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8992843760660394698}
+  m_Children: []
   m_Father: {fileID: 7201699782311459171}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5148577125217049991
@@ -3246,37 +3245,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &5938396867672057580
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8992843760660394698}
-  m_Layer: 3
-  m_Name: FirePoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8992843760660394698
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5938396867672057580}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 986432126872561698}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5966593568269144540
 GameObject:
   m_ObjectHideFlags: 0
@@ -3520,7 +3488,7 @@ Transform:
   m_GameObject: {fileID: 6159758766183004764}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 50, z: 0}
+  m_LocalPosition: {x: 0, y: 300, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

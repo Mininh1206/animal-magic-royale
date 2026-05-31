@@ -120,9 +120,13 @@ namespace AnimalMagicRoyale.Components.UI
             {
                 foreach (var map in availableMaps)
                 {
-                    VisualElement card = UIElementBuilders.BuildMapCard(map, SelectMap);
-                    mapSelector.Add(card);
-                    generatedMapCards.Add(card);
+                    if (map != null)
+                    {
+                        VisualElement card = UIElementBuilders.BuildMapCard(map, SelectMap);
+                        mapSelector.Add(card);
+                        generatedMapCards.Add(card);
+                    }
+
                 }
                 // Force select first map
                 SelectMap(availableMaps[0], generatedMapCards[0]);

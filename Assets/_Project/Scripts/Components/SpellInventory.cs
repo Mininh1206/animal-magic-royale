@@ -78,36 +78,7 @@ namespace AnimalMagicRoyale.Components
 
             if (data.projectileSpeed > 0 && data.projectilePrefab != null)
             {
-                for (int i = 0; i < data.projectileCount; i++)
-                {
-                    Vector3 spreadDir = direction;
-                    if (data.projectileCount > 1)
-                    {
-                        float spreadAngle = -15f + (30f * i / (data.projectileCount - 1));
-                        spreadDir = Quaternion.Euler(0, spreadAngle, 0) * direction;
-                    }
-
-                    Transform effectiveFirePoint = overrideFirePoint != null ? overrideFirePoint : this.firePoint;
-                    Vector3 spawnPos = effectiveFirePoint != null ? effectiveFirePoint.position : caster.transform.position + Vector3.up * 1f;
-                    if (Core.ProjectilePoolManager.Instance == null)
-                    {
-                        Debug.LogWarning("[SpellInventory] ERROR: ProjectilePoolManager.Instance is null! Cannot spawn projectile.");
-                        return false;
-                    }
-
-                    Debug.Log($"[SpellInventory] Solicitando proyectil a ProjectilePoolManager. Prefab: {data.projectilePrefab.name}");
-                    Projectile proj = Core.ProjectilePoolManager.Instance.GetProjectile(data.projectilePrefab);
-                    if (proj != null)
-                    {
-                        proj.transform.position = spawnPos;
-                        proj.Initialize(data, caster, spreadDir);
-                        Debug.Log($"[SpellInventory] Proyectil inicializado y lanzado.");
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"[SpellInventory] ProjectilePoolManager devolvió null al pedir el proyectil: {data.projectilePrefab.name}");
-                    }
-                }
+                SpawnProjectiles(caster, direction, overrideFirePoint, data);
             }
             else
             {
@@ -117,6 +88,41 @@ namespace AnimalMagicRoyale.Components
             currentSlot.lastCastTime = Time.time;
             Debug.Log($"[SpellInventory] {caster.name} fired {data.spellName} from slot {activeSlotIndex}");
             return true;
+        }
+
+        private void SpawnProjectiles(GameObject caster, Vector3 direction, Transform overrideFirePoint, SpellData data)
+        {
+            Transform effectiveFirePoint = overrideFirePoint != null ? overrideFirePoint : this.firePoint;
+            Vector3 spawnPos = effectiveFirePoint != null ? effectiveFirePoint.position : caster.transform.position + Vector3.up * 1f;
+            
+            if (Core.ProjectilePoolManager.Instance == null)
+            {
+                Debug.LogWarning("[SpellInventory] ERROR: ProjectilePoolManager.Instance is null! Cannot spawn projectile.");
+                return;
+            }
+
+            for (int i = 0; i < data.projectileCount; i++)
+            {
+                Vector3 spreadDir = direction;
+                if (data.projectileCount > 1)
+                {
+                    float spreadAngle = -15f + (30f * i / (data.projectileCount - 1));
+                    spreadDir = Quaternion.Euler(0, spreadAngle, 0) * direction;
+                }
+
+                Debug.Log($"[SpellInventory] Solicitando proyectil a ProjectilePoolManager. Prefab: {data.projectilePrefab.name}");
+                Projectile proj = Core.ProjectilePoolManager.Instance.GetProjectile(data.projectilePrefab);
+                if (proj != null)
+                {
+                    proj.transform.position = spawnPos;
+                    proj.Initialize(data, caster, spreadDir);
+                    Debug.Log($"[SpellInventory] Proyectil inicializado y lanzado.");
+                }
+                else
+                {
+                    Debug.LogWarning($"[SpellInventory] ProjectilePoolManager devolvió null al pedir el proyectil: {data.projectilePrefab.name}");
+                }
+            }
         }
 
         public void SelectSlot(int index)
@@ -130,6 +136,11 @@ namespace AnimalMagicRoyale.Components
         public SpellData GetActiveSpell()
         {
             return slots[activeSlotIndex].spellData;
+        }
+
+        public void SetFirePoint(Transform newFirePoint)
+        {
+            this.firePoint = newFirePoint;
         }
     }
 }

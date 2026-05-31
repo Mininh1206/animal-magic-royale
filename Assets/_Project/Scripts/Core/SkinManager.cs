@@ -65,37 +65,48 @@ namespace AnimalMagicRoyale.Core
                 return;
             }
 
-            // Destroy previous model
+            ClearPreviousModel();
+            InstantiateModel(skin);
+            UpdateAnimator(animalType);
+            
+            Bounds modelBounds = CalculateModelBounds(_currentModelInstance);
+            
+            SetupFirePoint(modelBounds);
+            UpdateCollisionComponents(modelBounds);
+
+            _currentSkin = skin;
+            Debug.Log($"[SkinManager] Applied skin: {skin.skinName} on {gameObject.name}");
+        }
+
+        private void ClearPreviousModel()
+        {
             if (_currentModelInstance != null)
             {
                 Destroy(_currentModelInstance);
             }
             else
             {
-                // Attempt to clean up any initial children of the modelParent to prevent duplicates
                 foreach (Transform child in modelParent)
                 {
-                    // Avoid destroying the FirePoint if it's placed under modelParent but isn't part of a model
                     if (child != firePointParent)
                     {
                         Destroy(child.gameObject);
                     }
                 }
             }
+        }
 
-            // Instantiate new model
+        private void InstantiateModel(SkinData skin)
+        {
             _currentModelInstance = Instantiate(skin.modelPrefab, modelParent);
             _currentModelInstance.transform.localPosition = Vector3.zero;
             _currentModelInstance.transform.localRotation = Quaternion.identity;
             _currentModelInstance.transform.localScale = Vector3.one;
-            
-            // Ensure the instantiated model matches the root object's layer so cameras/colliders work correctly
             SetLayerRecursively(_currentModelInstance, gameObject.layer);
+        }
 
-            _currentSkin = skin;
-            Debug.Log($"[SkinManager] Applied skin: {skin.skinName} on {gameObject.name}");
-
-            // Re-bind Animator to the CharacterAnimationHandler
+        private void UpdateAnimator(AnimalType animalType)
+        {
             Animator newAnimator = _currentModelInstance.GetComponentInChildren<Animator>();
             if (newAnimator != null)
             {
@@ -107,52 +118,68 @@ namespace AnimalMagicRoyale.Core
 
                 if (_animHandler != null)
                 {
-                    var field = typeof(CharacterAnimationHandler).GetField("targetAnimator", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    if(field != null)
-                    {
-                         field.SetValue(_animHandler, newAnimator);
-                         Debug.Log($"[SkinManager] Re-bound Animator for {_currentModelInstance.name}");
-                    }
+                    _animHandler.SetAnimator(newAnimator);
+                    Debug.Log($"[SkinManager] Re-bound Animator for {_currentModelInstance.name}");
                 }
             }
-
-            // If the model has a specific fire point, we could re-assign it in SpellInventory
-            // For now, we assume the SpellInventory FirePoint is independent or we can search for a tag/name
-            Transform newFirePoint = _currentModelInstance.transform.Find("FirePoint");
-            if (newFirePoint != null && _inventory != null)
-            {
-                var field = typeof(SpellInventory).GetField("firePoint", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (field != null)
-                {
-                    field.SetValue(_inventory, newFirePoint);
-                    Debug.Log($"[SkinManager] Re-bound FirePoint for {_currentModelInstance.name}");
-                }
-            }
-
-            AdjustPhysicsBounds(_currentModelInstance);
         }
 
-        private void AdjustPhysicsBounds(GameObject modelInstance)
+        private Bounds CalculateModelBounds(GameObject modelInstance)
         {
             var renderers = modelInstance.GetComponentsInChildren<Renderer>();
-            if (renderers.Length == 0) return;
+            if (renderers.Length == 0) return new Bounds(modelInstance.transform.position, Vector3.one);
 
             Bounds bounds = renderers[0].bounds;
             for (int i = 1; i < renderers.Length; i++)
             {
                 bounds.Encapsulate(renderers[i].bounds);
             }
+            return bounds;
+        }
 
+        private void SetupFirePoint(Bounds bounds)
+        {
+            Transform newFirePoint = _currentModelInstance.transform.Find("FirePoint");
+            if (newFirePoint == null)
+            {
+                GameObject fpObj = new GameObject("FirePoint");
+                newFirePoint = fpObj.transform;
+                newFirePoint.SetParent(_currentModelInstance.transform, false);
+
+                // Posicionar FirePoint en la parte frontal-alta del animal
+                Vector3 localCenter = _currentModelInstance.transform.InverseTransformPoint(bounds.center);
+                float chestHeight = bounds.size.y * 0.7f;
+                float forwardOffset = bounds.extents.z * 1.1f;
+                newFirePoint.localPosition = localCenter + new Vector3(0, chestHeight, forwardOffset);
+                
+                Debug.Log($"[SkinManager] Auto-generated FirePoint for {_currentModelInstance.name} at {newFirePoint.localPosition}");
+            }
+
+            if (_inventory != null)
+            {
+                _inventory.SetFirePoint(newFirePoint);
+                Debug.Log($"[SkinManager] Re-bound FirePoint for {_currentModelInstance.name}");
+            }
+        }
+
+        private void UpdateCollisionComponents(Bounds bounds)
+        {
             float height = bounds.size.y;
-            // Add a small padding to radius
             float radius = Mathf.Max(bounds.extents.x, bounds.extents.z) * 1.1f;
             Vector3 localCenter = transform.InverseTransformPoint(bounds.center);
-            
-            // Keep center grounded and centered horizontally
             localCenter.x = 0;
             localCenter.z = 0;
-            
-            // Apply to CharacterController
+
+            // Apply to NavMeshAgent (for AI logic)
+            var navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (navAgent != null)
+            {
+                navAgent.height = height;
+                navAgent.radius = radius;
+                Debug.Log($"[SkinManager] Adjusted NavMeshAgent. Height: {height:F2}, Radius: {radius:F2}");
+            }
+
+            // Apply to CharacterController (for Player logic)
             var charController = GetComponent<CharacterController>();
             if (charController != null)
             {
@@ -162,14 +189,20 @@ namespace AnimalMagicRoyale.Core
                 Debug.Log($"[SkinManager] Adjusted CharacterController. Height: {height:F2}, Radius: {radius:F2}");
             }
 
-            // Apply to NavMeshAgent
-            var navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-            if (navAgent != null)
+            // Añadir BoxCollider al hijo para que bots y proyectiles colisionen con él (NavMeshAgent NO colisiona)
+            BoxCollider boxCollider = _currentModelInstance.GetComponent<BoxCollider>();
+            if (boxCollider == null)
             {
-                navAgent.height = height;
-                navAgent.radius = radius;
-                Debug.Log($"[SkinManager] Adjusted NavMeshAgent. Height: {height:F2}, Radius: {radius:F2}");
+                boxCollider = _currentModelInstance.AddComponent<BoxCollider>();
             }
+            
+            // Adjust box size exactly to the bounds, local to the model instance
+            Vector3 childLocalCenter = _currentModelInstance.transform.InverseTransformPoint(bounds.center);
+            boxCollider.center = childLocalCenter;
+            boxCollider.size = bounds.size;
+            boxCollider.isTrigger = false; // Queremos que reciba los rayos y overlaps físicos
+            
+            Debug.Log($"[SkinManager] Added/Adjusted BoxCollider on model {_currentModelInstance.name}. Size: {boxCollider.size}");
         }
 
         private void SetLayerRecursively(GameObject obj, int newLayer)

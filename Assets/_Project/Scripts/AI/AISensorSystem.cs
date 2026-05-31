@@ -130,7 +130,7 @@ namespace AnimalMagicRoyale.AI
             else
             {
                 // Check if it's a living enemy
-                var health = obj.GetComponent<HealthComponent>();
+                var health = obj.GetComponentInParent<HealthComponent>();
                 if (health == null || !health.IsAlive)
                 {
                     return; // Ignoramos si no tiene vida o está muerto

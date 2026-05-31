@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a5ae5eba19702c4fb6921e8b0054396, type: 3}
   m_Name: Phase1
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.ZonePhaseData
-  startRadius: 50
-  endRadius: 40
-  shrinkDuration: 20
-  waitBeforeShrink: 10
+  startRadius: 600
+  endRadius: 300
+  shrinkDuration: 60
+  waitBeforeShrink: 30
   baseDamage: 1
   damageMultiplier: 0.1

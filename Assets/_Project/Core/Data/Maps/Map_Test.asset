@@ -15,7 +15,7 @@ MonoBehaviour:
   mapName: Test
   sceneName: Map_Template
   previewImage: {fileID: 21300000, guid: 2a4f458623b916c40b72c61daf7e223a, type: 3}
-  description: Mapa de testing 2
+  description: Mapa de testing
   maxPlayers: 20
   zonePhases:
   - {fileID: 11400000, guid: 598e7a25bdb79aa4b86923d31bce1516, type: 2}

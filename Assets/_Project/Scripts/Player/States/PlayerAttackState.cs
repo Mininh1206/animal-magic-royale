@@ -25,7 +25,7 @@ namespace AnimalMagicRoyale.Player
             if (inventory != null)
             {
                 Vector3 firePos = inventory.FirePoint != null ? inventory.FirePoint.position : player.transform.position + Vector3.up * 1f;
-                Vector3 direction = AimHelper.GetAimDirection(firePos);
+                Vector3 direction = AimHelper.GetAimDirection(firePos, player.gameObject);
                 inventory.TryCast(player.gameObject, direction);
             }
             else
