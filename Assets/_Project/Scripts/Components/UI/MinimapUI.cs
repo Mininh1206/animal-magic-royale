@@ -94,15 +94,18 @@ namespace AnimalMagicRoyale.Components.UI
 
                 marker.style.backgroundColor = isEnemy ? new Color(1f, 0.2f, 0.2f) : Color.green;
 
-                Vector3 diff = player.transform.position - trackedTarget.position;
+                Vector3 viewportPos = minimapCamera.WorldToViewportPoint(player.transform.position);
                 
-                float normX = diff.x / orthographicSize;
-                float normZ = diff.z / orthographicSize;
-                
-                float uiX = minimapRadius + (normX * minimapRadius) - 6f; // -6 for center pivot
-                float uiY = minimapRadius - (normZ * minimapRadius) - 6f;
+                // Viewport is (0,0) at bottom-left and (1,1) at top-right
+                // UI is (0,0) at top-left
+                float uiX = (viewportPos.x * minimapImage.resolvedStyle.width) - 6f; // -6 for center pivot
+                float uiY = ((1f - viewportPos.y) * minimapImage.resolvedStyle.height) - 6f;
 
-                float distFromCenter = Mathf.Sqrt(normX * normX + normZ * normZ);
+                // Check distance from center (using normalized coordinates relative to center 0.5, 0.5)
+                float normX = (viewportPos.x - 0.5f) * 2f;
+                float normY = (viewportPos.y - 0.5f) * 2f;
+                float distFromCenter = Mathf.Sqrt(normX * normX + normY * normY);
+
                 if (distFromCenter > 1f)
                 {
                     marker.style.display = DisplayStyle.None;
