@@ -301,10 +301,18 @@ namespace AnimalMagicRoyale.Components.UI
             if (dropdownResolution == null) return;
             var resolutions = Screen.resolutions;
             var choices = new System.Collections.Generic.List<string>();
-            foreach (var res in resolutions)
+            for (int i = 0; i < resolutions.Length; i++)
             {
-                string label = $"{res.width}x{res.height}";
-                if (!choices.Contains(label)) choices.Add(label);
+                var res = resolutions[i];
+                string label = $"{res.width}x{res.height} @ {Mathf.RoundToInt((float)res.refreshRateRatio.value)}Hz";
+                if (!choices.Contains(label))
+                {
+                    choices.Add(label);
+                }
+                else
+                {
+                    choices.Add($"{label} ({i})"); // Ensure uniqueness
+                }
             }
             if (choices.Count > 0)
             {
@@ -396,14 +404,12 @@ namespace AnimalMagicRoyale.Components.UI
             
             if (dropdownResolution != null)
             {
-                string resStr = dropdownResolution.value;
-                if (!string.IsNullOrEmpty(resStr) && resStr.Contains("x"))
+                int index = dropdownResolution.index;
+                var resolutions = Screen.resolutions;
+                if (index >= 0 && index < resolutions.Length)
                 {
-                    string[] parts = resStr.Split('x');
-                    if (parts.Length == 2 && int.TryParse(parts[0], out int w) && int.TryParse(parts[1], out int h))
-                    {
-                        Screen.SetResolution(w, h, Screen.fullScreen);
-                    }
+                    var res = resolutions[index];
+                    Screen.SetResolution(res.width, res.height, Screen.fullScreen);
                 }
             }
             Debug.Log("[SettingsManager] Graphics settings applied.");

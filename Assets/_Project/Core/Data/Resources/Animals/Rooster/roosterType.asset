@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2aa5384c7dddb745a09784c54ed58ea, type: 3}
+  m_Name: roosterType
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.Data.AnimalType
+  typeId: 1
+  displayName: Gallo
+  icon: {fileID: 0}
+  ability: {fileID: 11400000, guid: b509b9e3233304a43923964d29399827, type: 2}
+  audioData: {fileID: 11400000, guid: c9e809d5644c0264abc82566c3fccf20, type: 2}
+  animatorController: {fileID: 0}
+  defaultSkin: {fileID: 11400000, guid: 83925bf65c13de14bb4f738e031e8e41, type: 2}
+  availableSkins:
+  - {fileID: 11400000, guid: 83925bf65c13de14bb4f738e031e8e41, type: 2}
+  - {fileID: 11400000, guid: 628e604f02138af419e063308b5fea02, type: 2}

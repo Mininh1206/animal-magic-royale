@@ -70,6 +70,11 @@ namespace AnimalMagicRoyale.Components.UI
                         else
                         {
                             icon.style.backgroundImage = new StyleBackground(slotData.spellData.icon);
+                            icon.style.unityBackgroundScaleMode = ScaleMode.StretchToFill;
+                            
+                            // Aseguramos de que el VisualElement icono ocupe el 100% de su contenedor
+                            icon.style.width = Length.Percent(100);
+                            icon.style.height = Length.Percent(100);
                         }
                     }
 

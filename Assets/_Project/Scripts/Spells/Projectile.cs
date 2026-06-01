@@ -168,6 +168,17 @@ namespace AnimalMagicRoyale.Spells
             var otherProj = other.GetComponent<Projectile>();
             if (otherProj != null)
             {
+                // Ignorar colisiones entre proyectiles del mismo lanzador
+                if (otherProj.caster == this.caster) return;
+                
+                // Ignorar colisiones entre proyectiles del mismo equipo
+                if (AnimalMagicRoyale.Core.TeamManager.Instance != null && caster != null && otherProj.caster != null)
+                {
+                    int teamA = AnimalMagicRoyale.Core.TeamManager.Instance.GetTeam(this.caster);
+                    int teamB = AnimalMagicRoyale.Core.TeamManager.Instance.GetTeam(otherProj.caster);
+                    if (teamA != -1 && teamA == teamB) return;
+                }
+
                 OnProjectileClash(otherProj);
                 return;
             }

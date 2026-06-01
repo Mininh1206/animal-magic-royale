@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Manifiesto_Heal
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Spells.Effects.HealEffect
   healAmount: 35
+  healCasterInstead: 1

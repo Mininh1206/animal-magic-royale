@@ -419,6 +419,8 @@ MonoBehaviour:
   availableAnimals:
   - {fileID: 11400000, guid: 54aad67496bc59f499b8355b4922b896, type: 2}
   - {fileID: 11400000, guid: 5326c91ca7c0b594b839f7ef9c84bd73, type: 2}
+  - {fileID: 11400000, guid: 7e6c10201d580b34d946be96986c1ab3, type: 2}
+  - {fileID: 11400000, guid: 8eaef2eb99db26e4d9c7ccf39b78b9b7, type: 2}
   characterPreview: {fileID: 1930032689}
 --- !u!114 &1182545016
 MonoBehaviour:

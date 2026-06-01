@@ -19,7 +19,7 @@ MonoBehaviour:
   cooldown: 12
   projectileSpeed: 0
   projectileCount: 1
-  targetType: 0
+  targetType: 1
   isHoming: 0
   maxBounces: 0
   projectilePrefab: {fileID: 8349761922293664815, guid: 848e099678108084e90bb9235cfb1d9b, type: 3}

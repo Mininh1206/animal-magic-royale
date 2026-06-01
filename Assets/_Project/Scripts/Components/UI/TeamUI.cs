@@ -194,20 +194,20 @@ namespace AnimalMagicRoyale.Components.UI
                     continue;
                 }
 
-                // Calcular el offset usando los Renderers para obtener la altura visual real
+                // Calcular el offset usando el Collider para obtener la altura real (ignora partículas/estelas)
                 float topY = p.transform.position.y + 2.5f; // Fallback
-                var renderers = p.GetComponentsInChildren<Renderer>();
-                if (renderers != null && renderers.Length > 0)
+                var colliders = p.GetComponentsInChildren<Collider>();
+                if (colliders != null && colliders.Length > 0)
                 {
-                    float maxY = renderers[0].bounds.max.y;
-                    for (int i = 1; i < renderers.Length; i++)
+                    float maxY = colliders[0].bounds.max.y;
+                    for (int i = 1; i < colliders.Length; i++)
                     {
-                        if (renderers[i].bounds.max.y > maxY)
+                        if (!colliders[i].isTrigger && colliders[i].bounds.max.y > maxY)
                         {
-                            maxY = renderers[i].bounds.max.y;
+                            maxY = colliders[i].bounds.max.y;
                         }
                     }
-                    topY = maxY + 0.5f; // Ajustado exactamente encima del modelo visual
+                    topY = maxY + 0.5f; // Ajustado exactamente encima del collider
                 }
 
                 Vector3 targetPos = new Vector3(p.transform.position.x, topY, p.transform.position.z);

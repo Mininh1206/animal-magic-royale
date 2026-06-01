@@ -79,6 +79,10 @@ namespace AnimalMagicRoyale.Core.Data
                 {
                     Debug.LogWarning("[PlayerPreferences] Hash mismatch! File may have been tampered with. Creating new preferences.");
                     currentData = new PlayerPreferencesData();
+                    if (Screen.resolutions != null && Screen.resolutions.Length > 0)
+                    {
+                        currentData.resolutionIndex = Screen.resolutions.Length - 1;
+                    }
                     SavePreferences();
                 }
             }
@@ -86,6 +90,10 @@ namespace AnimalMagicRoyale.Core.Data
             {
                 // No file exists
                 currentData = new PlayerPreferencesData();
+                if (Screen.resolutions != null && Screen.resolutions.Length > 0)
+                {
+                    currentData.resolutionIndex = Screen.resolutions.Length - 1;
+                }
                 SavePreferences();
             }
         }

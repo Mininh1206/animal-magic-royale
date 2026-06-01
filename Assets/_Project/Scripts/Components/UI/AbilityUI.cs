@@ -23,6 +23,19 @@ namespace AnimalMagicRoyale.Components.UI
                 iconImage = container.Q<VisualElement>("icon");
                 if (iconImage == null) { iconImage = new VisualElement { name = "icon" }; iconImage.AddToClassList("slot-icon"); container.Add(iconImage); }
                 
+                // Asegurarnos de que el icono rellene completamente el recuadro sin verse empujado por otros elementos
+                if (iconImage != null)
+                {
+                    iconImage.style.unityBackgroundScaleMode = ScaleMode.StretchToFill;
+                    iconImage.style.width = Length.Percent(100);
+                    iconImage.style.height = Length.Percent(100);
+                    iconImage.style.position = Position.Absolute;
+                    iconImage.style.top = 0;
+                    iconImage.style.left = 0;
+                    iconImage.style.right = 0;
+                    iconImage.style.bottom = 0;
+                }
+                
                 cooldownOverlay = container.Q<VisualElement>("cooldown");
                 if (cooldownOverlay == null) { cooldownOverlay = new VisualElement { name = "cooldown" }; cooldownOverlay.AddToClassList("slot-cooldown"); container.Add(cooldownOverlay); }
                 
