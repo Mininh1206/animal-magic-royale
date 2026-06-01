@@ -100,16 +100,17 @@ namespace AnimalMagicRoyale.Player
                 }
             }
 
+            CheckInteractables();
+
             if (InteractRequested)
             {
-                var colliders = Physics.OverlapSphere(transform.position, 3f);
-                foreach (var col in colliders)
+                if (closestInteractable != null)
                 {
-                    var lootBox = col.GetComponent<AnimalMagicRoyale.Components.LootBox>();
-                    if (lootBox != null)
-                    {
-                        if (lootBox.TryOpen(gameObject)) break;
-                    }
+                    var lootBox = closestInteractable.GetComponent<AnimalMagicRoyale.Components.LootBox>();
+                    if (lootBox != null) lootBox.TryOpen(gameObject);
+                    
+                    var spellPickup = closestInteractable.GetComponent<AnimalMagicRoyale.Components.SpellPickup>();
+                    if (spellPickup != null) spellPickup.TryPickup(gameObject);
                 }
             }
 
@@ -125,6 +126,52 @@ namespace AnimalMagicRoyale.Player
             ActiveSlotChange = -1;
             AbilityRequested = false;
             InteractRequested = false;
+        }
+
+        private GameObject closestInteractable = null;
+
+        private void CheckInteractables()
+        {
+            var colliders = Physics.OverlapSphere(transform.position, 3f);
+            closestInteractable = null;
+            float closestDist = float.MaxValue;
+            
+            foreach (var col in colliders)
+            {
+                var lootBox = col.GetComponent<AnimalMagicRoyale.Components.LootBox>();
+                var spellPickup = col.GetComponent<AnimalMagicRoyale.Components.SpellPickup>();
+                
+                if (lootBox != null || spellPickup != null)
+                {
+                    float dist = Vector3.Distance(transform.position, col.transform.position);
+                    if (dist < closestDist)
+                    {
+                        closestDist = dist;
+                        closestInteractable = col.gameObject;
+                    }
+                }
+            }
+
+            var interactionUI = FindAnyObjectByType<AnimalMagicRoyale.Components.UI.InteractionUI>();
+            if (interactionUI != null)
+            {
+                if (closestInteractable != null)
+                {
+                    var spellPickup = closestInteractable.GetComponent<AnimalMagicRoyale.Components.SpellPickup>();
+                    if (spellPickup != null && spellPickup.containedSpell != null)
+                    {
+                        interactionUI.ShowSpellPrompt("recoger", spellPickup.containedSpell.spellName, spellPickup.containedSpell.description);
+                    }
+                    else
+                    {
+                        interactionUI.ShowPrompt("abrir cofre");
+                    }
+                }
+                else
+                {
+                    interactionUI.Hide();
+                }
+            }
         }
 
         private void HandleMouseLook()

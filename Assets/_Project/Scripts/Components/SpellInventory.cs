@@ -1,5 +1,6 @@
 using UnityEngine;
 using AnimalMagicRoyale.Spells;
+using AnimalMagicRoyale.Core;
 
 namespace AnimalMagicRoyale.Components
 {
@@ -35,6 +36,7 @@ namespace AnimalMagicRoyale.Components
         {
             if (newSpell == null) return false;
 
+            // First, try to find an empty slot (excluding the basic stick slot 0 if we want it to stay intact until explicitly overwritten)
             for (int i = 1; i < slots.Length; i++)
             {
                 if (slots[i].IsEmpty)
@@ -45,16 +47,33 @@ namespace AnimalMagicRoyale.Components
                 }
             }
 
-            if (activeSlotIndex != 0)
+            // If inventory is full, overwrite the currently active slot
+            SpellData oldSpell = slots[activeSlotIndex].spellData;
+            
+            slots[activeSlotIndex].spellData = newSpell;
+            
+            // Drop the old spell
+            if (oldSpell != null)
             {
-                slots[activeSlotIndex].spellData = newSpell;
-                return true;
+                DropSpell(oldSpell);
             }
-            else
-            {
-                slots[1].spellData = newSpell;
-                return true;
-            }
+            
+            return true;
+        }
+
+        private void DropSpell(SpellData spellToDrop)
+        {
+            if (spellToDrop == null) return;
+            
+            // Try to find a drop position slightly in front of the player
+            Vector3 dropPosition = transform.position + transform.forward * 1.5f + Vector3.up * 0.1f;
+            
+            // Create the pickup object
+            GameObject dropGO = new GameObject($"Dropped_{spellToDrop.spellName}");
+            dropGO.transform.position = dropPosition;
+            
+            var pickup = dropGO.AddComponent<SpellPickup>();
+            pickup.Initialize(spellToDrop);
         }
 
         public bool TryCast(GameObject caster, Vector3 direction, Transform overrideFirePoint = null)

@@ -17,6 +17,7 @@ namespace AnimalMagicRoyale.Components.UI
     [RequireComponent(typeof(PlayerCountUI))]
     [RequireComponent(typeof(TeamUI))]
     [RequireComponent(typeof(DamageNumberUI))]
+    [RequireComponent(typeof(InteractionUI))]
     public class HUDManager : MonoBehaviour
     {
         [Header("Events")]
@@ -31,6 +32,7 @@ namespace AnimalMagicRoyale.Components.UI
         private PlayerCountUI playerCountUI;
         private TeamUI teamUI;
         private DamageNumberUI damageNumberUI;
+        private InteractionUI interactionUI;
         
         private UnityEngine.UIElements.UIDocument uiDocument;
 
@@ -64,6 +66,7 @@ namespace AnimalMagicRoyale.Components.UI
             playerCountUI = GetComponent<PlayerCountUI>();
             teamUI = GetComponent<TeamUI>();
             damageNumberUI = GetComponent<DamageNumberUI>();
+            interactionUI = GetComponent<InteractionUI>();
             
             if (uiDocument != null && uiDocument.rootVisualElement != null)
             {
@@ -77,6 +80,7 @@ namespace AnimalMagicRoyale.Components.UI
                 if (playerCountUI != null) playerCountUI.Initialize(root);
                 if (teamUI != null) teamUI.Initialize(root);
                 if (damageNumberUI != null) damageNumberUI.Initialize(root);
+                if (interactionUI != null) interactionUI.Initialize(root);
             }
 
             Debug.Log("[HUDManager] Start executed (UI Toolkit).");

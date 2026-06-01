@@ -9,6 +9,7 @@ namespace AnimalMagicRoyale.Spells
     {
         [Header("Identity")]
         public string spellName;
+        public string description;
         public SpellTier tier;
         public Sprite icon;
 

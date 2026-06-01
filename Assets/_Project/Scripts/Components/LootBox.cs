@@ -41,10 +41,15 @@ namespace AnimalMagicRoyale.Components
         {
             isOpened = true;
             
-            var inventory = player.GetComponent<SpellInventory>();
-            if (inventory != null && containedSpell != null)
+            if (containedSpell != null)
             {
-                inventory.TryPickupSpell(containedSpell);
+                // Drop the spell instead of adding directly
+                Vector3 dropPosition = transform.position + Vector3.up * 0.1f;
+                GameObject dropGO = new GameObject($"Dropped_{containedSpell.spellName}");
+                dropGO.transform.position = dropPosition;
+                
+                var pickup = dropGO.AddComponent<SpellPickup>();
+                pickup.Initialize(containedSpell);
             }
 
             // Could emit event here if we had a reference to LootBoxOpenedEvent, 
