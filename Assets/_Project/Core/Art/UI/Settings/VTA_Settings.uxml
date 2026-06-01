@@ -72,6 +72,15 @@
                     </ui:VisualElement>
                     <ui:VisualElement class="setting-item">
                         <ui:VisualElement class="setting-item-info">
+                            <ui:Label text="Música en partida" class="setting-item-name"/>
+                            <ui:Label text="Continuar reproduciendo música durante el combate" class="setting-item-desc"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-item-control">
+                            <ui:Toggle name="toggle-music-in-match" value="false" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="setting-item">
+                        <ui:VisualElement class="setting-item-info">
                             <ui:Label text="Efectos de Hechizos" class="setting-item-name"/>
                             <ui:Label text="Volumen de los ataques y habilidades" class="setting-item-desc"/>
                         </ui:VisualElement>

@@ -38,6 +38,7 @@ namespace AnimalMagicRoyale.Core
             Ability,
             Interact,
             Inventory,
+            Cancel,
 
             // Debug Actions
             HealPlayer,
@@ -53,6 +54,7 @@ namespace AnimalMagicRoyale.Core
             { GameAction.Ability,     Key.Q },
             { GameAction.Interact,    Key.E },
             { GameAction.Inventory,   Key.I },
+            { GameAction.Cancel,      Key.Escape },
 
             // Debug Actions
             { GameAction.HealPlayer,    Key.H },

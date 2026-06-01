@@ -32,8 +32,7 @@ namespace AnimalMagicRoyale.Player
         {
             if (panTilt == null || Mouse.current == null) return;
 
-            if (AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && 
-                AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen)
+            if (AnimalMagicRoyale.Core.UIStateManager.IsAnyMenuOpen())
             {
                 return;
             }

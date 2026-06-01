@@ -196,10 +196,10 @@ namespace AnimalMagicRoyale.Components.UI
 
                 // Calcular el offset basado en los bounds en lugar de Vector3.up * 2.2f
                 var collider = p.GetComponent<Collider>();
-                float topY = p.transform.position.y + 2.2f; // Fallback
+                float topY = p.transform.position.y + 2.5f; // Fallback
                 if (collider != null)
                 {
-                    topY = collider.bounds.max.y + 0.3f; // Un poco de padding
+                    topY = collider.bounds.max.y + 1.2f; // Offset ajustado para que no se vea debajo de la cabeza
                 }
 
                 Vector3 targetPos = new Vector3(p.transform.position.x, topY, p.transform.position.z);
@@ -239,7 +239,7 @@ namespace AnimalMagicRoyale.Components.UI
 
                 // Center the label text
                 nameLabel.style.left = x - 50; // Approximated width / 2
-                nameLabel.style.top = y;
+                nameLabel.style.top = y - 20; // Restar la mitad del alto para centrar el pivot vertical
                 nameLabel.style.width = 100;
                 nameLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
             }

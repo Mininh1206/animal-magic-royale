@@ -31,10 +31,17 @@ namespace AnimalMagicRoyale.Components.UI
         // UI Controls
         private DropdownField dropdownResolution;
         private Toggle toggleFullscreen;
+        private Toggle toggleMusicInMatch;
         private Slider sliderGlobal;
         private Slider sliderMusic;
         private Slider sliderSpells;
         private Slider sliderEnvironment;
+
+        // Static accessors for Audio settings
+        public static float MusicVolume => PlayerPreferencesManager.Instance != null ? PlayerPreferencesManager.Instance.currentData.musicVolume / 100f : 1f;
+        public static float SFXVolume => PlayerPreferencesManager.Instance != null ? PlayerPreferencesManager.Instance.currentData.sfxVolume / 100f : 1f;
+        public static float EnvVolume => PlayerPreferencesManager.Instance != null ? PlayerPreferencesManager.Instance.currentData.envVolume / 100f : 1f;
+        public static bool MusicInMatchEnabled => PlayerPreferencesManager.Instance != null && PlayerPreferencesManager.Instance.currentData.musicInMatch;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void AutoInitialize()
@@ -111,6 +118,7 @@ namespace AnimalMagicRoyale.Components.UI
 
                 dropdownResolution = root.Q<DropdownField>("dropdown-resolution");
                 toggleFullscreen = root.Q<Toggle>("toggle-fullscreen");
+                toggleMusicInMatch = root.Q<Toggle>("toggle-music-in-match");
                 sliderGlobal = root.Q<Slider>("slider-global");
                 sliderMusic = root.Q<Slider>("slider-music");
                 sliderSpells = root.Q<Slider>("slider-spells");
@@ -126,13 +134,7 @@ namespace AnimalMagicRoyale.Components.UI
             }
         }
 
-        private void Update()
-        {
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-            {
-                ToggleSettings();
-            }
-        }
+
 
         public void ToggleSettings()
         {
@@ -231,10 +233,10 @@ namespace AnimalMagicRoyale.Components.UI
             if (toggleFullscreen != null) toggleFullscreen.value = data != null ? data.isFullscreen : Screen.fullScreen;
             if (sliderGlobal != null) sliderGlobal.value = data != null ? data.masterVolume / 100f : AudioListener.volume;
             
-            // Temporary default logic for other sliders
-            if (sliderMusic != null) sliderMusic.value = 1f;
-            if (sliderSpells != null) sliderSpells.value = 1f;
-            if (sliderEnvironment != null) sliderEnvironment.value = 1f;
+            if (sliderMusic != null) sliderMusic.value = data != null ? data.musicVolume / 100f : 1f;
+            if (sliderSpells != null) sliderSpells.value = data != null ? data.sfxVolume / 100f : 1f;
+            if (sliderEnvironment != null) sliderEnvironment.value = data != null ? data.envVolume / 100f : 1f;
+            if (toggleMusicInMatch != null) toggleMusicInMatch.value = data != null ? data.musicInMatch : false;
             
             PopulateResolutions();
             if (dropdownResolution != null && data != null && dropdownResolution.choices.Count > 0)
@@ -253,6 +255,7 @@ namespace AnimalMagicRoyale.Components.UI
             if (sliderMusic != null) sliderMusic.value = 1f;
             if (sliderSpells != null) sliderSpells.value = 1f;
             if (sliderEnvironment != null) sliderEnvironment.value = 1f;
+            if (toggleMusicInMatch != null) toggleMusicInMatch.value = false;
             
             PopulateResolutions();
             if (dropdownResolution != null && dropdownResolution.choices.Count > 0)
@@ -290,6 +293,12 @@ namespace AnimalMagicRoyale.Components.UI
                 var data = PlayerPreferencesManager.Instance.currentData;
                 if (toggleFullscreen != null) data.isFullscreen = toggleFullscreen.value;
                 if (sliderGlobal != null) data.masterVolume = sliderGlobal.value * 100f;
+                
+                if (sliderMusic != null) data.musicVolume = sliderMusic.value * 100f;
+                if (sliderSpells != null) data.sfxVolume = sliderSpells.value * 100f;
+                if (sliderEnvironment != null) data.envVolume = sliderEnvironment.value * 100f;
+                if (toggleMusicInMatch != null) data.musicInMatch = toggleMusicInMatch.value;
+                
                 if (dropdownResolution != null && dropdownResolution.index >= 0) data.resolutionIndex = dropdownResolution.index;
                 PlayerPreferencesManager.Instance.SavePreferences();
             }
@@ -327,7 +336,15 @@ namespace AnimalMagicRoyale.Components.UI
             {
                 AudioListener.volume = sliderGlobal.value;
             }
-            // Logic for Music, Spells, Environment Mixers will go here
+            
+            // Apply music volume directly if manager exists
+            var musicManager = FindAnyObjectByType<MenuMusicManager>();
+            if (musicManager != null)
+            {
+                var source = musicManager.GetComponent<AudioSource>();
+                if (source != null) source.volume = MusicVolume;
+            }
+            
             Debug.Log("[SettingsManager] Audio settings applied.");
         }
 

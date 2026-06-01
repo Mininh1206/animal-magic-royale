@@ -18,6 +18,10 @@ namespace AnimalMagicRoyale.Core.Data
         
         // Audio
         public float masterVolume = 100f;
+        public float musicVolume = 100f;
+        public float sfxVolume = 100f;
+        public float envVolume = 100f;
+        public bool musicInMatch = false;
     }
 
     public class PlayerPreferencesManager : MonoBehaviour

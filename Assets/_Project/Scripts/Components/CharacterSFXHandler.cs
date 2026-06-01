@@ -46,6 +46,7 @@ namespace AnimalMagicRoyale.Components
                     footstepSource.clip = audioData.footstepClips[0];
                     footstepSource.loop = true; // Looping the footstep file
                     footstepSource.pitch = Random.Range(0.95f, 1.05f);
+                    footstepSource.volume = AnimalMagicRoyale.Components.UI.SettingsManager.SFXVolume;
                     footstepSource.Play();
                 }
             }
@@ -67,6 +68,7 @@ namespace AnimalMagicRoyale.Components
             
             // Variacion ligera de pitch
             attackSource.pitch = Random.Range(0.95f, 1.05f);
+            attackSource.volume = AnimalMagicRoyale.Components.UI.SettingsManager.SFXVolume;
             attackSource.PlayOneShot(clip);
         }
 
