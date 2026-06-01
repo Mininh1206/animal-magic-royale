@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: Hormiga_HojaAfilada
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Spells.SpellData
   spellName: Hoja Afilada
-  description: 
+  description: Melee (rango corto)
   tier: 1
-  icon: {fileID: -1037089990, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
-  damage: 0
+  icon: {fileID: -270804019, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 2
   projectileSpeed: 0
   projectileCount: 1
+  targetType: 0
+  isHoming: 0
+  maxBounces: 0
   projectilePrefab: {fileID: 8349761922293664815, guid: 848e099678108084e90bb9235cfb1d9b, type: 3}
-  spellColor: {r: 0, g: 0.3921569, b: 0, a: 1}
+  spellColor: {r: 0, g: 1, b: 0, a: 1}
   effects:
   - {fileID: 11400000, guid: 1e5f8623cd54ef449a1200800e4d3d4a, type: 2}

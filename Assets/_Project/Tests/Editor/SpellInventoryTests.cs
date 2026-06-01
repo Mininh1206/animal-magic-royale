@@ -66,5 +66,17 @@ namespace AnimalMagicRoyale.Tests
             inventory.SelectSlot(1);
             Assert.AreEqual(1, inventory.activeSlotIndex);
         }
+
+        [Test]
+        public void SwapSlots_SwapsSpellData()
+        {
+            inventory.TryPickupSpell(spell1); // slot 1
+            inventory.TryPickupSpell(spell2); // slot 2
+
+            inventory.SwapSlots(1, 2);
+
+            Assert.AreEqual(spell2, inventory.slots[1].spellData);
+            Assert.AreEqual(spell1, inventory.slots[2].spellData);
+        }
     }
 }

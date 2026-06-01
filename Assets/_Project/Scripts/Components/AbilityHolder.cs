@@ -16,12 +16,14 @@ namespace AnimalMagicRoyale.Components
             this.ability = specialAbility;
         }
 
-        public bool IsReady => ability != null && ability.CanActivate(lastUseTime);
+        public bool isSilenced = false;
+
+        public bool IsReady => ability != null && ability.CanActivate(lastUseTime) && !isSilenced;
         public float TotalCooldown => ability != null ? ability.cooldown : 0f;
 
         public bool TryActivate()
         {
-            Debug.Log($"[AbilityHolder] TryActivate called on {gameObject.name}. IsReady: {IsReady}, ability is null: {ability == null}");
+            Debug.Log($"[AbilityHolder] TryActivate called on {gameObject.name}. IsReady: {IsReady}, isSilenced: {isSilenced}, ability is null: {ability == null}");
             if (IsReady)
             {
                 Debug.Log($"[AbilityHolder] Activating ability {ability.abilityName} on {gameObject.name}");

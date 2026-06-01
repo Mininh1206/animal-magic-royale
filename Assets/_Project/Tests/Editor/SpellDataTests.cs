@@ -12,7 +12,6 @@ namespace AnimalMagicRoyale.Tests
             var data = ScriptableObject.CreateInstance<SpellData>();
             
             Assert.AreEqual(1, data.projectileCount);
-            Assert.AreEqual(0, data.damage);
             Assert.IsNotNull(data.effects);
             
             Object.DestroyImmediate(data);

@@ -31,6 +31,28 @@ namespace AnimalMagicRoyale.Core
         private void Awake()
         {
             if (onLootBoxOpened == null) onLootBoxOpened = Resources.Load<LootBoxOpenedEvent>("Events/LootBoxOpenedEvent");
+            LoadSpellsFromResources();
+        }
+
+        private void LoadSpellsFromResources()
+        {
+            SpellData[] allSpells = Resources.LoadAll<SpellData>("Spells");
+            List<SpellData> hormigaList = new List<SpellData>();
+            List<SpellData> ornitorrincoList = new List<SpellData>();
+            List<SpellData> goatList = new List<SpellData>();
+
+            foreach (var spell in allSpells)
+            {
+                if (spell.name.StartsWith("Hormiga_")) hormigaList.Add(spell);
+                else if (spell.name.StartsWith("Ornitorrinco_")) ornitorrincoList.Add(spell);
+                else if (spell.name.StartsWith("GOAT_")) goatList.Add(spell);
+            }
+
+            if (hormigaSpells == null || hormigaSpells.Length == 0) hormigaSpells = hormigaList.ToArray();
+            if (ornitorrincoSpells == null || ornitorrincoSpells.Length == 0) ornitorrincoSpells = ornitorrincoList.ToArray();
+            if (goatSpells == null || goatSpells.Length == 0) goatSpells = goatList.ToArray();
+
+            Debug.Log($"[LootBoxSpawner] Cargados por defecto: {hormigaSpells.Length} Hormiga, {ornitorrincoSpells.Length} Ornitorrinco, {goatSpells.Length} GOAT.");
         }
 
         private void Start()

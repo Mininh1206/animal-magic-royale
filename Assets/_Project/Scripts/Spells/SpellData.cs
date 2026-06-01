@@ -4,6 +4,12 @@ using AnimalMagicRoyale.Spells.Effects;
 
 namespace AnimalMagicRoyale.Spells
 {
+    public enum TargetType
+    {
+        Projectile,
+        Self
+    }
+
     [CreateAssetMenu(fileName = "NewSpellData", menuName = "Animal Magic Royale/Spells/Spell Data")]
     public class SpellData : ScriptableObject
     {
@@ -14,7 +20,6 @@ namespace AnimalMagicRoyale.Spells
         public Sprite icon;
 
         [Header("Stats")]
-        public float damage;
         public float cooldown;
         
         [Tooltip("0 for melee/instant spells")]
@@ -23,6 +28,9 @@ namespace AnimalMagicRoyale.Spells
         public int projectileCount = 1;
 
         [Header("Visuals & Logic")]
+        public TargetType targetType = TargetType.Projectile;
+        public bool isHoming = false;
+        public int maxBounces = 0;
         public GameObject projectilePrefab;
         public Color spellColor = Color.white; // Added for ray color
         

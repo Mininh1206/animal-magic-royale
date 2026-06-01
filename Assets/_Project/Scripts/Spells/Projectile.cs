@@ -43,11 +43,16 @@ namespace AnimalMagicRoyale.Spells
             childRenderers = GetComponentsInChildren<Renderer>();
         }
 
+        private int bouncesLeft;
+        private GameObject homingTarget;
+
         public void Initialize(SpellData data, GameObject caster, Vector3 direction)
         {
             this.spellData = data;
             this.caster = caster;
             this.spawnTime = Time.time;
+            this.bouncesLeft = data.maxBounces;
+            this.homingTarget = null;
             
             rb.linearVelocity = direction.normalized * data.projectileSpeed;
             
@@ -93,6 +98,56 @@ namespace AnimalMagicRoyale.Spells
             }
         }
 
+        private void FixedUpdate()
+        {
+            if (!isInitialized) return;
+
+            if (spellData != null && spellData.isHoming)
+            {
+                if (homingTarget == null) FindHomingTarget();
+
+                if (homingTarget != null)
+                {
+                    Vector3 direction = (homingTarget.transform.position + Vector3.up * 0.5f - transform.position).normalized;
+                    Quaternion lookRot = Quaternion.LookRotation(direction);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.fixedDeltaTime * 10f);
+                    rb.linearVelocity = transform.forward * spellData.projectileSpeed;
+                }
+            }
+        }
+
+        private void FindHomingTarget()
+        {
+            Collider[] hits = Physics.OverlapSphere(transform.position, 15f);
+            float closestDist = float.MaxValue;
+            int casterTeam = AnimalMagicRoyale.Core.TeamManager.Instance != null && caster != null ? AnimalMagicRoyale.Core.TeamManager.Instance.GetTeam(caster) : -1;
+
+            foreach(var hit in hits)
+            {
+                var hc = hit.GetComponentInParent<AnimalMagicRoyale.Components.HealthComponent>();
+                if (hc != null && hc.gameObject != caster)
+                {
+                    if (casterTeam != -1 && AnimalMagicRoyale.Core.TeamManager.Instance != null && 
+                        AnimalMagicRoyale.Core.TeamManager.Instance.GetTeam(hc.gameObject) == casterTeam)
+                    {
+                        continue;
+                    }
+
+                    float dist = Vector3.Distance(transform.position, hc.transform.position);
+                    if (dist < closestDist)
+                    {
+                        closestDist = dist;
+                        homingTarget = hc.gameObject;
+                    }
+                }
+            }
+
+            if (homingTarget != null)
+            {
+                Debug.Log($"[Projectile Homing] {gameObject.name} fijó objetivo en {homingTarget.name}");
+            }
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if (!isInitialized) return;
@@ -124,7 +179,23 @@ namespace AnimalMagicRoyale.Spells
                 return;
             }
 
-            // Debug para saber contra qué choca
+            // Rebotes (si no chocó contra alguien vivo)
+            if (targetHealth == null && bouncesLeft > 0)
+            {
+                Vector3 normal = -rb.linearVelocity.normalized;
+                if (Physics.Raycast(transform.position - rb.linearVelocity.normalized * 0.5f, rb.linearVelocity.normalized, out RaycastHit hit, 2f))
+                {
+                    if (hit.collider == other) normal = hit.normal;
+                }
+                
+                rb.linearVelocity = Vector3.Reflect(rb.linearVelocity, normal).normalized * spellData.projectileSpeed;
+                transform.rotation = Quaternion.LookRotation(rb.linearVelocity);
+                bouncesLeft--;
+                Debug.Log($"[Projectile Bounce] {gameObject.name} rebotó en {other.gameObject.name}. Rebotes restantes: {bouncesLeft}");
+                return;
+            }
+
+            // Debug para saber contra qué choca (ignorar si es un rebote)
             Debug.Log($"[Projectile] Chocó contra: {other.gameObject.name}");
 
             if (spellData != null && spellData.effects != null)
@@ -155,11 +226,6 @@ namespace AnimalMagicRoyale.Spells
         protected virtual void OnProjectileClash(Projectile other)
         {
             Debug.Log($"[Projectile] Choque mágico detectado entre {gameObject.name} y {other.gameObject.name}");
-            
-            // TODO: Futuro: Aquí se puede comprobar si spellData es Fuego y el otro es Agua,
-            // instanciar un VFX de explosión o humo en el punto medio, etc.
-            
-            // Por defecto, ambos proyectiles se anulan y vuelven al pool
             ReturnToPool();
         }
     }

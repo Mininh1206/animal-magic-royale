@@ -1,58 +1,28 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using AnimalMagicRoyale.Core;
+using AnimalMagicRoyale.Spells;
 
 namespace AnimalMagicRoyale.Components.UI
 {
     public class InteractionUI : MonoBehaviour
     {
         private VisualElement container;
+        private Label titleLabel;
+        private Label descLabel;
         private Label promptLabel;
-        private Label spellNameLabel;
-        private Label spellDescLabel;
 
         public void Initialize(VisualElement root)
         {
-            container = new VisualElement();
-            container.style.position = Position.Absolute;
-            container.style.bottom = Length.Percent(20);
-            container.style.right = Length.Percent(5);
-            container.style.alignItems = Align.Center;
-            container.style.backgroundColor = new Color(0, 0, 0, 0.7f);
-            container.style.paddingTop = 10;
-            container.style.paddingBottom = 10;
-            container.style.paddingLeft = 20;
-            container.style.paddingRight = 20;
-            container.style.borderTopLeftRadius = 10;
-            container.style.borderTopRightRadius = 10;
-            container.style.borderBottomLeftRadius = 10;
-            container.style.borderBottomRightRadius = 10;
-            container.style.display = DisplayStyle.None;
-
-            spellNameLabel = new Label();
-            spellNameLabel.style.fontSize = 24;
-            spellNameLabel.style.color = Color.white;
-            spellNameLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-            spellNameLabel.style.display = DisplayStyle.None;
-
-            spellDescLabel = new Label();
-            spellDescLabel.style.fontSize = 16;
-            spellDescLabel.style.color = Color.yellow;
-            spellDescLabel.style.whiteSpace = WhiteSpace.Normal;
-            spellDescLabel.style.width = 300;
-            spellDescLabel.style.unityTextAlign = TextAnchor.UpperCenter;
-            spellDescLabel.style.display = DisplayStyle.None;
-            spellDescLabel.style.marginBottom = 10;
-
-            promptLabel = new Label();
-            promptLabel.style.fontSize = 18;
-            promptLabel.style.color = Color.white;
-
-            container.Add(spellNameLabel);
-            container.Add(spellDescLabel);
-            container.Add(promptLabel);
-
-            root.Add(container);
+            container = root.Q<VisualElement>("interaction-container");
+            if (container != null)
+            {
+                titleLabel = container.Q<Label>("interaction-title");
+                descLabel = container.Q<Label>("interaction-desc");
+                promptLabel = container.Q<Label>("interaction-prompt");
+                
+                container.style.display = DisplayStyle.None;
+            }
         }
 
         public void ShowPrompt(string actionText)
@@ -61,23 +31,46 @@ namespace AnimalMagicRoyale.Components.UI
             string keyName = KeyBindingManager.Instance.GetBinding(KeyBindingManager.GameAction.Interact).ToString();
             promptLabel.text = $"Pulsa [{keyName}] para {actionText}";
             
-            spellNameLabel.style.display = DisplayStyle.None;
-            spellDescLabel.style.display = DisplayStyle.None;
+            titleLabel.text = actionText;
+            titleLabel.style.color = Color.white;
+            titleLabel.style.display = DisplayStyle.Flex;
+            
+            descLabel.style.display = DisplayStyle.None;
+            
             container.style.display = DisplayStyle.Flex;
         }
 
-        public void ShowSpellPrompt(string actionText, string spellName, string description)
+        public void ShowSpellPrompt(string actionText, SpellData spellData)
         {
-            if (container == null) return;
+            if (container == null || spellData == null) return;
             string keyName = KeyBindingManager.Instance.GetBinding(KeyBindingManager.GameAction.Interact).ToString();
             promptLabel.text = $"Pulsa [{keyName}] para {actionText}";
             
-            spellNameLabel.text = spellName;
-            spellNameLabel.style.display = DisplayStyle.Flex;
+            titleLabel.text = spellData.spellName;
+            titleLabel.style.color = spellData.spellColor;
+            titleLabel.style.display = DisplayStyle.Flex;
             
-            spellDescLabel.text = description;
-            spellDescLabel.style.display = DisplayStyle.Flex;
+            descLabel.text = $"Tier: {spellData.tier}\n{spellData.description}";
             
+            // Build effects string
+            string effectsStr = "";
+            if (spellData.effects != null && spellData.effects.Count > 0)
+            {
+                foreach(var effect in spellData.effects)
+                {
+                    if (effect is AnimalMagicRoyale.Spells.Effects.DamageEffect dmg) effectsStr += $"Daño: {dmg.damageAmount}\n";
+                    else if (effect is AnimalMagicRoyale.Spells.Effects.SlowEffect slow) effectsStr += $"Ralentiza: {slow.slowPercent * 100}% ({slow.duration}s)\n";
+                    else if (effect is AnimalMagicRoyale.Spells.Effects.HealEffect heal) effectsStr += $"Cura: {heal.healAmount}\n";
+                    else if (effect is AnimalMagicRoyale.Spells.Effects.StunEffect stun) effectsStr += $"Stun: {stun.duration}s\n";
+                    else if (effect is AnimalMagicRoyale.Spells.Effects.KnockbackEffect kb) effectsStr += $"Empuje: {kb.force}\n";
+                }
+            }
+            if (!string.IsNullOrEmpty(effectsStr))
+            {
+                descLabel.text += $"\n\nEfectos:\n{effectsStr}";
+            }
+
+            descLabel.style.display = DisplayStyle.Flex;
             container.style.display = DisplayStyle.Flex;
         }
 

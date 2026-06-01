@@ -40,6 +40,7 @@ namespace AnimalMagicRoyale.Player
         public int ActiveSlotChange { get; set; } = -1;
         public bool AbilityRequested { get; set; }
         public bool InteractRequested { get; set; }
+        public bool isInvisible = false;
 
         // Estado interno
         public float VerticalVelocity { get; set; }
@@ -160,7 +161,7 @@ namespace AnimalMagicRoyale.Player
                     var spellPickup = closestInteractable.GetComponent<AnimalMagicRoyale.Components.SpellPickup>();
                     if (spellPickup != null && spellPickup.containedSpell != null)
                     {
-                        interactionUI.ShowSpellPrompt("recoger", spellPickup.containedSpell.spellName, spellPickup.containedSpell.description);
+                        interactionUI.ShowSpellPrompt("recoger", spellPickup.containedSpell);
                     }
                     else
                     {

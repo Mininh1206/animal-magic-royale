@@ -6,6 +6,7 @@ namespace AnimalMagicRoyale.Components.UI
     public class SpellInventoryUI : MonoBehaviour
     {
         private VisualElement[] slotUIs;
+        private Label activeSpellNameLabel;
         private SpellInventory trackedInventory;
         
         public void Initialize(VisualElement root)
@@ -21,6 +22,8 @@ namespace AnimalMagicRoyale.Components.UI
                     slotUIs[i] = root.Q<VisualElement>($"spell-slot-{i}");
                 }
             }
+
+            activeSpellNameLabel = root.Q<Label>("active-spell-name");
         }
         
         private void Update()
@@ -32,6 +35,20 @@ namespace AnimalMagicRoyale.Components.UI
                 var slotData = trackedInventory.slots[i];
                 bool isActive = (i == trackedInventory.activeSlotIndex);
                 
+                if (isActive && activeSpellNameLabel != null)
+                {
+                    if (!slotData.IsEmpty && slotData.spellData != null)
+                    {
+                        activeSpellNameLabel.text = slotData.spellData.spellName;
+                        activeSpellNameLabel.style.color = slotData.spellData.spellColor;
+                    }
+                    else
+                    {
+                        activeSpellNameLabel.text = "VACÍO";
+                        activeSpellNameLabel.style.color = Color.gray;
+                    }
+                }
+
                 var visualSlot = slotUIs[i];
                 if (visualSlot != null)
                 {

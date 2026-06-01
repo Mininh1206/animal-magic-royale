@@ -55,7 +55,9 @@ namespace AnimalMagicRoyale.Player
         {
             if (playerController != null)
             {
-                if (AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen) return;
+                bool isSettingsOpen = AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen;
+                bool isInventoryOpen = AnimalMagicRoyale.Components.UI.InventoryUI.Instance != null && AnimalMagicRoyale.Components.UI.InventoryUI.Instance.IsOpen;
+                if (isSettingsOpen || isInventoryOpen) return;
                 playerController.MoveInput = context.ReadValue<Vector2>();
             }
         }
@@ -64,7 +66,9 @@ namespace AnimalMagicRoyale.Player
         {
             if (playerController != null)
             {
-                if (AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen) return;
+                bool isSettingsOpen = AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen;
+                bool isInventoryOpen = AnimalMagicRoyale.Components.UI.InventoryUI.Instance != null && AnimalMagicRoyale.Components.UI.InventoryUI.Instance.IsOpen;
+                if (isSettingsOpen || isInventoryOpen) return;
                 playerController.JumpRequested = true;
             }
         }
@@ -73,7 +77,9 @@ namespace AnimalMagicRoyale.Player
         {
             if (playerController != null)
             {
-                if (AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen) return;
+                bool isSettingsOpen = AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen;
+                bool isInventoryOpen = AnimalMagicRoyale.Components.UI.InventoryUI.Instance != null && AnimalMagicRoyale.Components.UI.InventoryUI.Instance.IsOpen;
+                if (isSettingsOpen || isInventoryOpen) return;
                 playerController.IsSprinting = context.ReadValueAsButton();
             }
         }
@@ -82,13 +88,27 @@ namespace AnimalMagicRoyale.Player
         {
             if (playerController != null)
             {
-                if (AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen)
+                bool isSettingsOpen = AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null && AnimalMagicRoyale.Components.UI.SettingsManager.Instance.IsOpen;
+                bool isInventoryOpen = AnimalMagicRoyale.Components.UI.InventoryUI.Instance != null && AnimalMagicRoyale.Components.UI.InventoryUI.Instance.IsOpen;
+
+                if (isSettingsOpen || isInventoryOpen)
                 {
                     playerController.MoveInput = Vector2.zero;
                     playerController.LookInput = Vector2.zero;
                     playerController.IsSprinting = false;
+                    
+                    // Allow toggling inventory off
+                    if (isInventoryOpen && Keyboard.current != null)
+                    {
+                        var kb = AnimalMagicRoyale.Core.KeyBindingManager.Instance;
+                        if (kb != null && kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.Inventory))
+                        {
+                            AnimalMagicRoyale.Components.UI.InventoryUI.Instance.Toggle();
+                        }
+                    }
                     return;
                 }
+                
                 if (Mouse.current != null)
                 {
                     playerController.LookInput = Mouse.current.delta.ReadValue();
@@ -110,6 +130,11 @@ namespace AnimalMagicRoyale.Player
                     var kb = AnimalMagicRoyale.Core.KeyBindingManager.Instance;
                     if (kb != null)
                     {
+                        if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.Inventory))
+                        {
+                            AnimalMagicRoyale.Components.UI.InventoryUI.Instance?.Toggle();
+                        }
+
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.SelectSlot1)) playerController.ActiveSlotChange = 0;
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.SelectSlot2)) playerController.ActiveSlotChange = 1;
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.SelectSlot3)) playerController.ActiveSlotChange = 2;

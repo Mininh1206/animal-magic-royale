@@ -190,7 +190,7 @@ Cada personaje tiene soporte para **skins** (cambio de color/texturas).
 | 1 | MADEJA | 10 | 20s | Ralentiza 80% (6s) |
 | 2 | Tung Tung Sahur | 50 | 25s | Explosión masiva + Expulsión |
 | 3 | Manifiesto Comunista | 35 | 15s | Roba 35 HP (Daño = Curación) |
-| 4 | El Risitas | 0 | 30s | Stun total (1.5s) + suelta arma |
+| 4 | El Risitas | 20 | 30s | Stun total (1.5s) + suelta arma |
 | 5 | Beca Erasmus | 20 | 25s | Intercambio de posición + Confusión (controles invertidos 3s) |
 
 ### 5.5. Cajas de Botín

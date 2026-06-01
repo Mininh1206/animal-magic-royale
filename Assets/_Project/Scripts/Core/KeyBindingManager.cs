@@ -37,6 +37,7 @@ namespace AnimalMagicRoyale.Core
             SelectSlot3,
             Ability,
             Interact,
+            Inventory,
 
             // Debug Actions
             HealPlayer,
@@ -51,6 +52,7 @@ namespace AnimalMagicRoyale.Core
             { GameAction.SelectSlot3, Key.Digit3 },
             { GameAction.Ability,     Key.Q },
             { GameAction.Interact,    Key.E },
+            { GameAction.Inventory,   Key.I },
 
             // Debug Actions
             { GameAction.HealPlayer,    Key.H },

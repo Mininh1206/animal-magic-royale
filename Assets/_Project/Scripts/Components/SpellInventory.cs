@@ -13,6 +13,7 @@ namespace AnimalMagicRoyale.Components
         public int activeSlotIndex = 0;
         
         public Transform FirePoint => firePoint;
+        public bool isSilenced = false;
 
         public void Awake()
         {
@@ -76,14 +77,35 @@ namespace AnimalMagicRoyale.Components
             pickup.Initialize(spellToDrop);
         }
 
+        public void DropActiveSpell()
+        {
+            if (slots[activeSlotIndex].IsEmpty) return;
+            SpellData oldSpell = slots[activeSlotIndex].spellData;
+            
+            // Si es el palo básico, no lo soltamos
+            if (oldSpell != null && oldSpell.tier == SpellTier.Basic) return;
+
+            slots[activeSlotIndex].spellData = null;
+            if (oldSpell != null)
+            {
+                DropSpell(oldSpell);
+            }
+        }
+
         public bool TryCast(GameObject caster, Vector3 direction, Transform overrideFirePoint = null)
         {
+            if (isSilenced)
+            {
+                Debug.Log($"[SpellInventory] {caster.name} intentó castear pero está SILENCIADO.");
+                return false;
+            }
+
             Debug.Log($"[SpellInventory] TryCast called by {caster.name}. activeSlotIndex: {activeSlotIndex}");
             SpellSlot currentSlot = slots[activeSlotIndex];
 
             if (currentSlot.IsEmpty)
             {
-                Debug.LogWarning($"[SpellInventory] Intento de disparo fallido: El slot {activeSlotIndex} está VACÍO. spellData is null: {currentSlot.spellData == null}");
+                Debug.LogWarning($"[SpellInventory] Intento de disparo fallido: El slot {activeSlotIndex} está VACÍO.");
                 return false;
             }
             if (currentSlot.IsOnCooldown)
@@ -93,15 +115,25 @@ namespace AnimalMagicRoyale.Components
             }
 
             SpellData data = currentSlot.spellData;
-            Debug.Log($"[SpellInventory] Disparando {data.spellName} desde el slot {activeSlotIndex}. ¿Tiene prefab 3D?: {(data.projectilePrefab != null ? "SÍ" : "NO")}. Speed: {data.projectileSpeed}");
-
-            if (data.projectileSpeed > 0 && data.projectilePrefab != null)
+            
+            if (data.targetType == TargetType.Self)
+            {
+                Debug.Log($"[SpellInventory] Hechizo de Auto-Lanzamiento ({data.spellName}). Aplicando efectos al caster.");
+                if (data.effects != null)
+                {
+                    foreach (var effect in data.effects)
+                    {
+                        if (effect != null) effect.Apply(caster, caster);
+                    }
+                }
+            }
+            else if (data.projectileSpeed > 0 && data.projectilePrefab != null)
             {
                 SpawnProjectiles(caster, direction, overrideFirePoint, data);
             }
             else
             {
-                Debug.LogWarning($"[SpellInventory] No se lanza proyectil físico. Speed: {data.projectileSpeed}, Prefab is null: {data.projectilePrefab == null}");
+                Debug.LogWarning($"[SpellInventory] No se lanza proyectil físico ni es Self. Speed: {data.projectileSpeed}, Prefab is null: {data.projectilePrefab == null}");
             }
 
             currentSlot.lastCastTime = Time.time;
@@ -158,6 +190,15 @@ namespace AnimalMagicRoyale.Components
             {
                 activeSlotIndex = index;
             }
+        }
+
+        public void SwapSlots(int indexA, int indexB)
+        {
+            if (indexA < 0 || indexA >= slots.Length || indexB < 0 || indexB >= slots.Length) return;
+            
+            var temp = slots[indexA];
+            slots[indexA] = slots[indexB];
+            slots[indexB] = temp;
         }
 
         public SpellData GetActiveSpell()

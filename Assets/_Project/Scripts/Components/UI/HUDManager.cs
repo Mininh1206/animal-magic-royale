@@ -18,6 +18,7 @@ namespace AnimalMagicRoyale.Components.UI
     [RequireComponent(typeof(TeamUI))]
     [RequireComponent(typeof(DamageNumberUI))]
     [RequireComponent(typeof(InteractionUI))]
+    [RequireComponent(typeof(InventoryUI))]
     public class HUDManager : MonoBehaviour
     {
         [Header("Events")]
@@ -33,6 +34,7 @@ namespace AnimalMagicRoyale.Components.UI
         private TeamUI teamUI;
         private DamageNumberUI damageNumberUI;
         private InteractionUI interactionUI;
+        private InventoryUI inventoryUI;
         
         private UnityEngine.UIElements.UIDocument uiDocument;
 
@@ -68,6 +70,10 @@ namespace AnimalMagicRoyale.Components.UI
             damageNumberUI = GetComponent<DamageNumberUI>();
             interactionUI = GetComponent<InteractionUI>();
             
+            // Try to get or add InventoryUI
+            inventoryUI = GetComponent<InventoryUI>();
+            if (inventoryUI == null) inventoryUI = gameObject.AddComponent<InventoryUI>();
+            
             if (uiDocument != null && uiDocument.rootVisualElement != null)
             {
                 var root = uiDocument.rootVisualElement;
@@ -81,6 +87,7 @@ namespace AnimalMagicRoyale.Components.UI
                 if (teamUI != null) teamUI.Initialize(root);
                 if (damageNumberUI != null) damageNumberUI.Initialize(root);
                 if (interactionUI != null) interactionUI.Initialize(root);
+                if (inventoryUI != null) inventoryUI.Initialize(root);
             }
 
             Debug.Log("[HUDManager] Start executed (UI Toolkit).");
@@ -112,6 +119,7 @@ namespace AnimalMagicRoyale.Components.UI
                         {
                             if (healthBarUI != null) healthBarUI.SetTrackedPlayer(player.gameObject);
                             if (spellInventoryUI != null) spellInventoryUI.SetTrackedInventory(player.GetComponent<AnimalMagicRoyale.Components.SpellInventory>());
+                            if (inventoryUI != null) inventoryUI.SetTrackedInventory(player.GetComponent<AnimalMagicRoyale.Components.SpellInventory>());
                             
                             if (abilityUI != null)
                             {

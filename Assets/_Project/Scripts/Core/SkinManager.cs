@@ -224,5 +224,22 @@ namespace AnimalMagicRoyale.Core
                 }
             }
         }
+
+        public void SetVisibility(bool isVisible)
+        {
+            if (_currentModelInstance != null)
+            {
+                var renderers = _currentModelInstance.GetComponentsInChildren<Renderer>();
+                foreach (var r in renderers)
+                {
+                    // No ocultar particulas u otros efectos críticos si los hay, pero típicamente SkinnedMeshRenderer y MeshRenderer sí.
+                    if (r is SkinnedMeshRenderer || r is MeshRenderer)
+                    {
+                        r.enabled = isVisible;
+                    }
+                }
+                Debug.Log($"[SkinManager] Visibilidad ajustada a {isVisible} en {_currentModelInstance.name}");
+            }
+        }
     }
 }

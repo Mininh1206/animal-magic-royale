@@ -205,6 +205,7 @@ GameObject:
   - component: {fileID: 374212422485036605}
   - component: {fileID: 5421794067464134127}
   - component: {fileID: 1447505609296474765}
+  - component: {fileID: 8220334936915848288}
   m_Layer: 3
   m_Name: PlayerBase_Prefab
   m_TagString: Untagged
@@ -382,6 +383,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Player.PlayerInputHandler
   playerController: {fileID: 0}
+--- !u!114 &8220334936915848288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086530177085111275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1238fb415372e1b4fa854040925d653e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.CharacterSFXHandler
+  audioData: {fileID: 0}
+  footstepInterval: 0.35
 --- !u!1 &4945318093138926664
 GameObject:
   m_ObjectHideFlags: 0
@@ -603,6 +618,8 @@ GameObject:
   - component: {fileID: 6975471243602862778}
   - component: {fileID: 546259051771058310}
   - component: {fileID: 2337461066365443107}
+  - component: {fileID: 270145975010643641}
+  - component: {fileID: 244455342258853839}
   m_Layer: 3
   m_Name: HUD
   m_TagString: Untagged
@@ -783,6 +800,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.UI.DamageNumberUI
   onHealthChanged: {fileID: 11400000, guid: 029bc29be33723d4c9e8b69935cf1164, type: 2}
+--- !u!114 &270145975010643641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5107632299224459501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c91984e6eafc0a347835cb69d1f0bf1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.UI.InteractionUI
+--- !u!114 &244455342258853839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5107632299224459501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 508dd5472c9938a4bb8f16daed2b1e8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.UI.InventoryUI
 --- !u!1 &6159758766183004764
 GameObject:
   m_ObjectHideFlags: 0
@@ -810,7 +851,7 @@ Transform:
   m_GameObject: {fileID: 6159758766183004764}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 300, z: 0}
+  m_LocalPosition: {x: 0, y: 100, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

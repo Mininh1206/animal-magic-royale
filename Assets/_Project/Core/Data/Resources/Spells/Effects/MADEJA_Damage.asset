@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12bbf47347d719d4fa1c222cb683bc04, type: 3}
   m_Name: MADEJA_Damage
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Spells.Effects.DamageEffect
-  damageAmount: 10
+  damageAmount: 20

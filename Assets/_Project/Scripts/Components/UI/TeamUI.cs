@@ -142,5 +142,107 @@ namespace AnimalMagicRoyale.Components.UI
                 }
             }
         }
+
+        private Dictionary<GameObject, Label> floatingNames = new Dictionary<GameObject, Label>();
+        public static bool RevealEnemiesOnScreen = false;
+
+        private void Update()
+        {
+            if (UnityEngine.Camera.main == null || teamContainer == null || teamContainer.panel == null) return;
+            var root = teamContainer.parent;
+            if (root == null) return;
+            if (GameManager.Instance == null || TeamManager.Instance == null || localPlayer == null) return;
+
+            int myTeam = TeamManager.Instance.GetTeam(localPlayer);
+            if (myTeam == -1) return;
+
+            foreach (var p in GameManager.Instance.AlivePlayers)
+            {
+                if (p == null || p == localPlayer) continue;
+                
+                int pTeam = TeamManager.Instance.GetTeam(p);
+                bool isEnemy = pTeam != myTeam;
+                
+                if (isEnemy && !RevealEnemiesOnScreen)
+                {
+                    // If it's an enemy and wallhack is not active, ensure we hide their label if it exists
+                    if (floatingNames.TryGetValue(p, out Label hiddenLabel))
+                    {
+                        hiddenLabel.style.display = DisplayStyle.None;
+                    }
+                    continue;
+                }
+                
+                if (!floatingNames.TryGetValue(p, out Label nameLabel))
+                {
+                    nameLabel = new Label(p.name);
+                    nameLabel.style.position = Position.Absolute;
+                    nameLabel.style.fontSize = 16;
+                    nameLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+                    nameLabel.style.textShadow = new TextShadow { color = Color.black, offset = new Vector2(1, 1), blurRadius = 1f };
+                    root.Add(nameLabel);
+                    floatingNames[p] = nameLabel;
+                }
+
+                nameLabel.style.color = isEnemy ? new Color(1f, 0.2f, 0.2f) : new Color(0.2f, 1f, 0.2f); // Red for enemy, Light green for ally
+
+                // Check visibility
+                var health = p.GetComponent<HealthComponent>();
+                if (health != null && !health.IsAlive)
+                {
+                    nameLabel.style.display = DisplayStyle.None;
+                    continue;
+                }
+
+                // Calcular el offset basado en los bounds en lugar de Vector3.up * 2.2f
+                var collider = p.GetComponent<Collider>();
+                float topY = p.transform.position.y + 2.2f; // Fallback
+                if (collider != null)
+                {
+                    topY = collider.bounds.max.y + 0.3f; // Un poco de padding
+                }
+
+                Vector3 targetPos = new Vector3(p.transform.position.x, topY, p.transform.position.z);
+                Vector3 screenPos = UnityEngine.Camera.main.WorldToScreenPoint(targetPos);
+
+                // Behind camera
+                if (screenPos.z < 0)
+                {
+                    nameLabel.style.display = DisplayStyle.None;
+                    continue;
+                }
+
+                // Raycast occlusion check (only if it's an ally, enemies with wallhack skip this)
+                if (!isEnemy)
+                {
+                    Vector3 camPos = UnityEngine.Camera.main.transform.position;
+                    Vector3 dir = (targetPos - Vector3.up * 1f) - camPos;
+                    if (Physics.Raycast(camPos, dir.normalized, out RaycastHit hit, dir.magnitude, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                    {
+                        if (hit.collider.gameObject != p && !hit.collider.transform.IsChildOf(p.transform))
+                        {
+                            nameLabel.style.display = DisplayStyle.None;
+                            continue;
+                        }
+                    }
+                }
+
+                nameLabel.style.display = DisplayStyle.Flex;
+
+                float rootWidth = root.resolvedStyle.width;
+                float rootHeight = root.resolvedStyle.height;
+                if (rootWidth == 0) rootWidth = Screen.width;
+                if (rootHeight == 0) rootHeight = Screen.height;
+
+                float x = (screenPos.x / Screen.width) * rootWidth;
+                float y = ((Screen.height - screenPos.y) / Screen.height) * rootHeight;
+
+                // Center the label text
+                nameLabel.style.left = x - 50; // Approximated width / 2
+                nameLabel.style.top = y;
+                nameLabel.style.width = 100;
+                nameLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
+            }
+        }
     }
 }

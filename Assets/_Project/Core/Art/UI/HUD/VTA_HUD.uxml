@@ -53,6 +53,7 @@
             <!-- Bottom Center: Player Status (Ability, Spells, Health) -->
             <ui:VisualElement name="player-status-container" class="player-status-column column-align-center">
                 
+                <ui:Label name="active-spell-name" text="" class="active-spell-label" />
                 <ui:VisualElement class="action-slots-row row" style="margin-bottom: 10px; align-items: flex-end;">
                     <!-- Spells (Left) -->
                     <ui:VisualElement name="spell-inventory-container" class="spells-row row">
@@ -111,6 +112,41 @@
         <ui:VisualElement name="crosshair-container" class="center-crosshair">
             <ui:VisualElement class="crosshair-dot" />
         </ui:VisualElement>
-        
+        <!-- Interaction Popup -->
+        <ui:VisualElement name="interaction-container" class="interaction-panel">
+            <ui:Label name="interaction-title" text="Spell Name" class="interaction-title" />
+            <ui:Label name="interaction-desc" text="Description of the spell" class="interaction-desc" />
+            <ui:Label name="interaction-prompt" text="Pulsa [E] para recoger" class="interaction-prompt" />
+        </ui:VisualElement>
+
+        <!-- Inventory Panel -->
+        <ui:VisualElement name="inventory-root" class="inventory-root">
+            <ui:VisualElement name="inventory-panel" class="inventory-panel column">
+                <ui:Label text="INVENTARIO DE HECHIZOS" class="inventory-title" />
+                <ui:Label text="Arrastra para reorganizar" class="inventory-subtitle" />
+                <ui:VisualElement name="inventory-slots-container" class="inventory-slots-row row-center">
+                    <ui:VisualElement name="inv-slot-0" class="inv-slot">
+                        <ui:VisualElement name="inv-icon-0" class="inv-icon" />
+                        <ui:Label text="1" class="inv-slot-number" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="inv-slot-1" class="inv-slot">
+                        <ui:VisualElement name="inv-icon-1" class="inv-icon" />
+                        <ui:Label text="2" class="inv-slot-number" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="inv-slot-2" class="inv-slot">
+                        <ui:VisualElement name="inv-icon-2" class="inv-icon" />
+                        <ui:Label text="3" class="inv-slot-number" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="inventory-divider" />
+                <ui:VisualElement name="inventory-details" class="inventory-details-container column">
+                    <ui:Label name="detail-name" text="Selecciona un hechizo" class="detail-name" />
+                    <ui:Label name="detail-tier" text="" class="detail-tier" />
+                    <ui:Label name="detail-desc" text="" class="detail-desc" />
+                    <ui:Label name="detail-effects" text="" class="detail-effects" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
     </ui:VisualElement>
 </ui:UXML>

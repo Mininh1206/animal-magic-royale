@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce97ff8119d26a04f8107dc0d27a6db2, type: 3}
+  m_Name: "Ornitorrinco_CargaPort\xE1til"
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Spells.SpellData
+  spellName: "Carga Port\xE1til"
+  description: "Rayo el\xE9ctrico encadenado"
+  tier: 2
+  icon: {fileID: 1090568306, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  cooldown: 6
+  projectileSpeed: 45
+  projectileCount: 1
+  targetType: 0
+  isHoming: 0
+  maxBounces: 0
+  projectilePrefab: {fileID: 8349761922293664815, guid: 848e099678108084e90bb9235cfb1d9b, type: 3}
+  spellColor: {r: 0, g: 1, b: 1, a: 1}
+  effects:
+  - {fileID: 11400000, guid: 7a2059e096eac1742a137d552498fa39, type: 2}
+  - {fileID: 11400000, guid: 6e6385871cca8344d84da9097eea5a46, type: 2}
