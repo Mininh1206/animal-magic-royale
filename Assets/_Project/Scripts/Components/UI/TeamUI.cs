@@ -194,12 +194,20 @@ namespace AnimalMagicRoyale.Components.UI
                     continue;
                 }
 
-                // Calcular el offset basado en los bounds en lugar de Vector3.up * 2.2f
-                var collider = p.GetComponent<Collider>();
+                // Calcular el offset usando los Renderers para obtener la altura visual real
                 float topY = p.transform.position.y + 2.5f; // Fallback
-                if (collider != null)
+                var renderers = p.GetComponentsInChildren<Renderer>();
+                if (renderers != null && renderers.Length > 0)
                 {
-                    topY = collider.bounds.max.y + 1.2f; // Offset ajustado para que no se vea debajo de la cabeza
+                    float maxY = renderers[0].bounds.max.y;
+                    for (int i = 1; i < renderers.Length; i++)
+                    {
+                        if (renderers[i].bounds.max.y > maxY)
+                        {
+                            maxY = renderers[i].bounds.max.y;
+                        }
+                    }
+                    topY = maxY + 0.5f; // Ajustado exactamente encima del modelo visual
                 }
 
                 Vector3 targetPos = new Vector3(p.transform.position.x, topY, p.transform.position.z);

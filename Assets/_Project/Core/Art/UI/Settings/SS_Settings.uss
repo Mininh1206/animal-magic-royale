@@ -90,7 +90,6 @@
 .settings-content {
     flex-grow: 1;
     padding: 40px;
-    position: relative;
 }
 
 .settings-page {
@@ -158,10 +157,9 @@
 }
 
 .settings-footer {
-    position: absolute;
-    bottom: 30px;
-    right: 40px;
     flex-direction: row;
+    justify-content: flex-end;
+    padding-top: 20px;
 }
 
 .btn-settings-secondary {

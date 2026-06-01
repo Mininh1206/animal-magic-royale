@@ -23,7 +23,8 @@
             </ui:VisualElement>
             
             <!-- Right Content Area -->
-            <ui:VisualElement class="settings-content">
+            <ui:VisualElement class="settings-content" style="flex-direction: column;">
+                <ui:ScrollView style="flex-grow: 1;">
                 
                 <ui:VisualElement name="ContentGraphics" class="settings-page">
                     <ui:Label text="Gráficos" class="settings-page-title"/>
@@ -102,6 +103,8 @@
                 <ui:VisualElement name="ContentControls" class="settings-page" style="display: none;">
                     <ui:Label text="Controles" class="settings-page-title"/>
                 </ui:VisualElement>
+
+                </ui:ScrollView>
 
                 <!-- Footer Actions -->
                 <ui:VisualElement class="settings-footer">
