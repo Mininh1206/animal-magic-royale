@@ -35,6 +35,9 @@ namespace AnimalMagicRoyale.Components.UI
                 var visualSlot = slotUIs[i];
                 if (visualSlot != null)
                 {
+                    // Agrandar el slot activo para mayor feedback visual
+                    visualSlot.style.scale = isActive ? new StyleScale(new Scale(new Vector2(1.2f, 1.2f))) : new StyleScale(new Scale(Vector2.one));
+
                     // Lógica de SpellSlotUI incorporada aquí para UI Toolkit
                     var icon = visualSlot.Q<VisualElement>("icon");
                     var bg = visualSlot.Q<VisualElement>("bg");
@@ -55,10 +58,23 @@ namespace AnimalMagicRoyale.Components.UI
 
                     if (bg != null)
                     {
-                        bg.style.borderTopColor = isActive ? Color.green : Color.clear;
-                        bg.style.borderBottomColor = isActive ? Color.green : Color.clear;
-                        bg.style.borderLeftColor = isActive ? Color.green : Color.clear;
-                        bg.style.borderRightColor = isActive ? Color.green : Color.clear;
+                        // Aseguramos que tenga grosor de borde para que se vea el color
+                        bg.style.borderTopWidth = 4;
+                        bg.style.borderBottomWidth = 4;
+                        bg.style.borderLeftWidth = 4;
+                        bg.style.borderRightWidth = 4;
+
+                        // Redondear los bordes
+                        bg.style.borderTopLeftRadius = 8;
+                        bg.style.borderTopRightRadius = 8;
+                        bg.style.borderBottomLeftRadius = 8;
+                        bg.style.borderBottomRightRadius = 8;
+
+                        Color activeBorderColor = new Color(0.2f, 1f, 0.2f, 1f); // Verde brillante
+                        bg.style.borderTopColor = isActive ? activeBorderColor : Color.clear;
+                        bg.style.borderBottomColor = isActive ? activeBorderColor : Color.clear;
+                        bg.style.borderLeftColor = isActive ? activeBorderColor : Color.clear;
+                        bg.style.borderRightColor = isActive ? activeBorderColor : Color.clear;
                     }
 
                     if (cdOverlay != null)

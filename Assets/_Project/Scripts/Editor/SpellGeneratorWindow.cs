@@ -69,6 +69,21 @@ namespace AnimalMagicRoyale.EditorScripts
             var heal = ScriptableObject.CreateInstance<HealEffect>(); heal.healAmount = 20f;
             AssetDatabase.CreateAsset(heal, $"{basePath}/Effects/TicketComedor_Heal.asset");
             CreateSpell("Ticket Comedor", SpellTier.Hormiga, 15f, 0f, 1, heal);
+
+            // Nuevos Hechizos Hormiga añadidos según CLAUDE.md
+            CreateSpell("Antenas 5G", SpellTier.Hormiga, 8f, 15f, 1); // Invierte controles
+            CreateSpell("Hormigón Armado", SpellTier.Hormiga, 10f, 0f, 1); // Cobertura
+            CreateSpell("Canal Sur", SpellTier.Hormiga, 12f, 0f, 1); // Revela en radar
+            CreateSpell("Ácido Fórmico", SpellTier.Hormiga, 5f, 10f, 1, CreateDamage("AcidoFormico", 12f)); // Charco DoT
+            CreateSpell("Café Máquina", SpellTier.Hormiga, 10f, 0f, 1); // +25% cadencia
+            CreateSpell("WiFi UHU", SpellTier.Hormiga, 8f, 20f, 1, CreateDamage("WiFiUHU", 5f)); // TP atrás
+            CreateSpell("Grapadora", SpellTier.Hormiga, 3f, 25f, 1, CreateDamage("Grapadora", 18f)); // Reduce vel ataque
+            CreateSpell("Clip de Papel", SpellTier.Hormiga, 0.8f, 20f, 1, CreateDamage("ClipPapel", 8f)); // Rebota
+            CreateSpell("Post-it", SpellTier.Hormiga, 4f, 15f, 1, CreateDamage("Postit", 5f)); // Pega y explota
+            CreateSpell("Pendrive Virus", SpellTier.Hormiga, 10f, 20f, 1, CreateDamage("Pendrive", 10f)); // Desactiva hab
+            CreateSpell("Casio Científica", SpellTier.Hormiga, 4f, 18f, 1, CreateDamage("Casio", 20f)); // Homing
+            CreateSpell("Rotulador Seco", SpellTier.Hormiga, 2f, 15f, 1, CreateDamage("Rotulador", 5f)); // Humo
+            
             
             // --- TIER ORNITORRINCO ---
             var stun = ScriptableObject.CreateInstance<StunEffect>(); stun.duration = 1.5f;
@@ -76,6 +91,16 @@ namespace AnimalMagicRoyale.EditorScripts
             CreateSpell("Espolón Veneno", SpellTier.Ornitorrinco, 6f, 20f, 1, CreateDamage("EspolonVeneno", 20f), stun);
             
             CreateSpell("Pico-Metralla", SpellTier.Ornitorrinco, 5f, 15f, 5, CreateDamage("PicoMetralla", 5f));
+
+            // Nuevos Hechizos Ornitorrinco añadidos según CLAUDE.md
+            CreateSpell("Electro-localización", SpellTier.Ornitorrinco, 15f, 0f, 1); // Wallhack
+            CreateSpell("Agente P", SpellTier.Ornitorrinco, 20f, 0f, 1); // Invisibilidad
+            CreateSpell("Huevo Sorpresa", SpellTier.Ornitorrinco, 10f, 0f, 1, CreateDamage("HuevoSorpresa", 40f)); // Mina
+            CreateSpell("PDF No Editable", SpellTier.Ornitorrinco, 12f, 15f, 1); // Bloquea magias
+            CreateSpell("Carga Portátil", SpellTier.Ornitorrinco, 8f, 25f, 1, CreateDamage("Carga", 30f)); // Rayo eléctrico
+            CreateSpell("Cable Ethernet", SpellTier.Ornitorrinco, 7f, 20f, 1, CreateDamage("Cable", 15f)); // Atrapa
+            CreateSpell("Ratón de Bola", SpellTier.Ornitorrinco, 4f, 10f, 1, CreateDamage("Raton", 25f)); // Pesado
+            CreateSpell("Pantallazo Azul", SpellTier.Ornitorrinco, 15f, 20f, 1); // Congela pantalla
             
             // --- TIER GOAT ---
             var megaSlow = ScriptableObject.CreateInstance<SlowEffect>(); megaSlow.slowPercent = 0.8f; megaSlow.duration = 6f;
@@ -89,6 +114,13 @@ namespace AnimalMagicRoyale.EditorScripts
             var lifesteal = ScriptableObject.CreateInstance<HealEffect>(); lifesteal.healAmount = 35f;
             AssetDatabase.CreateAsset(lifesteal, $"{basePath}/Effects/Manifiesto_Heal.asset");
             CreateSpell("Manifiesto Comunista", SpellTier.GOAT, 15f, 20f, 1, CreateDamage("Manifiesto", 35f), lifesteal);
+
+            // Nuevos Hechizos GOAT añadidos según CLAUDE.md
+            var risitasStun = ScriptableObject.CreateInstance<StunEffect>(); risitasStun.duration = 1.5f;
+            AssetDatabase.CreateAsset(risitasStun, $"{basePath}/Effects/ElRisitas_Stun.asset");
+            CreateSpell("El Risitas", SpellTier.GOAT, 30f, 15f, 1, risitasStun); // Stun total + suelta arma
+            
+            CreateSpell("Beca Erasmus", SpellTier.GOAT, 25f, 20f, 1, CreateDamage("BecaErasmus", 20f)); // Intercambio + Confusión
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
