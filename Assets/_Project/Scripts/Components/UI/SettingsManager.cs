@@ -43,6 +43,11 @@ namespace AnimalMagicRoyale.Components.UI
         public static float EnvVolume => PlayerPreferencesManager.Instance != null ? PlayerPreferencesManager.Instance.currentData.envVolume / 100f : 1f;
         public static bool MusicInMatchEnabled => PlayerPreferencesManager.Instance != null && PlayerPreferencesManager.Instance.currentData.musicInMatch;
 
+        // Rebinding State
+        private bool isRebinding = false;
+        private KeyBindingManager.GameAction actionToRebind;
+        private Button rebindButtonActive;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void AutoInitialize()
         {
@@ -134,7 +139,28 @@ namespace AnimalMagicRoyale.Components.UI
             }
         }
 
-
+        private void Update()
+        {
+            if (isRebinding && Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame)
+            {
+                foreach (var keyControl in Keyboard.current.allKeys)
+                {
+                    if (keyControl.wasPressedThisFrame)
+                    {
+                        KeyBindingManager.Instance.SetBinding(actionToRebind, keyControl.keyCode);
+                        
+                        if (rebindButtonActive != null)
+                        {
+                            rebindButtonActive.text = KeyBindingManager.Instance.GetBinding(actionToRebind).ToString();
+                        }
+                        
+                        isRebinding = false;
+                        rebindButtonActive = null;
+                        break;
+                    }
+                }
+            }
+        }
 
         public void ToggleSettings()
         {
@@ -239,6 +265,8 @@ namespace AnimalMagicRoyale.Components.UI
             if (toggleMusicInMatch != null) toggleMusicInMatch.value = data != null ? data.musicInMatch : false;
             
             PopulateResolutions();
+            PopulateControls();
+            
             if (dropdownResolution != null && data != null && dropdownResolution.choices.Count > 0)
             {
                 if (data.resolutionIndex >= 0 && data.resolutionIndex < dropdownResolution.choices.Count)
@@ -258,6 +286,8 @@ namespace AnimalMagicRoyale.Components.UI
             if (toggleMusicInMatch != null) toggleMusicInMatch.value = false;
             
             PopulateResolutions();
+            PopulateControls();
+            
             if (dropdownResolution != null && dropdownResolution.choices.Count > 0)
             {
                 // Set native resolution (usually the last in the populated list)
@@ -283,6 +313,55 @@ namespace AnimalMagicRoyale.Components.UI
             else
             {
                 dropdownResolution.choices = new System.Collections.Generic.List<string> { $"{Screen.width}x{Screen.height}" };
+            }
+        }
+
+        private void PopulateControls()
+        {
+            if (contentControls == null || KeyBindingManager.Instance == null) return;
+            contentControls.Clear();
+            
+            var title = new Label("Mapeado de Teclas");
+            title.AddToClassList("settings-page-title");
+            contentControls.Add(title);
+
+            foreach (KeyBindingManager.GameAction action in System.Enum.GetValues(typeof(KeyBindingManager.GameAction)))
+            {
+                if (action == KeyBindingManager.GameAction.HealPlayer || action == KeyBindingManager.GameAction.LowerHealth) continue;
+
+                var row = new VisualElement();
+                row.AddToClassList("setting-item");
+
+                var info = new VisualElement();
+                info.AddToClassList("setting-item-info");
+                
+                var nameLabel = new Label(action.ToString());
+                nameLabel.AddToClassList("setting-item-name");
+                info.Add(nameLabel);
+
+                var controlContainer = new VisualElement();
+                controlContainer.AddToClassList("setting-item-control");
+                controlContainer.style.width = 150;
+
+                var btn = new Button();
+                btn.text = KeyBindingManager.Instance.GetBinding(action).ToString();
+                btn.AddToClassList("btn-settings-secondary");
+                
+                KeyBindingManager.GameAction currentAction = action;
+
+                btn.clicked += () => 
+                {
+                    if (isRebinding) return;
+                    isRebinding = true;
+                    actionToRebind = currentAction;
+                    rebindButtonActive = btn;
+                    btn.text = "...";
+                };
+
+                controlContainer.Add(btn);
+                row.Add(info);
+                row.Add(controlContainer);
+                contentControls.Add(row);
             }
         }
 

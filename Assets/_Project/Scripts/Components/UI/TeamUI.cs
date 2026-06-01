@@ -229,17 +229,11 @@ namespace AnimalMagicRoyale.Components.UI
 
                 nameLabel.style.display = DisplayStyle.Flex;
 
-                float rootWidth = root.resolvedStyle.width;
-                float rootHeight = root.resolvedStyle.height;
-                if (rootWidth == 0) rootWidth = Screen.width;
-                if (rootHeight == 0) rootHeight = Screen.height;
-
-                float x = (screenPos.x / Screen.width) * rootWidth;
-                float y = ((Screen.height - screenPos.y) / Screen.height) * rootHeight;
+                Vector2 panelPos = RuntimePanelUtils.CameraTransformWorldToPanel(teamContainer.panel, targetPos, UnityEngine.Camera.main);
 
                 // Center the label text
-                nameLabel.style.left = x - 50; // Approximated width / 2
-                nameLabel.style.top = y - 20; // Restar la mitad del alto para centrar el pivot vertical
+                nameLabel.style.left = panelPos.x - 50; // Approximated width / 2
+                nameLabel.style.top = panelPos.y - 10; // offset
                 nameLabel.style.width = 100;
                 nameLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
             }
