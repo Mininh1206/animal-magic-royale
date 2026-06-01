@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Hormiga_HojaAfilada
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Spells.SpellData
   spellName: Hoja Afilada
+  description: 
   tier: 1
-  icon: {fileID: 0}
+  icon: {fileID: -1037089990, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   damage: 0
   cooldown: 2
   projectileSpeed: 0
