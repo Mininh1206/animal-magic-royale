@@ -43,9 +43,9 @@ namespace AnimalMagicRoyale.Core
 
             foreach (var spell in allSpells)
             {
-                if (spell.name.StartsWith("Hormiga_")) hormigaList.Add(spell);
-                else if (spell.name.StartsWith("Ornitorrinco_")) ornitorrincoList.Add(spell);
-                else if (spell.name.StartsWith("GOAT_")) goatList.Add(spell);
+                if (spell.tier == SpellTier.Hormiga) hormigaList.Add(spell);
+                else if (spell.tier == SpellTier.Ornitorrinco) ornitorrincoList.Add(spell);
+                else if (spell.tier == SpellTier.GOAT) goatList.Add(spell);
             }
 
             if (hormigaSpells == null || hormigaSpells.Length == 0) hormigaSpells = hormigaList.ToArray();
@@ -62,7 +62,25 @@ namespace AnimalMagicRoyale.Core
 
         private void SpawnInitialBoxes()
         {
-            foreach (Transform point in spawnPoints)
+            if (spawnPoints == null || spawnPoints.Length == 0) return;
+
+            List<Transform> actualSpawnPoints = new List<Transform>();
+            foreach (var sp in spawnPoints)
+            {
+                if (sp != null && sp.childCount > 0)
+                {
+                    foreach (Transform child in sp)
+                    {
+                        actualSpawnPoints.Add(child);
+                    }
+                }
+                else if (sp != null)
+                {
+                    actualSpawnPoints.Add(sp);
+                }
+            }
+
+            foreach (Transform point in actualSpawnPoints)
             {
                 SpawnBox(point);
             }

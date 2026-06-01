@@ -16,7 +16,7 @@ MonoBehaviour:
   sceneName: Map_Factory
   previewImage: {fileID: 0}
   description: "Pueblo Tomate Monta\xF1oso"
-  maxPlayers: 20
+  maxPlayers: 60
   zonePhases:
   - {fileID: 11400000, guid: 9d182f4fbd4b1ed4c8c89448cd454e75, type: 2}
   - {fileID: 11400000, guid: 271eed7e33393204fb4107bd1ca31dda, type: 2}
