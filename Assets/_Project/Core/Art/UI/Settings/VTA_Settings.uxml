@@ -23,8 +23,8 @@
             </ui:VisualElement>
             
             <!-- Right Content Area -->
-            <ui:VisualElement class="settings-content" style="flex-direction: column;">
-                <ui:ScrollView style="flex-grow: 1;">
+            <ui:VisualElement class="settings-content" style="flex-direction: column; flex-shrink: 1;">
+                <ui:ScrollView style="flex-grow: 1; flex-shrink: 1;">
                 
                 <ui:VisualElement name="ContentGraphics" class="settings-page">
                     <ui:Label text="Gráficos" class="settings-page-title"/>

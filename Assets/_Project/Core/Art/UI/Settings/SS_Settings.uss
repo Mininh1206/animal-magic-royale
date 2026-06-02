@@ -11,10 +11,10 @@
 }
 
 .settings-modal {
-    width: 80%;
-    max-width: 900px;
-    height: 80%;
-    max-height: 700px;
+    width: 90%;
+    max-width: 1200px;
+    height: 90%;
+    max-height: 800px;
     background-color: #141421;
     border-radius: 20px;
     flex-direction: row;
@@ -160,6 +160,7 @@
     flex-direction: row;
     justify-content: flex-end;
     padding-top: 20px;
+    flex-shrink: 0;
 }
 
 .btn-settings-secondary {
