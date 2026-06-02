@@ -9,6 +9,12 @@ namespace AnimalMagicRoyale.Spells.Effects
         {
             if (caster == null || target == null) return;
             
+            if (target.layer != LayerMask.NameToLayer("Player"))
+            {
+                Debug.Log($"[SwapPositionEffect] Target {target.name} no está en la capa Player. Intercambio abortado.");
+                return;
+            }
+
             Debug.Log($"[SwapPositionEffect] Intercambiando posición de {caster.name} con {target.name}.");
             Vector3 temp = caster.transform.position;
             

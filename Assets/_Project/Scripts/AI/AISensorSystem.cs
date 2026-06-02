@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AnimalMagicRoyale.Components;
 using AnimalMagicRoyale.Core;
+using AnimalMagicRoyale.Spells.Effects;
 
 namespace AnimalMagicRoyale.AI
 {
@@ -53,6 +54,16 @@ namespace AnimalMagicRoyale.AI
         {
             VisibleTargets.Clear();
             
+            if (GetComponent<BlindComponent>() != null)
+            {
+                // Debug opcional o evitar ruido, lo ideal es logear solo al aplicar el debuff.
+                // Debug.Log($"[BlindEffect] (Bot) Visión anulada, limpiando targets.");
+                return;
+            }
+
+            int combinedTargetLayers = config.targetLayers | LayerMask.GetMask("Drops");
+            int visionLayers = config.obstacleLayers | combinedTargetLayers;
+
             // 1. Vision (Raycasts)
             // Ligeramente simplificado: lanzamos rayos en abanico y vemos si golpean un target y no hay obstáculo
             float angleStep = config.viewAngle / config.rayCount;
@@ -64,10 +75,10 @@ namespace AnimalMagicRoyale.AI
                 Vector3 direction = Quaternion.Euler(0, currentAngle, 0) * transform.forward;
                 
                 // Primero check de obstáculo
-                if (Physics.Raycast(transform.position + Vector3.up, direction, out RaycastHit hit, config.viewRange, config.obstacleLayers | config.targetLayers))
+                if (Physics.Raycast(transform.position + Vector3.up, direction, out RaycastHit hit, config.viewRange, visionLayers))
                 {
                     // Si golpeamos algo, verificamos si es un target válido (está en targetLayers y NO en obstacleLayers)
-                    if (((1 << hit.collider.gameObject.layer) & config.targetLayers) != 0)
+                    if (((1 << hit.collider.gameObject.layer) & combinedTargetLayers) != 0)
                     {
                         ProcessHit(hit.collider.gameObject, hit.distance, TargetType.Enemy); // Por ahora asumimos todo en target layer es Enemy/LootBox
                     }
@@ -75,7 +86,7 @@ namespace AnimalMagicRoyale.AI
             }
 
             // 2. Hearing (OverlapSphere)
-            int count = Physics.OverlapSphereNonAlloc(transform.position, config.hearingRange, hearingColliders, config.targetLayers);
+            int count = Physics.OverlapSphereNonAlloc(transform.position, config.hearingRange, hearingColliders, combinedTargetLayers);
             for (int i = 0; i < count; i++)
             {
                 GameObject obj = hearingColliders[i].gameObject;
@@ -120,6 +131,11 @@ namespace AnimalMagicRoyale.AI
         {
             if (obj == this.gameObject) return; // Ignore self
             
+            if (obj.GetComponentInParent<InvisibilityComponent>() != null)
+            {
+                return; // Ignoramos si está invisible
+            }
+
             // Check if it's a living entity first to ignore our own children (like ModelContainer)
             var health = obj.GetComponentInParent<HealthComponent>();
             if (health != null)

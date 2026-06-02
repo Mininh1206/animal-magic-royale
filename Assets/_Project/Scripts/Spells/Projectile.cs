@@ -200,15 +200,24 @@ namespace AnimalMagicRoyale.Spells
             if (targetHealth == null && bouncesLeft > 0)
             {
                 Vector3 normal = -rb.linearVelocity.normalized;
-                if (Physics.Raycast(transform.position - rb.linearVelocity.normalized * 0.5f, rb.linearVelocity.normalized, out RaycastHit hit, 2f))
+                var hits = Physics.RaycastAll(transform.position - rb.linearVelocity.normalized * 0.5f, rb.linearVelocity.normalized, 2f);
+                foreach (var hit in hits)
                 {
-                    if (hit.collider == other) normal = hit.normal;
+                    if (hit.collider == other)
+                    {
+                        normal = hit.normal;
+                        break;
+                    }
                 }
                 
                 rb.linearVelocity = Vector3.Reflect(rb.linearVelocity, normal).normalized * spellData.projectileSpeed;
                 transform.rotation = Quaternion.LookRotation(rb.linearVelocity);
+                
+                // Pequeño push para no quedarnos atrapados en el collider y gastar rebotes
+                transform.position += normal * 0.2f;
+
                 bouncesLeft--;
-                Debug.Log($"[Projectile Bounce] {gameObject.name} rebotó en {other.gameObject.name}. Rebotes restantes: {bouncesLeft}");
+                Debug.Log($"[Projectile Bounce] {gameObject.name} rebotó en {other.gameObject.name}. Rebotes restantes: {bouncesLeft}. Normal: {normal}");
                 return;
             }
 

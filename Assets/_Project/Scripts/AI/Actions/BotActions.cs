@@ -142,6 +142,12 @@ namespace AnimalMagicRoyale.AI
                                   ? ctx.Bot.Inventory.FirePoint.position 
                                   : ctx.Bot.transform.position + Vector3.up * 1f;
 
+                if (dist < 3f)
+                {
+                    targetCenter.y = firePos.y;
+                    // Debug.Log($"[BotAI] Ajustando mira vertical por cercanía (< 3f) en {ctx.Bot.gameObject.name}");
+                }
+
                 Vector3 aimDir = (targetCenter - firePos).normalized;
 
                 if (!isSelfCast)
@@ -221,7 +227,7 @@ namespace AnimalMagicRoyale.AI
                 {
                     float dist = Vector3.Distance(ctx.Bot.transform.position, ctx.BestPhysicalLoot.position);
                     
-                    if (dist <= 1.5f)
+                    if (dist <= 2.5f)
                     {
                         if (ctx.Bot.Agent.isOnNavMesh && ctx.Bot.Agent.isActiveAndEnabled) ctx.Bot.Agent.isStopped = true;
                         
@@ -230,7 +236,7 @@ namespace AnimalMagicRoyale.AI
                         {
                             if (lootBox.TryOpen(ctx.Bot.gameObject))
                             {
-                                // Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} abrió un cofre.");
+                                Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} abrió un cofre.");
                                 return NodeStatus.Success;
                             }
                         }
@@ -265,7 +271,7 @@ namespace AnimalMagicRoyale.AI
 #pragma warning disable CS0618
                                             TeamMemorySystem.Instance.RemoveSpell(ctx.TeamId, ctx.BestPhysicalLoot.gameObject.GetEntityId());
 #pragma warning restore CS0618
-                                        // Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} recogió un hechizo.");
+                                        Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} recogió un hechizo.");
                                         return NodeStatus.Success;
                                     }
                                 }
