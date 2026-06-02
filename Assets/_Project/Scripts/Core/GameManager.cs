@@ -218,17 +218,34 @@ namespace AnimalMagicRoyale.Core
         {
             Debug.Log($"[GameManager] HandlePlayerDeath received: {payload.victim?.name} killed by {payload.killer?.name ?? "environment"}");
             
-            if (payload.victim != null)
+            // 1. Unregister first so AlivePlayers is updated
+            UnregisterPlayer(payload.victim, payload.killer);
+
+            // 2. Comprobar si el equipo del jugador local ha sido eliminado por completo
+            var localPlayerController = FindFirstObjectByType<AnimalMagicRoyale.Player.PlayerController>();
+            if (localPlayerController != null)
             {
-                // Lógica de espectador si muere el jugador local
-                var playerController = payload.victim.GetComponent<AnimalMagicRoyale.Player.PlayerController>();
-                if (playerController != null)
+                GameObject localPlayer = localPlayerController.gameObject;
+                
+                // Si la víctima es el jugador local, intentamos poner modo espectador
+                if (payload.victim == localPlayer)
                 {
-                    HandleLocalPlayerDeathSpectator(payload.victim);
+                    HandleLocalPlayerDeathSpectator(localPlayer);
+                }
+                else if (StateMachine.CurrentState != GameOverState)
+                {
+                    // Si murió un bot, comprobamos si el jugador local está muerto y no le quedan aliados
+                    if (!alivePlayers.Contains(localPlayer))
+                    {
+                        GameObject teammate = GetAliveTeammate(localPlayer);
+                        if (teammate == null)
+                        {
+                            Debug.Log("[GameManager] Local player's last teammate died. Proceeding to Game Over.");
+                            StateMachine.ChangeState(GameOverState);
+                        }
+                    }
                 }
             }
-            
-            UnregisterPlayer(payload.victim, payload.killer);
         }
 
         private void HandleLocalPlayerDeathSpectator(GameObject localPlayer)
