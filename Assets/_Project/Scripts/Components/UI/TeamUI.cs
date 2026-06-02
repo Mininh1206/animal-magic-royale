@@ -149,7 +149,7 @@ namespace AnimalMagicRoyale.Components.UI
         private void Update()
         {
             if (UnityEngine.Camera.main == null || teamContainer == null || teamContainer.panel == null) return;
-            var root = teamContainer.parent;
+            var root = teamContainer.panel.visualTree;
             if (root == null) return;
             if (GameManager.Instance == null || TeamManager.Instance == null || localPlayer == null) return;
 
@@ -199,15 +199,23 @@ namespace AnimalMagicRoyale.Components.UI
                 var colliders = p.GetComponentsInChildren<Collider>();
                 if (colliders != null && colliders.Length > 0)
                 {
-                    float maxY = colliders[0].bounds.max.y;
-                    for (int i = 1; i < colliders.Length; i++)
+                    bool foundValid = false;
+                    float maxY = float.MinValue;
+                    foreach (var col in colliders)
                     {
-                        if (!colliders[i].isTrigger && colliders[i].bounds.max.y > maxY)
+                        if (!col.isTrigger)
                         {
-                            maxY = colliders[i].bounds.max.y;
+                            if (!foundValid || col.bounds.max.y > maxY)
+                            {
+                                maxY = col.bounds.max.y;
+                                foundValid = true;
+                            }
                         }
                     }
-                    topY = maxY + 0.5f; // Ajustado exactamente encima del collider
+                    if (foundValid)
+                    {
+                        topY = maxY + 0.5f; // Ajustado exactamente encima del collider
+                    }
                 }
 
                 Vector3 targetPos = new Vector3(p.transform.position.x, topY, p.transform.position.z);

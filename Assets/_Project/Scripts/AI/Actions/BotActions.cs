@@ -230,14 +230,14 @@ namespace AnimalMagicRoyale.AI
                     if (ZoneManager.Instance != null && ZoneManager.Instance.IsActive)
                     {
                         center = ZoneManager.Instance.ZoneCenter;
-                        patrolRadius = Mathf.Max(10f, ZoneManager.Instance.CurrentRadius * 0.7f);
+                        patrolRadius = Mathf.Max(10f, (ZoneManager.Instance.CurrentDiameter / 2f) * 0.7f);
                     }
                     
                     Vector2 rand = Random.insideUnitCircle * patrolRadius;
                     Vector3 dest = center + new Vector3(rand.x, 0, rand.y);
                     
                     // Comprobar que el punto es válido en el NavMesh
-                    if (UnityEngine.AI.NavMesh.SamplePosition(dest, out UnityEngine.AI.NavMeshHit hit, 10f, UnityEngine.AI.NavMesh.AllAreas))
+                    if (UnityEngine.AI.NavMesh.SamplePosition(dest, out UnityEngine.AI.NavMeshHit hit, patrolRadius, UnityEngine.AI.NavMesh.AllAreas))
                     {
                         ctx.Bot.Agent.speed = 5f; // Andar patrullando
                         ctx.Bot.Agent.SetDestination(hit.position);
