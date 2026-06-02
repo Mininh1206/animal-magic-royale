@@ -43,6 +43,13 @@ namespace AnimalMagicRoyale.Components
                         t.gameObject.SetActive(false);
                     }
                 }
+                
+                // Destruir cualquier colisionador físico que traiga el modelo 3D para evitar choques fantasma
+                var colliders = visual.GetComponentsInChildren<Collider>(true);
+                foreach (var c in colliders)
+                {
+                    Destroy(c);
+                }
             }
 #endif
             if (visual == null)

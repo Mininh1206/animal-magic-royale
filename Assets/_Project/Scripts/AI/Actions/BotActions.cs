@@ -230,15 +230,24 @@ namespace AnimalMagicRoyale.AI
                     {
                         if (ctx.Bot.Agent.isOnNavMesh && ctx.Bot.Agent.isActiveAndEnabled) ctx.Bot.Agent.isStopped = true;
                         
-                        if (lootBox != null)
+                        // Hacer lo mismo que el jugador: OverlapSphere
+                        var colliders = Physics.OverlapSphere(ctx.Bot.transform.position, 3f);
+                        bool interacted = false;
+
+                        foreach (var col in colliders)
                         {
-                            if (lootBox.TryOpen(ctx.Bot.gameObject))
+                            var lb = col.GetComponent<LootBox>();
+                            if (lb != null)
                             {
-                                // Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} abrió un cofre.");
-                                return NodeStatus.Success;
+                                if (lb.TryOpen(ctx.Bot.gameObject))
+                                {
+                                    interacted = true;
+                                    break;
+                                }
                             }
-                        }
-                        else if (pickup != null && pickup.containedSpell != null)
+                            
+                            var p = col.GetComponent<SpellPickup>();
+                            if (p != null && p.containedSpell != null)
                             {
                                 int targetSlot = -1;
                                 int lowestTier = int.MaxValue;
@@ -260,17 +269,20 @@ namespace AnimalMagicRoyale.AI
                                 if (targetSlot != -1)
                                 {
                                     ctx.Bot.Inventory.SelectSlot(targetSlot);
-                                    if (pickup.TryPickup(ctx.Bot.gameObject))
+                                    if (p.TryPickup(ctx.Bot.gameObject))
                                     {
                                         if (TeamMemorySystem.Instance != null)
 #pragma warning disable CS0618
-                                            TeamMemorySystem.Instance.RemoveSpell(ctx.TeamId, pickup.gameObject.GetEntityId());
+                                            TeamMemorySystem.Instance.RemoveSpell(ctx.TeamId, p.gameObject.GetEntityId());
 #pragma warning restore CS0618
-                                        // Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} recogió un hechizo.");
-                                        return NodeStatus.Success;
+                                        interacted = true;
+                                        break;
                                     }
                                 }
                             }
+                        }
+
+                        if (interacted) return NodeStatus.Success;
                         return NodeStatus.Failure;
                     }
                     
