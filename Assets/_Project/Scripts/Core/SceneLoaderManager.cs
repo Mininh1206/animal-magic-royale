@@ -14,6 +14,7 @@ namespace AnimalMagicRoyale.Core
         private UIDocument uiDocument;
         private VisualElement loadingContainer;
         private VisualElement progressBarFill;
+        private AudioListener _tempAudioListener;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void AutoInitialize()
@@ -52,6 +53,10 @@ namespace AnimalMagicRoyale.Core
                     
                     if (loadingContainer != null) loadingContainer.style.display = DisplayStyle.None;
                 }
+
+                _tempAudioListener = gameObject.GetComponent<AudioListener>();
+                if (_tempAudioListener == null) _tempAudioListener = gameObject.AddComponent<AudioListener>();
+                _tempAudioListener.enabled = false;
             }
             else
             {
@@ -94,7 +99,11 @@ namespace AnimalMagicRoyale.Core
 
                 if (asyncLoad.progress >= 0.9f)
                 {
-                    asyncLoad.allowSceneActivation = true;
+                    if (!asyncLoad.allowSceneActivation)
+                    {
+                        if (_tempAudioListener != null) _tempAudioListener.enabled = true;
+                        asyncLoad.allowSceneActivation = true;
+                    }
                 }
                 
                 yield return null;
@@ -104,7 +113,10 @@ namespace AnimalMagicRoyale.Core
             yield return new WaitForSeconds(0.5f);
             
             // Wait for main camera to exist (player/spectator instantiated)
-            yield return new WaitUntil(() => UnityEngine.Camera.main != null);
+            // Fallback to allCamerasCount in case the camera is not tagged as "MainCamera"
+            yield return new WaitUntil(() => UnityEngine.Camera.main != null || UnityEngine.Camera.allCamerasCount > 0);
+            
+            if (_tempAudioListener != null) _tempAudioListener.enabled = false;
             
             if (loadingContainer != null) 
             {
