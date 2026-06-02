@@ -16,3 +16,4 @@ MonoBehaviour:
   animalType: 1
   previewIcon: {fileID: 21300000, guid: 9719c6c363b825a4b8ff4f93346037ab, type: 3}
   modelPrefab: {fileID: 919132149155446097, guid: 19d69fbec2f51d74d929cf61759886af, type: 3}
+  animatorController: {fileID: 9100000, guid: 61543e7078ed6b847b95434f709d7c81, type: 2}
