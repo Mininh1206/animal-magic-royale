@@ -21,9 +21,7 @@ namespace AnimalMagicRoyale.Components
             // Crear un objeto visual para el pickup en la capa Drops
             gameObject.layer = LayerMask.NameToLayer("Drops");
 
-#if UNITY_EDITOR
-            string assetPath = "Assets/_Project/Core/Art/ScrollFiles/ScrollBookCandle.fbx";
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            GameObject prefab = Resources.Load<GameObject>("ScrollBookCandle");
             if (prefab != null)
             {
                 visual = Instantiate(prefab, transform);
@@ -51,7 +49,6 @@ namespace AnimalMagicRoyale.Components
                     Destroy(c);
                 }
             }
-#endif
             if (visual == null)
             {
                 // Fallback to a placeholder cube if fbx is not found or in build (since we can't use AssetDatabase in build)
