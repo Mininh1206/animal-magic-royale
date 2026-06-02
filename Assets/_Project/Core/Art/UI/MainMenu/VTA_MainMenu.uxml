@@ -16,7 +16,10 @@
                     </ui:Button>
                 </ui:VisualElement>
                 
-                <ui:VisualElement class="top-right">
+                <ui:VisualElement class="top-right" style="flex-direction: row;">
+                    <ui:Button name="HelpButton" class="btn-icon" style="margin-right: 10px;">
+                        <ui:Label text="?" style="font-size: 24px; -unity-font-style: bold; color: white;" />
+                    </ui:Button>
                     <ui:Button name="SettingsButton" class="btn-icon">
                         <ui:VisualElement class="icon-settings" />
                     </ui:Button>
@@ -60,7 +63,7 @@
             <ui:VisualElement name="CustomizationPanel" class="customization-panel" style="display: none;">
                 <ui:VisualElement class="customization-left">
                     <ui:Label text="TIPO DE ANIMAL" class="column-title"/>
-                    <ui:ScrollView name="AnimalGrid" class="animal-grid" style="flex-grow: 1;" />
+                    <ui:ScrollView name="AnimalGrid" class="animal-grid" style="flex-grow: 1;" mode="Vertical" horizontal-scroller-visibility="Hidden" />
                     <!-- Ability info -->
                     <ui:VisualElement class="ability-container">
                         <ui:Label text="HABILIDAD" class="ability-title"/>
@@ -74,6 +77,32 @@
                 <ui:VisualElement class="customization-right">
                     <ui:Label text="SKINS" class="column-title"/>
                     <ui:ScrollView name="SkinSelector" class="skin-selector" style="flex-grow: 1;" mode="Vertical" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Help Panel (Hidden initially) -->
+            <ui:VisualElement name="HelpPanel" class="customization-panel" style="display: none; flex-direction: column;">
+                <ui:VisualElement style="flex-direction: row; justify-content: space-between; padding: 20px;">
+                    <ui:Label text="COMPENDIO DE HECHIZOS" class="column-title" style="font-size: 32px;"/>
+                    <ui:Button name="CloseHelpButton" class="btn-icon" style="background-color: #D32F2F;">
+                        <ui:Label text="X" style="font-size: 24px; -unity-font-style: bold; color: white;" />
+                    </ui:Button>
+                </ui:VisualElement>
+                
+                <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
+                    <!-- Spell Grid -->
+                    <ui:VisualElement style="flex: 2; padding: 20px;">
+                        <ui:ScrollView name="SpellCompendiumGrid" style="flex-grow: 1;" mode="Vertical" />
+                    </ui:VisualElement>
+                    
+                    <!-- Spell Detail -->
+                    <ui:VisualElement style="flex: 1; padding: 20px; background-color: rgba(0,0,0,0.5); border-radius: 10px; margin: 20px;">
+                        <ui:Label text="DETALLES" class="column-title"/>
+                        <ui:Image name="HelpSpellIcon" style="width: 100px; height: 100px; align-self: center; margin-top: 20px; margin-bottom: 20px;"/>
+                        <ui:Label name="HelpSpellName" text="Selecciona un hechizo" style="font-size: 24px; -unity-font-style: bold; color: white; -unity-text-align: upper-center; margin-bottom: 10px;"/>
+                        <ui:Label name="HelpSpellTier" text="" style="font-size: 18px; color: #FFA500; -unity-text-align: upper-center; margin-bottom: 20px;"/>
+                        <ui:Label name="HelpSpellDesc" text="" style="font-size: 16px; color: #CCCCCC; white-space: normal; -unity-text-align: upper-left;"/>
+                    </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
 

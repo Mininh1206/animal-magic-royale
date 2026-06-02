@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using AnimalMagicRoyale.Core.Data;
 using AnimalMagicRoyale.Core;
+using AnimalMagicRoyale.Spells;
 
 namespace AnimalMagicRoyale.Components.UI
 {
@@ -22,11 +23,19 @@ namespace AnimalMagicRoyale.Components.UI
         // UI Elements
         private VisualElement lobbyPanel;
         private VisualElement customizationPanel;
+        private VisualElement helpPanel;
         private ScrollView mapSelector;
         private ScrollView animalGrid; // was VisualElement, changed to ScrollView in UXML
         private ScrollView skinGrid;
         private VisualElement previewArea;
         private Label abilityText;
+
+        // Help Panel Elements
+        private ScrollView spellCompendiumGrid;
+        private UnityEngine.UIElements.Image helpSpellIcon;
+        private Label helpSpellName;
+        private Label helpSpellTier;
+        private Label helpSpellDesc;
 
         // Top Bar Toggle
         private Button btnCustomize;
@@ -59,6 +68,7 @@ namespace AnimalMagicRoyale.Components.UI
 
             lobbyPanel = root.Q<VisualElement>("LobbyPanel");
             customizationPanel = root.Q<VisualElement>("CustomizationPanel");
+            helpPanel = root.Q<VisualElement>("HelpPanel");
 
             btnCustomize = root.Q<Button>("CustomizeButton");
             if (btnCustomize != null)
@@ -70,6 +80,12 @@ namespace AnimalMagicRoyale.Components.UI
 
             Button btnSettings = root.Q<Button>("SettingsButton");
             if (btnSettings != null) btnSettings.clicked += OpenSettings;
+
+            Button btnHelp = root.Q<Button>("HelpButton");
+            if (btnHelp != null) btnHelp.clicked += ToggleHelpPanel;
+
+            Button btnCloseHelp = root.Q<Button>("CloseHelpButton");
+            if (btnCloseHelp != null) btnCloseHelp.clicked += SwitchToLobby;
 
             mapSelector = root.Q<ScrollView>("MapSelector");
             
@@ -93,6 +109,12 @@ namespace AnimalMagicRoyale.Components.UI
             skinGrid = root.Q<ScrollView>("SkinSelector");
             previewArea = root.Q<VisualElement>("PreviewArea");
             abilityText = root.Q<Label>("AbilityText");
+
+            spellCompendiumGrid = root.Q<ScrollView>("SpellCompendiumGrid");
+            helpSpellIcon = root.Q<UnityEngine.UIElements.Image>("HelpSpellIcon");
+            helpSpellName = root.Q<Label>("HelpSpellName");
+            helpSpellTier = root.Q<Label>("HelpSpellTier");
+            helpSpellDesc = root.Q<Label>("HelpSpellDesc");
 
             if (characterPreview != null && previewArea != null)
             {
@@ -165,6 +187,58 @@ namespace AnimalMagicRoyale.Components.UI
                 SelectAnimal(availableAnimals[defaultIndex], generatedAnimalCards[defaultIndex]);
             }
 
+            // Populate Spells Compendium
+            if (spellCompendiumGrid != null)
+            {
+                spellCompendiumGrid.Clear();
+                // Utilizando flex-direction: row y flex-wrap: wrap en el contentContainer para crear la cuadrícula
+                spellCompendiumGrid.contentContainer.style.flexDirection = FlexDirection.Row;
+                spellCompendiumGrid.contentContainer.style.flexWrap = Wrap.Wrap;
+
+                SpellData[] allSpells = Resources.LoadAll<SpellData>("Spells");
+                System.Array.Sort(allSpells, (a, b) => a.tier.CompareTo(b.tier)); // Ordenar por tier
+
+                foreach (var spell in allSpells)
+                {
+                    VisualElement spellCard = new VisualElement();
+                    spellCard.style.width = 80;
+                    spellCard.style.height = 80;
+                    spellCard.style.marginRight = 10;
+                    spellCard.style.marginBottom = 10;
+                    spellCard.style.backgroundColor = new StyleColor(new Color(0.2f, 0.2f, 0.2f));
+                    spellCard.style.borderTopLeftRadius = 10;
+                    spellCard.style.borderTopRightRadius = 10;
+                    spellCard.style.borderBottomLeftRadius = 10;
+                    spellCard.style.borderBottomRightRadius = 10;
+                    spellCard.style.borderTopWidth = 2;
+                    spellCard.style.borderBottomWidth = 2;
+                    spellCard.style.borderLeftWidth = 2;
+                    spellCard.style.borderRightWidth = 2;
+
+                    // Color del borde según tier
+                    Color tierColor = Color.white;
+                    if (spell.tier == SpellTier.Hormiga) tierColor = Color.green;
+                    else if (spell.tier == SpellTier.Ornitorrinco) tierColor = Color.cyan;
+                    else if (spell.tier == SpellTier.GOAT) tierColor = new Color(0.8f, 0f, 1f);
+                    
+                    spellCard.style.borderTopColor = tierColor;
+                    spellCard.style.borderBottomColor = tierColor;
+                    spellCard.style.borderLeftColor = tierColor;
+                    spellCard.style.borderRightColor = tierColor;
+
+                    UnityEngine.UIElements.Image icon = new UnityEngine.UIElements.Image();
+                    icon.sprite = spell.icon;
+                    icon.style.width = Length.Percent(80);
+                    icon.style.height = Length.Percent(80);
+                    icon.style.alignSelf = Align.Center;
+                    icon.style.marginTop = Length.Percent(10);
+                    
+                    spellCard.Add(icon);
+                    spellCard.RegisterCallback<ClickEvent>(evt => SelectHelpSpell(spell));
+                    spellCompendiumGrid.Add(spellCard);
+                }
+            }
+
             // Default Team Mode (Solo)
             SelectTeamMode(TeamMode.Solo, btnSolo);
         }
@@ -186,6 +260,7 @@ namespace AnimalMagicRoyale.Components.UI
             isInLobby = true;
             if (lobbyPanel != null) lobbyPanel.style.display = DisplayStyle.Flex;
             if (customizationPanel != null) customizationPanel.style.display = DisplayStyle.None;
+            if (helpPanel != null) helpPanel.style.display = DisplayStyle.None;
 
             if (customizeLabel != null) customizeLabel.text = "CUSTOMIZE";
             if (customizeIcon != null) customizeIcon.style.display = DisplayStyle.Flex;
@@ -196,9 +271,42 @@ namespace AnimalMagicRoyale.Components.UI
             isInLobby = false;
             if (lobbyPanel != null) lobbyPanel.style.display = DisplayStyle.None;
             if (customizationPanel != null) customizationPanel.style.display = DisplayStyle.Flex;
+            if (helpPanel != null) helpPanel.style.display = DisplayStyle.None;
 
             if (customizeLabel != null) customizeLabel.text = "VOLVER";
             if (customizeIcon != null) customizeIcon.style.display = DisplayStyle.None;
+        }
+        
+        public void ToggleHelpPanel()
+        {
+            isInLobby = false;
+            if (lobbyPanel != null) lobbyPanel.style.display = DisplayStyle.None;
+            if (customizationPanel != null) customizationPanel.style.display = DisplayStyle.None;
+            if (helpPanel != null) helpPanel.style.display = DisplayStyle.Flex;
+            
+            if (customizeLabel != null) customizeLabel.text = "VOLVER";
+            if (customizeIcon != null) customizeIcon.style.display = DisplayStyle.None;
+        }
+
+        private void SelectHelpSpell(SpellData spell)
+        {
+            if (helpSpellIcon != null) helpSpellIcon.sprite = spell.icon;
+            if (helpSpellName != null) helpSpellName.text = spell.spellName;
+            
+            if (helpSpellTier != null) 
+            {
+                helpSpellTier.text = spell.tier.ToString().ToUpper();
+                Color tierColor = Color.white;
+                if (spell.tier == SpellTier.Hormiga) tierColor = Color.green;
+                else if (spell.tier == SpellTier.Ornitorrinco) tierColor = Color.cyan;
+                else if (spell.tier == SpellTier.GOAT) tierColor = new Color(0.8f, 0f, 1f);
+                helpSpellTier.style.color = new StyleColor(tierColor);
+            }
+            
+            if (helpSpellDesc != null)
+            {
+                helpSpellDesc.text = $"Daño/CD: {spell.cooldown}s\n\n{spell.description}";
+            }
         }
 
         private void OpenSettings()
