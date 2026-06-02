@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.Abilities.EmergencyFlightAbility
   abilityName: Vuelo de Emergencia
   cooldown: 45
-  icon: {fileID: 21300014, guid: 215687feeab0b7445b4a1cd86c82c2e1, type: 3}
+  icon: {fileID: 21300000, guid: d6acd0b54bdf8f645afef2e7ec768fda, type: 3}
   jumpImpulse: 15
   glideGravity: -5
   duration: 4

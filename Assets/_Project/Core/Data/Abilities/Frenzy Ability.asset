@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333746aea0a28842bfbb7aa54c7dac2, type: 3}
   m_Name: Frenzy Ability
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Components.Abilities.FrenzyAbility
-  abilityName: 
+  abilityName: "Frenes\xED"
   cooldown: 45
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: c2d4f7a98f5d6eb4ca673d1b0a1d8eb7, type: 3}
   speedMultiplier: 1.5
   duration: 5
