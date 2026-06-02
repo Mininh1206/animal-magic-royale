@@ -13,8 +13,8 @@ namespace AnimalMagicRoyale.Spells.Effects
             // Debug.Log($"[WallhackEffect] {target.name} activó visión a través de paredes por {duration}s.");
             
             // Wallhack es un buff para el jugador local, si este es el local:
-            var input = target.GetComponent<UnityEngine.InputSystem.PlayerInput>();
-            if (input != null && input.enabled)
+            var playerCtrl = target.GetComponent<AnimalMagicRoyale.Player.PlayerController>();
+            if (playerCtrl != null)
             {
                 var whComp = target.AddComponent<WallhackComponent>();
                 whComp.Initialize(duration);

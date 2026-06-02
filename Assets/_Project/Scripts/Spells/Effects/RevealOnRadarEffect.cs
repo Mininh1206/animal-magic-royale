@@ -12,8 +12,8 @@ namespace AnimalMagicRoyale.Spells.Effects
             if (target == null) return;
             // Debug.Log($"[RevealOnRadarEffect] {target.name} revela a enemigos en MinimapUI por {duration}s.");
             
-            var input = target.GetComponent<UnityEngine.InputSystem.PlayerInput>();
-            if (input != null && input.enabled)
+            var playerCtrl = target.GetComponent<AnimalMagicRoyale.Player.PlayerController>();
+            if (playerCtrl != null)
             {
                 var radarComp = target.AddComponent<RevealOnRadarComponent>();
                 radarComp.Initialize(duration);

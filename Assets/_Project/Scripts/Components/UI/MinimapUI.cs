@@ -87,7 +87,7 @@ namespace AnimalMagicRoyale.Components.UI
 
             foreach (var player in AnimalMagicRoyale.Core.GameManager.Instance.AlivePlayers)
             {
-                if (player == trackedTarget.gameObject) continue;
+                if (player == null || player == trackedTarget.gameObject) continue;
 
                 int pTeam = AnimalMagicRoyale.Core.TeamManager.Instance.GetTeam(player);
                 bool isEnemy = pTeam != myTeam;
@@ -154,7 +154,7 @@ namespace AnimalMagicRoyale.Components.UI
             var toRemove = new System.Collections.Generic.List<GameObject>();
             foreach (var kvp in teamMarkers)
             {
-                if (!AnimalMagicRoyale.Core.GameManager.Instance.AlivePlayers.Contains(kvp.Key))
+                if (kvp.Key == null || !AnimalMagicRoyale.Core.GameManager.Instance.AlivePlayers.Contains(kvp.Key))
                 {
                     kvp.Value.RemoveFromHierarchy();
                     toRemove.Add(kvp.Key);

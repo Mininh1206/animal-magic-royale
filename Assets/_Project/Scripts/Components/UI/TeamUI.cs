@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using AnimalMagicRoyale.Core;
 using AnimalMagicRoyale.Components;
+using System.Linq;
 
 namespace AnimalMagicRoyale.Components.UI
 {
@@ -253,6 +254,18 @@ namespace AnimalMagicRoyale.Components.UI
                 nameLabel.style.width = 100;
                 nameLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
             }
+
+            // Limpieza de nombres flotantes de bots/jugadores destruidos o muertos
+            var toRemoveNames = new System.Collections.Generic.List<GameObject>();
+            foreach (var kvp in floatingNames)
+            {
+                if (kvp.Key == null || !GameManager.Instance.AlivePlayers.Contains(kvp.Key))
+                {
+                    kvp.Value.RemoveFromHierarchy();
+                    toRemoveNames.Add(kvp.Key);
+                }
+            }
+            foreach (var k in toRemoveNames) floatingNames.Remove(k);
         }
     }
 }
