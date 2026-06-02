@@ -195,7 +195,7 @@ namespace AnimalMagicRoyale.Core
         {
             if (GameManager.Instance != null)
             {
-                var trackers = FindObjectsByType<ZoneDamageTracker>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+                var trackers = FindObjectsByType<ZoneDamageTracker>(FindObjectsInactive.Exclude);
                 foreach (var tracker in trackers)
                 {
                     bool inside = IsInsideZone(tracker.transform.position);
@@ -213,7 +213,7 @@ namespace AnimalMagicRoyale.Core
                 
                 if (GameManager.Instance != null)
                 {
-                    var trackers = FindObjectsByType<ZoneDamageTracker>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+                    var trackers = FindObjectsByType<ZoneDamageTracker>(FindObjectsInactive.Exclude);
                     foreach (var tracker in trackers)
                     {
                         if (tracker.isOutside)
