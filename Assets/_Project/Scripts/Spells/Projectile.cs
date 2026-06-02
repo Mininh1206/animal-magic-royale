@@ -215,7 +215,8 @@ namespace AnimalMagicRoyale.Spells
                 {
                     if (effect != null)
                     {
-                        effect.Apply(caster, other.gameObject);
+                        GameObject targetToApply = targetHealth != null ? targetHealth.gameObject : other.gameObject;
+                        effect.Apply(caster, targetToApply);
                     }
                 }
             }
