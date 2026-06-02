@@ -43,6 +43,22 @@ namespace AnimalMagicRoyale.Player
                 if (Vector3.Dot(cam.transform.forward, hit.point - firePointPosition) > 0)
                 {
                     targetPoint = hit.point;
+
+                    // Ajuste de altura (eje Y) para apuntar al centro de la masa si se golpea a un personaje
+                    var charController = hit.collider.GetComponentInParent<CharacterController>();
+                    if (charController != null)
+                    {
+                        targetPoint = charController.transform.position + Vector3.up * (charController.height / 2f);
+                    }
+                    else
+                    {
+                        var navAgent = hit.collider.GetComponentInParent<UnityEngine.AI.NavMeshAgent>();
+                        if (navAgent != null)
+                        {
+                            targetPoint = navAgent.transform.position + Vector3.up * (navAgent.height / 2f);
+                        }
+                    }
+
                     break;
                 }
             }
