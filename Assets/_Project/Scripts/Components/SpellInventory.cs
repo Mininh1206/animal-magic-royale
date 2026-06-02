@@ -62,7 +62,7 @@ namespace AnimalMagicRoyale.Components
             return true;
         }
 
-        private void DropSpell(SpellData spellToDrop)
+        public void DropSpell(SpellData spellToDrop)
         {
             if (spellToDrop == null) return;
             

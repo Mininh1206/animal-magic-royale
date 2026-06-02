@@ -19,8 +19,8 @@ namespace AnimalMagicRoyale.Components
             // Add a visual representation
             GameObject visual = null;
 #if UNITY_EDITOR
-            // Try to load the scroll book prefab first
-            // TODO: Change this path to the new asset you want to use
+            // Crear un objeto visual para el pickup en la capa Drops
+            gameObject.layer = LayerMask.NameToLayer("Drops");
             string assetPath = "Assets/_Project/Core/Art/ScrollFiles/ScrollBookCandle.fbx";
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             if (prefab != null)
