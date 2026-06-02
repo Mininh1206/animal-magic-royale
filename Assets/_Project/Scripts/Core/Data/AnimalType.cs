@@ -27,7 +27,6 @@ namespace AnimalMagicRoyale.Core.Data
         public CharacterAudioData audioData;
         
         [Header("Customization")]
-        public RuntimeAnimatorController animatorController;
         public SkinData defaultSkin;
         public List<SkinData> availableSkins = new List<SkinData>();
     }

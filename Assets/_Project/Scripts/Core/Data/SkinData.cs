@@ -12,5 +12,6 @@ namespace AnimalMagicRoyale.Core.Data
         [Header("Visuals")]
         public Sprite previewIcon;
         public GameObject modelPrefab;
+        public RuntimeAnimatorController animatorController;
     }
 }

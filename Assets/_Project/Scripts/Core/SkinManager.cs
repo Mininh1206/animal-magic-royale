@@ -67,7 +67,7 @@ namespace AnimalMagicRoyale.Core
 
             ClearPreviousModel();
             InstantiateModel(skin);
-            UpdateAnimator(animalType);
+            UpdateAnimator(skin);
             
             Bounds modelBounds = CalculateModelBounds(_currentModelInstance);
             
@@ -112,15 +112,15 @@ namespace AnimalMagicRoyale.Core
             SetLayerRecursively(_currentModelInstance, gameObject.layer);
         }
 
-        private void UpdateAnimator(AnimalType animalType)
+        private void UpdateAnimator(SkinData skin)
         {
             Animator newAnimator = _currentModelInstance.GetComponentInChildren<Animator>();
             if (newAnimator != null)
             {
-                if (animalType != null && animalType.animatorController != null)
+                if (skin != null && skin.animatorController != null)
                 {
-                    newAnimator.runtimeAnimatorController = animalType.animatorController;
-                    Debug.Log($"[SkinManager] Applied AnimatorController {animalType.animatorController.name}");
+                    newAnimator.runtimeAnimatorController = skin.animatorController;
+                    Debug.Log($"[SkinManager] Applied AnimatorController {skin.animatorController.name}");
                 }
 
                 if (_animHandler != null)
