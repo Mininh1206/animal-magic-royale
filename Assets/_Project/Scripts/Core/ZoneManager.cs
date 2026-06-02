@@ -18,11 +18,11 @@ namespace AnimalMagicRoyale.Core
 
         private int currentPhaseIndex = 0;
         private float phaseTimer = 0f;
-        private float currentRadius;
-        private float targetRadius;
+        private float currentDiameter;
+        private float targetDiameter;
         private Vector3 zoneCenter;
         
-        public float CurrentRadius => currentRadius;
+        public float CurrentDiameter => currentDiameter;
         public Vector3 ZoneCenter => zoneCenter;
         private bool isActive = false;
         private bool isShrinking = false;
@@ -53,7 +53,7 @@ namespace AnimalMagicRoyale.Core
                     zoneCollider = zoneVisual.gameObject.AddComponent<CapsuleCollider>();
                     zoneCollider.isTrigger = true;
                     zoneCollider.height = 20f; // Multiplicado por localScale.y (100) = 2000 de altura
-                    zoneCollider.radius = 0.5f; // Multiplicado por localScale.x (currentRadius * 2) = currentRadius
+                    zoneCollider.radius = 0.5f; // Multiplicado por localScale.x (currentDiameter) = radio real
                     zoneCollider.direction = 1; // Y-Axis
                     
                     var proxy = zoneVisual.gameObject.AddComponent<ZoneDamageColliderProxy>();
@@ -76,21 +76,21 @@ namespace AnimalMagicRoyale.Core
             {
                 // Fallback para pruebas rápidas en escena
                 var phase1 = ScriptableObject.CreateInstance<ZonePhaseData>();
-                phase1.startRadius = 200f; phase1.endRadius = 100f; phase1.waitBeforeShrink = 10f; phase1.shrinkDuration = 20f; phase1.baseDamage = 5f;
+                phase1.startDiameter = 400f; phase1.endDiameter = 200f; phase1.waitBeforeShrink = 10f; phase1.shrinkDuration = 20f; phase1.baseDamage = 5f;
                 var phase2 = ScriptableObject.CreateInstance<ZonePhaseData>();
-                phase2.startRadius = 100f; phase2.endRadius = 30f; phase2.waitBeforeShrink = 10f; phase2.shrinkDuration = 20f; phase2.baseDamage = 10f;
+                phase2.startDiameter = 200f; phase2.endDiameter = 60f; phase2.waitBeforeShrink = 10f; phase2.shrinkDuration = 20f; phase2.baseDamage = 10f;
                 var phase3 = ScriptableObject.CreateInstance<ZonePhaseData>();
-                phase3.startRadius = 30f; phase3.endRadius = 5f; phase3.waitBeforeShrink = 10f; phase3.shrinkDuration = 20f; phase3.baseDamage = 20f;
+                phase3.startDiameter = 60f; phase3.endDiameter = 10f; phase3.waitBeforeShrink = 10f; phase3.shrinkDuration = 20f; phase3.baseDamage = 20f;
                 var phase4 = ScriptableObject.CreateInstance<ZonePhaseData>();
-                phase4.startRadius = 5f; phase4.endRadius = 0f; phase4.waitBeforeShrink = 10f; phase4.shrinkDuration = 20f; phase4.baseDamage = 50f;
+                phase4.startDiameter = 10f; phase4.endDiameter = 0f; phase4.waitBeforeShrink = 10f; phase4.shrinkDuration = 20f; phase4.baseDamage = 50f;
                 
                 phases = new ZonePhaseData[] { phase1, phase2, phase3, phase4 };
             }
 
             if (phases.Length > 0)
             {
-                currentRadius = phases[0].startRadius;
-                targetRadius = phases[0].startRadius;
+                currentDiameter = phases[0].startDiameter;
+                targetDiameter = phases[0].startDiameter;
             }
 
             // Usar la posición del visual de la zona como centro (por si el manager está en otra parte)
@@ -104,10 +104,10 @@ namespace AnimalMagicRoyale.Core
             currentPhaseIndex = 0;
             if (phases.Length > 0)
             {
-                currentRadius = phases[currentPhaseIndex].startRadius;
-                targetRadius = phases[currentPhaseIndex].startRadius;
+                currentDiameter = phases[currentPhaseIndex].startDiameter;
+                targetDiameter = phases[currentPhaseIndex].startDiameter;
                 phaseTimer = phases[currentPhaseIndex].waitBeforeShrink;
-                Debug.Log($"[ZoneManager] Activated. Phase 0, start radius: {currentRadius}");
+                Debug.Log($"[ZoneManager] Activated. Phase 0, start diameter: {currentDiameter}");
             }
             else
             {
@@ -142,7 +142,7 @@ namespace AnimalMagicRoyale.Core
                 {
                     phaseTimer -= Time.deltaTime;
                     float t = 1f - (phaseTimer / currentPhase.shrinkDuration);
-                    currentRadius = Mathf.Lerp(currentPhase.startRadius, currentPhase.endRadius, t);
+                    currentDiameter = Mathf.Lerp(currentPhase.startDiameter, currentPhase.endDiameter, t);
                     UpdateVisuals();
 
                     if (phaseTimer <= 0)
@@ -160,16 +160,16 @@ namespace AnimalMagicRoyale.Core
         {
             isShrinking = true;
             phaseTimer = phase.shrinkDuration;
-            targetRadius = phase.endRadius;
-            Debug.Log($"[ZoneManager] Zone shrinking to {targetRadius} over {phaseTimer}s.");
+            targetDiameter = phase.endDiameter;
+            Debug.Log($"[ZoneManager] Zone shrinking to {targetDiameter} over {phaseTimer}s.");
 
             if (onZoneShrink != null)
             {
                 onZoneShrink.Raise(new ZoneShrinkPayload
                 {
                     phaseIndex = currentPhaseIndex,
-                    currentRadius = currentRadius,
-                    targetRadius = targetRadius,
+                    currentRadius = currentDiameter / 2f,
+                    targetRadius = targetDiameter / 2f,
                     duration = phase.shrinkDuration
                 });
             }
@@ -250,15 +250,15 @@ namespace AnimalMagicRoyale.Core
         {
             Vector3 position2D = new Vector3(position.x, 0, position.z);
             Vector3 center2D = new Vector3(zoneCenter.x, 0, zoneCenter.z);
-            return Vector3.Distance(position2D, center2D) <= currentRadius;
+            return Vector3.Distance(position2D, center2D) <= (currentDiameter / 2f);
         }
 
         private void UpdateVisuals()
         {
             if (zoneVisual != null)
             {
-                // El collider hereda esta escala. Al tener radio 0.5, el radio físico se ajusta a currentRadius exactamente.
-                zoneVisual.localScale = new Vector3(currentRadius * 2, 100f, currentRadius * 2);
+                // El collider hereda esta escala. Al tener radio 0.5, el radio físico se ajusta a currentDiameter/2.
+                zoneVisual.localScale = new Vector3(currentDiameter, 100f, currentDiameter);
             }
         }
 
