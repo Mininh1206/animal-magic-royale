@@ -6,7 +6,7 @@ namespace AnimalMagicRoyale.Spells
 {
     public enum TargetType
     {
-        Projectile,
+        Enemy,
         Self
     }
 
@@ -28,7 +28,7 @@ namespace AnimalMagicRoyale.Spells
         public int projectileCount = 1;
 
         [Header("Visuals & Logic")]
-        public TargetType targetType = TargetType.Projectile;
+        public TargetType targetType = TargetType.Enemy;
         public bool isHoming = false;
         public int maxBounces = 0;
         public GameObject projectilePrefab;
