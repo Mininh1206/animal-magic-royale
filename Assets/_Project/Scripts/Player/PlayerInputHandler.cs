@@ -82,22 +82,7 @@ namespace AnimalMagicRoyale.Player
         {
             if (playerController != null)
             {
-                if (Keyboard.current != null)
-                {
-                    var kb = AnimalMagicRoyale.Core.KeyBindingManager.Instance;
-                    if (kb != null && kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.Cancel))
-                    {
-                        Debug.Log("[PlayerInputHandler] Cancel action triggered.");
-                        if (AnimalMagicRoyale.Components.UI.InventoryUI.Instance != null && AnimalMagicRoyale.Components.UI.InventoryUI.Instance.IsOpen)
-                        {
-                            AnimalMagicRoyale.Components.UI.InventoryUI.Instance.Hide();
-                        }
-                        else if (AnimalMagicRoyale.Components.UI.SettingsManager.Instance != null)
-                        {
-                            AnimalMagicRoyale.Components.UI.SettingsManager.Instance.ToggleSettings();
-                        }
-                    }
-                }
+
 
                 if (UIStateManager.IsAnyMenuOpen())
                 {

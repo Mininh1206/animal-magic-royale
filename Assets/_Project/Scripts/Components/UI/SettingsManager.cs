@@ -141,6 +141,23 @@ namespace AnimalMagicRoyale.Components.UI
 
         private void Update()
         {
+            if (Keyboard.current != null)
+            {
+                var kb = KeyBindingManager.Instance;
+                if (kb != null && kb.GetActionDown(KeyBindingManager.GameAction.Cancel) && !isRebinding)
+                {
+                    Debug.Log("[SettingsManager] Cancel action triggered.");
+                    if (AnimalMagicRoyale.Components.UI.InventoryUI.Instance != null && AnimalMagicRoyale.Components.UI.InventoryUI.Instance.IsOpen)
+                    {
+                        AnimalMagicRoyale.Components.UI.InventoryUI.Instance.Hide();
+                    }
+                    else
+                    {
+                        ToggleSettings();
+                    }
+                }
+            }
+
             if (isRebinding && Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame)
             {
                 foreach (var keyControl in Keyboard.current.allKeys)
