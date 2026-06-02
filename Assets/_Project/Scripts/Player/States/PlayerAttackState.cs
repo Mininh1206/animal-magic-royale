@@ -19,13 +19,18 @@ namespace AnimalMagicRoyale.Player
 
         public override void Enter()
         {
+            // Debug.Log("[PlayerAttackState] Enter() called!");
             startTime = Time.time;
 
             if (inventory != null)
             {
                 Vector3 firePos = inventory.FirePoint != null ? inventory.FirePoint.position : player.transform.position + Vector3.up * 1f;
-                Vector3 direction = AimHelper.GetAimDirection(firePos);
+                Vector3 direction = AimHelper.GetAimDirection(firePos, player.gameObject);
                 inventory.TryCast(player.gameObject, direction);
+            }
+            else
+            {
+                Debug.LogError("[PlayerAttackState] ERROR: inventory is NULL! Cannot call TryCast.");
             }
         }
 

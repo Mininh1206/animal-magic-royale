@@ -6,8 +6,8 @@ namespace AnimalMagicRoyale.Core
     public class ZonePhaseData : ScriptableObject
     {
         [Header("Size & Timing")]
-        public float startRadius = 100f;
-        public float endRadius = 50f;
+        public float startDiameter = 200f;
+        public float endDiameter = 100f;
         public float shrinkDuration = 30f;
         public float waitBeforeShrink = 60f;
 

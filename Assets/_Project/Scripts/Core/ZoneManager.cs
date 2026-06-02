@@ -18,12 +18,16 @@ namespace AnimalMagicRoyale.Core
 
         private int currentPhaseIndex = 0;
         private float phaseTimer = 0f;
-        private float currentRadius;
-        private float targetRadius;
+        private float currentDiameter;
+        private float targetDiameter;
         private Vector3 zoneCenter;
+        
+        public float CurrentDiameter => currentDiameter;
+        public Vector3 ZoneCenter => zoneCenter;
         private bool isActive = false;
         private bool isShrinking = false;
-        private float damageTimer = 0f;
+        private float damageTimer = 1f; // Dar un pequeño margen (1s) antes del primer tick de daño
+        private CapsuleCollider zoneCollider;
 
         public bool IsActive => isActive;
         public bool IsShrinking => isShrinking;
@@ -35,6 +39,26 @@ namespace AnimalMagicRoyale.Core
             if (Instance == null)
             {
                 Instance = this;
+                if (onZoneShrink == null) onZoneShrink = Resources.Load<ZoneShrinkEvent>("Events/ZoneShrinkEvent");
+                
+                // Asegurarse de que el visual existe antes de asignarle el collider
+                if (zoneVisual != null)
+                {
+                    // Destruir colliders que pudieran venir por defecto en el modelo (ej. cilindro de Unity) para que no sean obstáculos físicos
+                    foreach (var col in zoneVisual.gameObject.GetComponents<Collider>())
+                    {
+                        Destroy(col);
+                    }
+
+                    zoneCollider = zoneVisual.gameObject.AddComponent<CapsuleCollider>();
+                    zoneCollider.isTrigger = true;
+                    zoneCollider.height = 20f; // Multiplicado por localScale.y (100) = 2000 de altura
+                    zoneCollider.radius = 0.5f; // Multiplicado por localScale.x (currentDiameter) = radio real
+                    zoneCollider.direction = 1; // Y-Axis
+                    
+                    var proxy = zoneVisual.gameObject.AddComponent<ZoneDamageColliderProxy>();
+                    proxy.Initialize(this);
+                }
             }
             else
             {
@@ -44,12 +68,33 @@ namespace AnimalMagicRoyale.Core
 
         private void Start()
         {
+            if (AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap != null && AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap.zonePhases != null && AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap.zonePhases.Count > 0)
+            {
+                phases = AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap.zonePhases.ToArray();
+            }
+            else if (phases == null || phases.Length == 0)
+            {
+                // Fallback para pruebas rápidas en escena
+                var phase1 = ScriptableObject.CreateInstance<ZonePhaseData>();
+                phase1.startDiameter = 400f; phase1.endDiameter = 200f; phase1.waitBeforeShrink = 10f; phase1.shrinkDuration = 20f; phase1.baseDamage = 5f;
+                var phase2 = ScriptableObject.CreateInstance<ZonePhaseData>();
+                phase2.startDiameter = 200f; phase2.endDiameter = 60f; phase2.waitBeforeShrink = 10f; phase2.shrinkDuration = 20f; phase2.baseDamage = 10f;
+                var phase3 = ScriptableObject.CreateInstance<ZonePhaseData>();
+                phase3.startDiameter = 60f; phase3.endDiameter = 10f; phase3.waitBeforeShrink = 10f; phase3.shrinkDuration = 20f; phase3.baseDamage = 20f;
+                var phase4 = ScriptableObject.CreateInstance<ZonePhaseData>();
+                phase4.startDiameter = 10f; phase4.endDiameter = 0f; phase4.waitBeforeShrink = 10f; phase4.shrinkDuration = 20f; phase4.baseDamage = 50f;
+                
+                phases = new ZonePhaseData[] { phase1, phase2, phase3, phase4 };
+            }
+
             if (phases.Length > 0)
             {
-                currentRadius = phases[0].startRadius;
-                targetRadius = phases[0].startRadius;
+                currentDiameter = phases[0].startDiameter;
+                targetDiameter = phases[0].startDiameter;
             }
-            zoneCenter = transform.position;
+
+            // Usar la posición del visual de la zona como centro (por si el manager está en otra parte)
+            zoneCenter = zoneVisual != null ? zoneVisual.position : transform.position;
             UpdateVisuals();
         }
 
@@ -59,10 +104,10 @@ namespace AnimalMagicRoyale.Core
             currentPhaseIndex = 0;
             if (phases.Length > 0)
             {
-                currentRadius = phases[currentPhaseIndex].startRadius;
-                targetRadius = phases[currentPhaseIndex].startRadius;
+                currentDiameter = phases[currentPhaseIndex].startDiameter;
+                targetDiameter = phases[currentPhaseIndex].startDiameter;
                 phaseTimer = phases[currentPhaseIndex].waitBeforeShrink;
-                Debug.Log($"[ZoneManager] Activated. Phase 0, start radius: {currentRadius}");
+                // Debug.Log($"[ZoneManager] Activated. Phase 0, start diameter: {currentDiameter}");
             }
             else
             {
@@ -97,7 +142,7 @@ namespace AnimalMagicRoyale.Core
                 {
                     phaseTimer -= Time.deltaTime;
                     float t = 1f - (phaseTimer / currentPhase.shrinkDuration);
-                    currentRadius = Mathf.Lerp(currentPhase.startRadius, currentPhase.endRadius, t);
+                    currentDiameter = Mathf.Lerp(currentPhase.startDiameter, currentPhase.endDiameter, t);
                     UpdateVisuals();
 
                     if (phaseTimer <= 0)
@@ -107,6 +152,7 @@ namespace AnimalMagicRoyale.Core
                 }
             }
 
+            UpdateTrackers();
             ApplyZoneDamage(currentPhase);
         }
 
@@ -114,16 +160,16 @@ namespace AnimalMagicRoyale.Core
         {
             isShrinking = true;
             phaseTimer = phase.shrinkDuration;
-            targetRadius = phase.endRadius;
-            Debug.Log($"[ZoneManager] Zone shrinking to {targetRadius} over {phaseTimer}s.");
+            targetDiameter = phase.endDiameter;
+            // Debug.Log($"[ZoneManager] Zone shrinking to {targetDiameter} over {phaseTimer}s.");
 
             if (onZoneShrink != null)
             {
                 onZoneShrink.Raise(new ZoneShrinkPayload
                 {
                     phaseIndex = currentPhaseIndex,
-                    currentRadius = currentRadius,
-                    targetRadius = targetRadius,
+                    currentRadius = currentDiameter / 2f,
+                    targetRadius = targetDiameter / 2f,
                     duration = phase.shrinkDuration
                 });
             }
@@ -137,11 +183,24 @@ namespace AnimalMagicRoyale.Core
             if (currentPhaseIndex < phases.Length)
             {
                 phaseTimer = phases[currentPhaseIndex].waitBeforeShrink;
-                Debug.Log($"[ZoneManager] Advanced to Phase {currentPhaseIndex}. Waiting {phaseTimer}s before shrink.");
+                // Debug.Log($"[ZoneManager] Advanced to Phase {currentPhaseIndex}. Waiting {phaseTimer}s before shrink.");
             }
             else
             {
-                Debug.Log("[ZoneManager] Final phase reached. Zone will no longer shrink.");
+                // Debug.Log("[ZoneManager] Final phase reached. Zone will no longer shrink.");
+            }
+        }
+
+        private void UpdateTrackers()
+        {
+            if (GameManager.Instance != null)
+            {
+                var trackers = FindObjectsByType<ZoneDamageTracker>(FindObjectsInactive.Exclude);
+                foreach (var tracker in trackers)
+                {
+                    bool inside = IsInsideZone(tracker.transform.position);
+                    tracker.UpdateZoneStatus(inside);
+                }
             }
         }
 
@@ -152,29 +211,18 @@ namespace AnimalMagicRoyale.Core
             {
                 damageTimer = damageTickInterval;
                 
-                // We'll iterate through all players registered in GameManager
                 if (GameManager.Instance != null)
                 {
-                    // This is slightly inefficient if we could get the alive list directly, but we don't have access to the private list.
-                    // We'll have to rely on objects with ZoneDamageTracker for now.
-                    var trackers = FindObjectsByType<ZoneDamageTracker>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-                    if (trackers.Length == 0)
-                    {
-                        Debug.LogWarning("[ZoneManager] WARNING: No ZoneDamageTrackers found in scene!");
-                    }
+                    var trackers = FindObjectsByType<ZoneDamageTracker>(FindObjectsInactive.Exclude);
                     foreach (var tracker in trackers)
                     {
-                        bool isInside = IsInsideZone(tracker.transform.position);
-                        tracker.UpdateZoneStatus(isInside);
-
-                        if (!isInside)
+                        if (tracker.isOutside)
                         {
                             var health = tracker.GetComponent<HealthComponent>();
                             if (health != null && health.IsAlive)
                             {
                                 float damage = phase.baseDamage * tracker.GetDamageMultiplier(phase.damageMultiplier);
                                 health.TakeDamage(damage, gameObject); // Pass ZoneManager gameObject as source
-                                Debug.Log($"[ZoneManager] {tracker.gameObject.name} outside zone, dealt {damage} damage.");
                             }
                         }
                     }
@@ -182,19 +230,35 @@ namespace AnimalMagicRoyale.Core
             }
         }
 
+        public void HandleTriggerExit(Collider other)
+        {
+            if (other.TryGetComponent<ZoneDamageTracker>(out var tracker))
+            {
+                tracker.UpdateZoneStatus(false); // No está dentro
+            }
+        }
+
+        public void HandleTriggerEnter(Collider other)
+        {
+            if (other.TryGetComponent<ZoneDamageTracker>(out var tracker))
+            {
+                tracker.UpdateZoneStatus(true); // Está dentro
+            }
+        }
+
         public bool IsInsideZone(Vector3 position)
         {
             Vector3 position2D = new Vector3(position.x, 0, position.z);
             Vector3 center2D = new Vector3(zoneCenter.x, 0, zoneCenter.z);
-            return Vector3.Distance(position2D, center2D) <= currentRadius;
+            return Vector3.Distance(position2D, center2D) <= (currentDiameter / 2f);
         }
 
         private void UpdateVisuals()
         {
             if (zoneVisual != null)
             {
-                // Assuming cylinder has radius 0.5 when scale is 1
-                zoneVisual.localScale = new Vector3(currentRadius * 2, 100f, currentRadius * 2);
+                // El collider hereda esta escala. Al tener radio 0.5, el radio físico se ajusta a currentDiameter/2.
+                zoneVisual.localScale = new Vector3(currentDiameter, 100f, currentDiameter);
             }
         }
 

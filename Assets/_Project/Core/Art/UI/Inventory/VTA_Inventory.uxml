@@ -1,0 +1,39 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="SS_Inventory.uss" />
+    <ui:VisualElement name="inventory-root" class="inventory-root">
+        
+        <ui:VisualElement name="inventory-panel" class="inventory-panel column">
+            
+            <ui:Label text="INVENTARIO DE HECHIZOS" class="inventory-title" />
+            
+            <ui:Label text="Arrastra para reorganizar" class="inventory-subtitle" />
+            
+            <ui:VisualElement name="inventory-slots-container" class="inventory-slots-row row-center">
+                <!-- Slots -->
+                <ui:VisualElement name="inv-slot-0" class="inv-slot">
+                    <ui:VisualElement name="inv-icon-0" class="inv-icon" />
+                    <ui:Label text="1" class="inv-slot-number" />
+                </ui:VisualElement>
+                <ui:VisualElement name="inv-slot-1" class="inv-slot">
+                    <ui:VisualElement name="inv-icon-1" class="inv-icon" />
+                    <ui:Label text="2" class="inv-slot-number" />
+                </ui:VisualElement>
+                <ui:VisualElement name="inv-slot-2" class="inv-slot">
+                    <ui:VisualElement name="inv-icon-2" class="inv-icon" />
+                    <ui:Label text="3" class="inv-slot-number" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            
+            <ui:VisualElement class="inventory-divider" />
+            
+            <ui:VisualElement name="inventory-details" class="inventory-details-container column">
+                <ui:Label name="detail-name" text="Selecciona un hechizo" class="detail-name" />
+                <ui:Label name="detail-tier" text="" class="detail-tier" />
+                <ui:Label name="detail-desc" text="" class="detail-desc" />
+                <ui:Label name="detail-effects" text="" class="detail-effects" />
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+        
+    </ui:VisualElement>
+</ui:UXML>

@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using AnimalMagicRoyale.Components;
 using AnimalMagicRoyale.Core;
+using AnimalMagicRoyale.Spells.Effects;
 
 namespace AnimalMagicRoyale.AI
 {
-    public enum TargetType { Enemy, LootBox, ZoneBoundary }
+    public enum TargetType { Enemy, LootBox, ZoneBoundary, SpellPickup }
 
     public struct SensorTarget
     {
@@ -45,7 +46,7 @@ namespace AnimalMagicRoyale.AI
                     if (t.type == TargetType.Enemy) enemyCount++;
                     if (t.type == TargetType.LootBox) lootCount++;
                 }
-                Debug.Log($"[AISensorSystem] {gameObject.name}: Scan found {VisibleTargets.Count} targets ({enemyCount} enemies, {lootCount} lootboxes)");
+                // Debug.Log($"[AISensorSystem] {gameObject.name}: Scan found {VisibleTargets.Count} targets ({enemyCount} enemies, {lootCount} lootboxes)");
             }
         }
 
@@ -53,6 +54,16 @@ namespace AnimalMagicRoyale.AI
         {
             VisibleTargets.Clear();
             
+            if (GetComponent<BlindComponent>() != null)
+            {
+                // Debug opcional o evitar ruido, lo ideal es logear solo al aplicar el debuff.
+                // Debug.Log($"[BlindEffect] (Bot) Visión anulada, limpiando targets.");
+                return;
+            }
+
+            int combinedTargetLayers = config.targetLayers | LayerMask.GetMask("Drops");
+            int visionLayers = config.obstacleLayers | combinedTargetLayers;
+
             // 1. Vision (Raycasts)
             // Ligeramente simplificado: lanzamos rayos en abanico y vemos si golpean un target y no hay obstáculo
             float angleStep = config.viewAngle / config.rayCount;
@@ -64,10 +75,10 @@ namespace AnimalMagicRoyale.AI
                 Vector3 direction = Quaternion.Euler(0, currentAngle, 0) * transform.forward;
                 
                 // Primero check de obstáculo
-                if (Physics.Raycast(transform.position + Vector3.up, direction, out RaycastHit hit, config.viewRange, config.obstacleLayers | config.targetLayers))
+                if (Physics.Raycast(transform.position + Vector3.up, direction, out RaycastHit hit, config.viewRange, visionLayers))
                 {
                     // Si golpeamos algo, verificamos si es un target válido (está en targetLayers y NO en obstacleLayers)
-                    if (((1 << hit.collider.gameObject.layer) & config.targetLayers) != 0)
+                    if (((1 << hit.collider.gameObject.layer) & combinedTargetLayers) != 0)
                     {
                         ProcessHit(hit.collider.gameObject, hit.distance, TargetType.Enemy); // Por ahora asumimos todo en target layer es Enemy/LootBox
                     }
@@ -75,7 +86,7 @@ namespace AnimalMagicRoyale.AI
             }
 
             // 2. Hearing (OverlapSphere)
-            int count = Physics.OverlapSphereNonAlloc(transform.position, config.hearingRange, hearingColliders, config.targetLayers);
+            int count = Physics.OverlapSphereNonAlloc(transform.position, config.hearingRange, hearingColliders, combinedTargetLayers);
             for (int i = 0; i < count; i++)
             {
                 GameObject obj = hearingColliders[i].gameObject;
@@ -119,18 +130,39 @@ namespace AnimalMagicRoyale.AI
         private void ProcessHit(GameObject obj, float dist, TargetType defaultType)
         {
             if (obj == this.gameObject) return; // Ignore self
+            
+            if (obj.GetComponentInParent<InvisibilityComponent>() != null)
+            {
+                return; // Ignoramos si está invisible
+            }
+
+            // Check if it's a living entity first to ignore our own children (like ModelContainer)
+            var health = obj.GetComponentInParent<HealthComponent>();
+            if (health != null)
+            {
+                if (health.gameObject == this.gameObject) return; // It's us!
+
+                // Filtrar companeros de equipo usando el root (health.gameObject)
+                if (TeamManager.Instance != null && 
+                    TeamManager.Instance.AreTeammates(gameObject, health.gameObject))
+                {
+                    return;
+                }
+            }
 
             TargetType type = defaultType;
 
             // Check if it's a loot box
-            if (obj.GetComponent<LootBox>() != null)
+            if (obj.GetComponentInParent<LootBox>() != null)
             {
                 type = TargetType.LootBox;
             }
+            else if (obj.GetComponentInParent<AnimalMagicRoyale.Components.SpellPickup>() != null)
+            {
+                type = TargetType.SpellPickup;
+            }
             else
             {
-                // Check if it's a living enemy
-                var health = obj.GetComponent<HealthComponent>();
                 if (health == null || !health.IsAlive)
                 {
                     return; // Ignoramos si no tiene vida o está muerto

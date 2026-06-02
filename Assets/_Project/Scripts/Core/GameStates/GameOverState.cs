@@ -13,23 +13,23 @@ namespace AnimalMagicRoyale.Core
 
         public override void Enter()
         {
-            Debug.Log("[GameOverState] Entered Game Over State.");
+            // Debug.Log("[GameOverState] Entered Game Over State.");
             
             if (ZoneManager.Instance != null)
             {
                 ZoneManager.Instance.Deactivate();
-                Debug.Log("[GameOverState] ZoneManager deactivated.");
+                // Debug.Log("[GameOverState] ZoneManager deactivated.");
             }
             // TODO: Disable player inputs
             
             if (gameManager.AlivePlayersCount == 1)
             {
                 gameManager.Winner = gameManager.GetLastAlivePlayer();
-                Debug.Log($"[GameOverState] Winner is {gameManager.Winner.name}");
+                // Debug.Log($"[GameOverState] Winner is {gameManager.Winner.name}");
             }
             else
             {
-                Debug.Log("[GameOverState] It's a draw!");
+                // Debug.Log("[GameOverState] It's a draw!");
             }
             
             if (gameManager.onGameStateChanged != null)

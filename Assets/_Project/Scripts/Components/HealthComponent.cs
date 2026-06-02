@@ -18,6 +18,9 @@ namespace AnimalMagicRoyale.Components
 
         public void Awake()
         {
+            if (onHealthChanged == null) onHealthChanged = Resources.Load<HealthChangedEvent>("Events/HealthChangedEvent");
+            if (onDeath == null) onDeath = Resources.Load<DeathEvent>("Events/DeathEvent");
+
             CurrentHealth = maxHealth;
             IsAlive = true;
             lastDamager = null;
@@ -26,6 +29,15 @@ namespace AnimalMagicRoyale.Components
         public void TakeDamage(float amount, GameObject source = null)
         {
             if (!IsAlive || amount <= 0) return;
+
+            // Fuego amigo protection: don't damage teammates
+            if (source != null && AnimalMagicRoyale.Core.TeamManager.Instance != null)
+            {
+                if (AnimalMagicRoyale.Core.TeamManager.Instance.AreTeammates(gameObject, source))
+                {
+                    return; // Ignorar daño de aliados
+                }
+            }
 
             // Prevent damage if the game is not in Playing state
             if (AnimalMagicRoyale.Core.GameManager.Instance != null && 
@@ -67,7 +79,7 @@ namespace AnimalMagicRoyale.Components
                 });
             }
 
-            Debug.Log($"[HealthComponent] {gameObject.name} took {amount} dmg from {source?.name ?? "environment"}. HP: {CurrentHealth}/{maxHealth}");
+            // Debug.Log($"[HealthComponent] {gameObject.name} took {amount} dmg from {source?.name ?? "environment"}. HP: {CurrentHealth}/{maxHealth}");
 
             if (CurrentHealth <= 0)
             {
@@ -103,11 +115,11 @@ namespace AnimalMagicRoyale.Components
             if (!IsAlive) return;
             
             IsAlive = false;
-            Debug.Log($"[HealthComponent] {gameObject.name} has been killed by {lastDamager?.name ?? "environment"}");
+            // Debug.Log($"[HealthComponent] {gameObject.name} has been killed by {lastDamager?.name ?? "environment"}");
             
             if (onDeath != null)
             {
-                Debug.Log($"[HealthComponent] {gameObject.name}: Raising DeathEvent (asset: {onDeath.name})");
+                // Debug.Log($"[HealthComponent] {gameObject.name}: Raising DeathEvent (asset: {onDeath.name})");
                 onDeath.Raise(new DeathPayload
                 {
                     victim = gameObject,
@@ -123,10 +135,23 @@ namespace AnimalMagicRoyale.Components
             // para evitar problemas de configuración del Inspector con los ScriptableObjects.
             if (AnimalMagicRoyale.Core.GameManager.Instance != null)
             {
-                Debug.Log($"[HealthComponent] Fallback: Notificando directamente al GameManager de la muerte de {gameObject.name}");
+                // Debug.Log($"[HealthComponent] Fallback: Notificando directamente al GameManager de la muerte de {gameObject.name}");
                 AnimalMagicRoyale.Core.GameManager.Instance.UnregisterPlayer(gameObject, lastDamager);
             }
             
+            // Drop all spells
+            var inventory = GetComponent<SpellInventory>();
+            if (inventory != null)
+            {
+                for (int i = 0; i < inventory.slots.Length; i++)
+                {
+                    if (!inventory.slots[i].IsEmpty)
+                    {
+                        inventory.DropSpell(inventory.slots[i].spellData);
+                    }
+                }
+            }
+
             gameObject.SetActive(false);
         }
     }

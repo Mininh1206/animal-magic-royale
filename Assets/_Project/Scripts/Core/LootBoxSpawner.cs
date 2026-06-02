@@ -28,6 +28,33 @@ namespace AnimalMagicRoyale.Core
         [Header("Events")]
         public LootBoxOpenedEvent onLootBoxOpened;
 
+        private void Awake()
+        {
+            if (onLootBoxOpened == null) onLootBoxOpened = Resources.Load<LootBoxOpenedEvent>("Events/LootBoxOpenedEvent");
+            LoadSpellsFromResources();
+        }
+
+        private void LoadSpellsFromResources()
+        {
+            SpellData[] allSpells = Resources.LoadAll<SpellData>("Spells");
+            List<SpellData> hormigaList = new List<SpellData>();
+            List<SpellData> ornitorrincoList = new List<SpellData>();
+            List<SpellData> goatList = new List<SpellData>();
+
+            foreach (var spell in allSpells)
+            {
+                if (spell.tier == SpellTier.Hormiga) hormigaList.Add(spell);
+                else if (spell.tier == SpellTier.Ornitorrinco) ornitorrincoList.Add(spell);
+                else if (spell.tier == SpellTier.GOAT) goatList.Add(spell);
+            }
+
+            if (hormigaSpells == null || hormigaSpells.Length == 0) hormigaSpells = hormigaList.ToArray();
+            if (ornitorrincoSpells == null || ornitorrincoSpells.Length == 0) ornitorrincoSpells = ornitorrincoList.ToArray();
+            if (goatSpells == null || goatSpells.Length == 0) goatSpells = goatList.ToArray();
+
+            // Debug.Log($"[LootBoxSpawner] Cargados por defecto: {hormigaSpells.Length} Hormiga, {ornitorrincoSpells.Length} Ornitorrinco, {goatSpells.Length} GOAT.");
+        }
+
         private void Start()
         {
             SpawnInitialBoxes();
@@ -35,7 +62,25 @@ namespace AnimalMagicRoyale.Core
 
         private void SpawnInitialBoxes()
         {
-            foreach (Transform point in spawnPoints)
+            if (spawnPoints == null || spawnPoints.Length == 0) return;
+
+            List<Transform> actualSpawnPoints = new List<Transform>();
+            foreach (var sp in spawnPoints)
+            {
+                if (sp != null && sp.childCount > 0)
+                {
+                    foreach (Transform child in sp)
+                    {
+                        actualSpawnPoints.Add(child);
+                    }
+                }
+                else if (sp != null)
+                {
+                    actualSpawnPoints.Add(sp);
+                }
+            }
+
+            foreach (Transform point in actualSpawnPoints)
             {
                 SpawnBox(point);
             }

@@ -1,0 +1,83 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/Core/Art/UI/MainMenu/SS_MainMenu.uss?fileID=7433441132597879392&amp;guid=84dde2d56609de34b8ea211d7670111c&amp;type=3#SS_MainMenu"/>
+    <ui:Image source="project://database/Assets/_Project/Core/Art/UI/MainMenu/background.png" scale-mode="ScaleAndCrop" name="Background" class="background-image">
+        <ui:VisualElement name="Main" class="main-container">
+            <ui:VisualElement name="TopBar" class="top-bar">
+                <ui:VisualElement class="top-left">
+                    <ui:VisualElement class="logo-container">
+                        <ui:Image name="Logo" source="project://database/Assets/_Project/Core/Art/UI/Shared/logo.png" class="logo-image"/>
+                    </ui:VisualElement>
+                    <ui:Button name="CustomizeButton" class="btn-customize">
+                        <ui:VisualElement name="CustomizeIcon" class="btn-customize-icon"/>
+                        <ui:Label name="CustomizeLabel" text="CUSTOMIZE" class="btn-customize-label"/>
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:VisualElement class="top-right" style="flex-direction: row;">
+                    <ui:Button name="HelpButton" class="btn-icon" style="margin-right: 10px;">
+                        <ui:Label text="?" style="font-size: 24px; -unity-font-style: bold; color: white; background-image: url(&quot;project://database/Assets/_Project/Core/Art/UI/Icons/libro.png?fileID=2800000&amp;guid=6da9ab65fb2113243be83504e6c225ea&amp;type=3#libro&quot;); width: 33px;"/>
+                    </ui:Button>
+                    <ui:Button name="SettingsButton" class="btn-icon">
+                        <ui:VisualElement class="icon-settings"/>
+                    </ui:Button>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="LobbyPanel" class="lobby-panel">
+                <ui:VisualElement class="arena-panel">
+                    <ui:Label text="ARENA" class="arena-title"/>
+                    <ui:ScrollView name="MapSelector" mode="Horizontal" class="map-selector"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="right-actions">
+                    <ui:VisualElement class="team-selector">
+                        <ui:Button name="BtnSolo" text="SOLO" class="team-btn team-btn-selected"/>
+                        <ui:Button name="BtnDuos" text="DÚOS" class="team-btn"/>
+                        <ui:Button name="BtnSquads" text="SQUADS" class="team-btn"/>
+                    </ui:VisualElement>
+                    <ui:Button name="PlayButton" class="play-btn">
+                        <ui:VisualElement class="play-btn-content">
+                            <ui:VisualElement class="icon-play"/>
+                            <ui:Label text="JUGAR" class="play-btn-text"/>
+                        </ui:VisualElement>
+                    </ui:Button>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="CustomizationPanel" class="customization-panel" style="display: none;">
+                <ui:VisualElement class="customization-left">
+                    <ui:Label text="TIPO DE ANIMAL" class="column-title"/>
+                    <ui:ScrollView name="AnimalGrid" mode="Vertical" horizontal-scroller-visibility="Hidden" class="animal-grid" style="flex-grow: 1;"/>
+                    <ui:VisualElement class="ability-container">
+                        <ui:Label text="HABILIDAD" class="ability-title"/>
+                        <ui:Label name="AbilityText" text="-" class="ability-text"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="customization-center">
+                    <ui:Label text="VISTA PREVIA" class="column-title"/>
+                    <ui:VisualElement name="PreviewArea" class="preview-area"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="customization-right">
+                    <ui:Label text="SKINS" class="column-title"/>
+                    <ui:ScrollView name="SkinSelector" mode="Vertical" class="skin-selector" style="flex-grow: 1;"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="HelpPanel" class="customization-panel" style="display: none; flex-direction: column;">
+                <ui:VisualElement style="flex-direction: row; justify-content: space-between; padding: 20px;">
+                    <ui:Label text="COMPENDIO DE HECHIZOS" class="column-title" style="font-size: 32px;"/>
+                    <ui:Button name="CloseHelpButton" class="btn-icon" style="background-color: rgb(211, 47, 47);">
+                        <ui:Label text="X" style="font-size: 24px; -unity-font-style: bold; color: white;"/>
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
+                    <ui:VisualElement style="flex: 2; padding: 20px;">
+                        <ui:ScrollView name="SpellCompendiumGrid" mode="Vertical" style="flex-grow: 1;"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement style="flex: 1; padding: 20px; background-color: rgba(0, 0, 0, 0.5); border-radius: 10px; margin: 20px;">
+                        <ui:Label text="DETALLES" class="column-title"/>
+                        <ui:Image name="HelpSpellIcon" style="width: 100px; height: 100px; align-self: center; margin-top: 20px; margin-bottom: 20px;"/>
+                        <ui:Label name="HelpSpellName" text="Selecciona un hechizo" style="font-size: 24px; -unity-font-style: bold; color: white; -unity-text-align: upper-center; margin-bottom: 10px;"/>
+                        <ui:Label name="HelpSpellTier" text="" style="font-size: 18px; color: rgb(255, 165, 0); -unity-text-align: upper-center; margin-bottom: 20px;"/>
+                        <ui:Label name="HelpSpellDesc" text="" style="font-size: 16px; color: rgb(204, 204, 204); white-space: normal; -unity-text-align: upper-left;"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:Image>
+</ui:UXML>

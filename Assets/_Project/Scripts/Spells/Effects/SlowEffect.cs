@@ -19,6 +19,28 @@ namespace AnimalMagicRoyale.Spells.Effects
             {
                 playerController.StartCoroutine(ApplySlowRoutine(playerController));
             }
+            else
+            {
+                var botController = target.GetComponent<AnimalMagicRoyale.AI.BotController>();
+                if (botController != null)
+                {
+                    botController.StartCoroutine(ApplySlowBotRoutine(botController));
+                }
+            }
+        }
+
+        private IEnumerator ApplySlowBotRoutine(AnimalMagicRoyale.AI.BotController controller)
+        {
+            // Debug.Log($"[SlowEffect] Slow aplicado al bot {controller.gameObject.name} por {duration}s.");
+            float originalSpeed = controller.Agent.speed;
+            controller.Agent.speed *= (1f - slowPercent);
+
+            yield return new WaitForSeconds(duration);
+
+            if (controller != null && controller.Agent != null)
+            {
+                controller.Agent.speed = originalSpeed;
+            }
         }
 
         private IEnumerator ApplySlowRoutine(PlayerController controller)

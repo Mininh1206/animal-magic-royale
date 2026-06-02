@@ -19,7 +19,7 @@ namespace AnimalMagicRoyale.Tests
         {
             var context = new BotContext
             {
-                NearestEnemy = new SensorTarget(new GameObject().transform, 5f, TargetType.Enemy),
+                NearestEnemy = new GameObject().transform,
                 FuzzyResult = new FuzzyOutput(0.8f, 0.1f, 0.1f)
             };
 
@@ -57,7 +57,7 @@ namespace AnimalMagicRoyale.Tests
         {
             var context = new BotContext
             {
-                NearestLootBox = new SensorTarget(new GameObject().transform, 5f, TargetType.LootBox),
+                BestPhysicalLoot = new GameObject().transform,
                 FuzzyResult = new FuzzyOutput(0.1f, 0.1f, 0.8f)
             };
 

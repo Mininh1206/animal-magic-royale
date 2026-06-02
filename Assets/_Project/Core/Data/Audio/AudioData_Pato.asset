@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00170ce4ac62a444baba6e9830d97674, type: 3}
+  m_Name: AudioData_Pato
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.Data.CharacterAudioData
+  footstepClips:
+  - {fileID: 8300000, guid: 943797148632d2a478317b6050735348, type: 3}
+  attackClips:
+  - {fileID: 8300000, guid: c675981bbce42cc4b91fa628aff999e4, type: 3}
+  - {fileID: 8300000, guid: 9ac4f44cb18dc4340b239268ce1136b2, type: 3}
+  - {fileID: 8300000, guid: f85133299d2708f4d853a2faf6bad8fd, type: 3}
+  - {fileID: 8300000, guid: f35f3085ce80e574fbe938061ede97f6, type: 3}

@@ -1,0 +1,120 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/Core/Art/UI/Settings/SS_Settings.uss" />
+    <ui:VisualElement name="SettingsPanel" class="settings-overlay" style="display: none;">
+        <ui:VisualElement class="settings-modal">
+            
+            <!-- Left Sidebar -->
+            <ui:VisualElement class="settings-sidebar">
+                <ui:Label text="AJUSTES" class="settings-title"/>
+                <ui:Button name="TabGraphics" class="settings-tab settings-tab-active">
+                    <ui:Label text="Gráficos" class="settings-tab-text"/>
+                </ui:Button>
+                <ui:Button name="TabAudio" class="settings-tab">
+                    <ui:Label text="Sonido" class="settings-tab-text"/>
+                </ui:Button>
+                <ui:Button name="TabControls" class="settings-tab">
+                    <ui:Label text="Controles" class="settings-tab-text"/>
+                </ui:Button>
+                
+                <ui:VisualElement style="flex-grow: 1;" />
+                <ui:Button name="BtnMainMenu" class="settings-tab" style="background-color: #D32F2F; margin-bottom: 20px;">
+                    <ui:Label text="Volver al Menú" class="settings-tab-text" style="color: white;"/>
+                </ui:Button>
+            </ui:VisualElement>
+            
+            <!-- Right Content Area -->
+            <ui:VisualElement class="settings-content" style="flex-direction: column; flex-shrink: 1;">
+                <ui:ScrollView style="flex-grow: 1; flex-shrink: 1;">
+                
+                <ui:VisualElement name="ContentGraphics" class="settings-page">
+                    <ui:Label text="Gráficos" class="settings-page-title"/>
+                    
+                    <ui:VisualElement class="setting-item">
+                        <ui:VisualElement class="setting-item-info">
+                            <ui:Label text="Resolución" class="setting-item-name"/>
+                            <ui:Label text="Calidad de imagen vs rendimiento" class="setting-item-desc"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-item-control">
+                            <ui:DropdownField name="dropdown-resolution" choices="1920x1080,1280x720" value="1920x1080" style="width: 300px;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    
+                    <ui:VisualElement class="setting-item">
+                        <ui:VisualElement class="setting-item-info">
+                            <ui:Label text="Pantalla Completa" class="setting-item-name"/>
+                            <ui:Label text="Modo ventana sin bordes" class="setting-item-desc"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-item-control">
+                            <ui:Toggle name="toggle-fullscreen" value="true" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    
+                </ui:VisualElement>
+
+                <ui:VisualElement name="ContentAudio" class="settings-page" style="display: none;">
+                    <ui:Label text="Sonido" class="settings-page-title"/>
+                    <ui:VisualElement class="setting-item">
+                        <ui:VisualElement class="setting-item-info">
+                            <ui:Label text="Volumen Maestro" class="setting-item-name"/>
+                            <ui:Label text="Ajusta el volumen de todo el juego" class="setting-item-desc"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-item-control" style="width: 200px;">
+                            <ui:Slider name="slider-global" low-value="0" high-value="1" value="1" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="setting-item">
+                        <ui:VisualElement class="setting-item-info">
+                            <ui:Label text="Música" class="setting-item-name"/>
+                            <ui:Label text="Volumen de la banda sonora" class="setting-item-desc"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-item-control" style="width: 200px;">
+                            <ui:Slider name="slider-music" low-value="0" high-value="1" value="1" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="setting-item">
+                        <ui:VisualElement class="setting-item-info">
+                            <ui:Label text="Música en partida" class="setting-item-name"/>
+                            <ui:Label text="Continuar reproduciendo música durante el combate" class="setting-item-desc"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-item-control">
+                            <ui:Toggle name="toggle-music-in-match" value="false" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="setting-item">
+                        <ui:VisualElement class="setting-item-info">
+                            <ui:Label text="Efectos de Hechizos" class="setting-item-name"/>
+                            <ui:Label text="Volumen de los ataques y habilidades" class="setting-item-desc"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-item-control" style="width: 200px;">
+                            <ui:Slider name="slider-spells" low-value="0" high-value="1" value="1" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="setting-item">
+                        <ui:VisualElement class="setting-item-info">
+                            <ui:Label text="Efectos de Entorno" class="setting-item-name"/>
+                            <ui:Label text="Volumen de pasos, interacciones, etc." class="setting-item-desc"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-item-control" style="width: 200px;">
+                            <ui:Slider name="slider-environment" low-value="0" high-value="1" value="1" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="ContentControls" class="settings-page" style="display: none;">
+                    <ui:Label text="Controles" class="settings-page-title"/>
+                </ui:VisualElement>
+
+                </ui:ScrollView>
+
+                <!-- Footer Actions -->
+                <ui:VisualElement class="settings-footer">
+                    <ui:Button name="ResetBtn" class="btn-settings-secondary" text="Restablecer" />
+                    <ui:Button name="ApplyBtn" class="btn-settings-primary" text="Aplicar" />
+                </ui:VisualElement>
+                
+            </ui:VisualElement>
+            
+            <ui:Button name="CloseSettingsBtn" class="btn-close-settings" text="X" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

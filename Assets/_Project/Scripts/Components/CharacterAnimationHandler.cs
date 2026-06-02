@@ -31,7 +31,11 @@ namespace AnimalMagicRoyale.Components
             
             if (targetAnimator == null)
             {
-                Debug.LogWarning($"[CharacterAnimationHandler] No se encontró Animator en {gameObject.name}");
+                bool isPreview = gameObject.name.Contains("SpawnPoint") || gameObject.name.Contains("Preview");
+                if (!isPreview)
+                {
+                    Debug.LogWarning($"[CharacterAnimationHandler] No se encontró Animator en {gameObject.name}");
+                }
             }
         }
         
@@ -54,6 +58,14 @@ namespace AnimalMagicRoyale.Components
         {
             if (targetAnimator != null)
                 targetAnimator.SetBool(ANIM_IS_ATTACKING, attacking);
+        }
+
+        /// <summary>
+        /// Asigna un nuevo Animator (útil cuando SkinManager cambia el modelo en ejecución).
+        /// </summary>
+        public void SetAnimator(Animator newAnimator)
+        {
+            targetAnimator = newAnimator;
         }
     }
 }

@@ -20,14 +20,28 @@ namespace AnimalMagicRoyale.Components
             this.containedSpell = spell;
             this.tier = tier;
             isOpened = false;
+            
+            SetLayerRecursively(gameObject, LayerMask.NameToLayer("Drops"));
+            
             gameObject.SetActive(true);
+        }
+
+        private void SetLayerRecursively(GameObject obj, int newLayer)
+        {
+            if (obj == null) return;
+            obj.layer = newLayer;
+            foreach (Transform child in obj.transform)
+            {
+                SetLayerRecursively(child.gameObject, newLayer);
+            }
         }
 
         public bool TryOpen(GameObject player)
         {
             if (isOpened) return false;
 
-            if (Vector3.Distance(transform.position, player.transform.position) <= interactionRange)
+            float effectiveRange = Mathf.Max(interactionRange, 3f);
+            if (Vector3.Distance(transform.position, player.transform.position) <= effectiveRange)
             {
                 // In a real scenario with hold interaction, we'd check input over time here.
                 // Since user approved interaction, we assume the input system calls this when E is pressed.
@@ -41,10 +55,15 @@ namespace AnimalMagicRoyale.Components
         {
             isOpened = true;
             
-            var inventory = player.GetComponent<SpellInventory>();
-            if (inventory != null && containedSpell != null)
+            if (containedSpell != null)
             {
-                inventory.TryPickupSpell(containedSpell);
+                // Drop the spell instead of adding directly
+                Vector3 dropPosition = transform.position + Vector3.up * 0.1f;
+                GameObject dropGO = new GameObject($"Dropped_{containedSpell.spellName}");
+                dropGO.transform.position = dropPosition;
+                
+                var pickup = dropGO.AddComponent<SpellPickup>();
+                pickup.Initialize(containedSpell);
             }
 
             // Could emit event here if we had a reference to LootBoxOpenedEvent, 

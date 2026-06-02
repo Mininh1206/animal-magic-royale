@@ -10,7 +10,7 @@ namespace AnimalMagicRoyale.Editor
         [MenuItem("Animal Magic Royale/Generar Eventos Automáticamente")]
         public static void GenerateEvents()
         {
-            string targetFolder = "Assets/_Project/Core/Data/Events";
+            string targetFolder = "Assets/_Project/Core/Data/Resources/Events";
             
             // Crear las carpetas si no existen
             if (!Directory.Exists(targetFolder))
@@ -32,7 +32,7 @@ namespace AnimalMagicRoyale.Editor
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log($"<color=green><b>[Éxito]</b></color> Todos los eventos han sido generados correctamente en: {targetFolder}");
+            // Debug.Log($"<color=green><b>[Éxito]</b></color> Todos los eventos han sido generados correctamente en: {targetFolder}");
         }
 
         private static void CreateEventAsset<T>(string folder, string name) where T : ScriptableObject

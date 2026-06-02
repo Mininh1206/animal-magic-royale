@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce97ff8119d26a04f8107dc0d27a6db2, type: 3}
+  m_Name: Ornitorrinco_PantallazoAzul
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Spells.SpellData
+  spellName: Pantallazo Azul
+  description: Congela y ciega al rival (1.5s)
+  tier: 2
+  icon: {fileID: -1037089990, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  cooldown: 12
+  projectileSpeed: 40
+  projectileCount: 1
+  targetType: 0
+  isHoming: 0
+  maxBounces: 0
+  projectilePrefab: {fileID: 8349761922293664815, guid: 848e099678108084e90bb9235cfb1d9b, type: 3}
+  spellColor: {r: 0, g: 1, b: 1, a: 1}
+  effects:
+  - {fileID: 11400000, guid: 57c639284b44f124896d450cfe8cd76e, type: 2}
+  - {fileID: 11400000, guid: 9b43f9cce8f7087409b2751aa9ad6300, type: 2}
+  - {fileID: 11400000, guid: 482d7cf87187eb44db91f43351d7a9ef, type: 2}

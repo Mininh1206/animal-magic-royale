@@ -6,6 +6,7 @@ namespace AnimalMagicRoyale.Player
 {
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(AnimalMagicRoyale.Components.AbilityHolder))]
+    [RequireComponent(typeof(PlayerInputHandler))]
     public class PlayerController : BasicController
     {
         [Header("Movement Settings")]
@@ -39,6 +40,7 @@ namespace AnimalMagicRoyale.Player
         public int ActiveSlotChange { get; set; } = -1;
         public bool AbilityRequested { get; set; }
         public bool InteractRequested { get; set; }
+        public bool isInvisible = false;
 
         // Estado interno
         public float VerticalVelocity { get; set; }
@@ -93,18 +95,23 @@ namespace AnimalMagicRoyale.Player
                 {
                     abilityHolder.TryActivate();
                 }
+                else
+                {
+                    Debug.LogError("[PlayerController] ERROR: AbilityRequested is true, but AbilityHolder component is NULL on the player!");
+                }
             }
+
+            CheckInteractables();
 
             if (InteractRequested)
             {
-                var colliders = Physics.OverlapSphere(transform.position, 3f);
-                foreach (var col in colliders)
+                if (closestInteractable != null)
                 {
-                    var lootBox = col.GetComponent<AnimalMagicRoyale.Components.LootBox>();
-                    if (lootBox != null)
-                    {
-                        if (lootBox.TryOpen(gameObject)) break;
-                    }
+                    var lootBox = closestInteractable.GetComponent<AnimalMagicRoyale.Components.LootBox>();
+                    if (lootBox != null) lootBox.TryOpen(gameObject);
+                    
+                    var spellPickup = closestInteractable.GetComponent<AnimalMagicRoyale.Components.SpellPickup>();
+                    if (spellPickup != null) spellPickup.TryPickup(gameObject);
                 }
             }
 
@@ -113,6 +120,59 @@ namespace AnimalMagicRoyale.Player
             StateMachine.Update();
             ApplyGravity();
             ApplyVerticalMovement();
+            
+            // Clear single-frame inputs AFTER they have been processed
+            JumpRequested = false;
+            AttackRequested = false;
+            ActiveSlotChange = -1;
+            AbilityRequested = false;
+            InteractRequested = false;
+        }
+
+        private GameObject closestInteractable = null;
+
+        private void CheckInteractables()
+        {
+            var colliders = Physics.OverlapSphere(transform.position, 3f);
+            closestInteractable = null;
+            float closestDist = float.MaxValue;
+            
+            foreach (var col in colliders)
+            {
+                var lootBox = col.GetComponent<AnimalMagicRoyale.Components.LootBox>();
+                var spellPickup = col.GetComponent<AnimalMagicRoyale.Components.SpellPickup>();
+                
+                if (lootBox != null || spellPickup != null)
+                {
+                    float dist = Vector3.Distance(transform.position, col.transform.position);
+                    if (dist < closestDist)
+                    {
+                        closestDist = dist;
+                        closestInteractable = col.gameObject;
+                    }
+                }
+            }
+
+            var interactionUI = FindAnyObjectByType<AnimalMagicRoyale.Components.UI.InteractionUI>();
+            if (interactionUI != null)
+            {
+                if (closestInteractable != null)
+                {
+                    var spellPickup = closestInteractable.GetComponent<AnimalMagicRoyale.Components.SpellPickup>();
+                    if (spellPickup != null && spellPickup.containedSpell != null)
+                    {
+                        interactionUI.ShowSpellPrompt("recoger", spellPickup.containedSpell);
+                    }
+                    else
+                    {
+                        interactionUI.ShowPrompt("abrir cofre");
+                    }
+                }
+                else
+                {
+                    interactionUI.Hide();
+                }
+            }
         }
 
         private void HandleMouseLook()
@@ -137,11 +197,6 @@ namespace AnimalMagicRoyale.Player
 
         private void LateUpdate()
         {
-            JumpRequested = false;
-            AttackRequested = false;
-            ActiveSlotChange = -1;
-            AbilityRequested = false;
-            InteractRequested = false;
         }
 
         private void GroundedCheck()
