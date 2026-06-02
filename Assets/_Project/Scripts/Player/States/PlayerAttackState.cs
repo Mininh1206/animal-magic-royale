@@ -19,7 +19,7 @@ namespace AnimalMagicRoyale.Player
 
         public override void Enter()
         {
-            Debug.Log("[PlayerAttackState] Enter() called!");
+            // Debug.Log("[PlayerAttackState] Enter() called!");
             startTime = Time.time;
 
             if (inventory != null)

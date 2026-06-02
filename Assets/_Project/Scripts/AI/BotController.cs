@@ -205,7 +205,7 @@ namespace AnimalMagicRoyale.AI
                         Agent.Move(right * (Random.value > 0.5f ? 1f : -1f) * 2f);
 
                         stuckTimer = 0f;
-                        // Debug.Log($"[BotController] {gameObject.name} got stuck. Unstucking.");
+                        Debug.Log($"[BotController] {gameObject.name} got stuck. Unstucking.");
                     }
                 }
                 else

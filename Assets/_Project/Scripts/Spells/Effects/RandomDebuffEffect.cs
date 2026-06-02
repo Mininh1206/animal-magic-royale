@@ -15,7 +15,7 @@ namespace AnimalMagicRoyale.Spells.Effects
             int index = Random.Range(0, possibleDebuffs.Count);
             SpellEffect selected = possibleDebuffs[index];
             
-            Debug.Log($"[RandomDebuffEffect] Seleccionado debuff '{selected.name}' para aplicar a {target.name}");
+            // Debug.Log($"[RandomDebuffEffect] Seleccionado debuff '{selected.name}' para aplicar a {target.name}");
             if (selected != null)
             {
                 selected.Apply(caster, target);

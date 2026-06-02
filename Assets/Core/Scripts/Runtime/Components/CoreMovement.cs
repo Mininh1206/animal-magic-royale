@@ -485,7 +485,7 @@ namespace Blocks.Gameplay.Core
 
             if (newParent != null)
             {
-                Debug.Log("Setting parent to: " + newParent.name, this);
+                // Debug.Log("Setting parent to: " + newParent.name, this);
                 NetworkObject.TrySetParent(newParent);
                 isMovementEnabled = false;
             }

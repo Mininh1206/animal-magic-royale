@@ -56,7 +56,7 @@ namespace AnimalMagicRoyale.Components.UI
             if (prefab != null)
             {
                 Instantiate(prefab);
-                Debug.Log("[SettingsManager] Auto-instantiated from Resources.");
+                // Debug.Log("[SettingsManager] Auto-instantiated from Resources.");
             }
             else
             {
@@ -146,7 +146,7 @@ namespace AnimalMagicRoyale.Components.UI
                 var kb = KeyBindingManager.Instance;
                 if (kb != null && kb.GetActionDown(KeyBindingManager.GameAction.Cancel) && !isRebinding)
                 {
-                    Debug.Log("[SettingsManager] Cancel action triggered.");
+                    // Debug.Log("[SettingsManager] Cancel action triggered.");
                     if (AnimalMagicRoyale.Components.UI.InventoryUI.Instance != null && AnimalMagicRoyale.Components.UI.InventoryUI.Instance.IsOpen)
                     {
                         AnimalMagicRoyale.Components.UI.InventoryUI.Instance.Hide();
@@ -181,7 +181,7 @@ namespace AnimalMagicRoyale.Components.UI
 
         public void ToggleSettings()
         {
-            Debug.Log($"[SettingsManager] ToggleSettings called. Current state: IsOpen={IsOpen}");
+            // Debug.Log($"[SettingsManager] ToggleSettings called. Current state: IsOpen={IsOpen}");
             if (IsOpen)
             {
                 HideSettings();
@@ -221,7 +221,7 @@ namespace AnimalMagicRoyale.Components.UI
 
         public void ShowSettings()
         {
-            Debug.Log("[SettingsManager] ShowSettings invoked.");
+            // Debug.Log("[SettingsManager] ShowSettings invoked.");
             if (settingsPanel != null)
             {
                 settingsPanel.style.display = DisplayStyle.Flex;
@@ -429,7 +429,7 @@ namespace AnimalMagicRoyale.Components.UI
                     Screen.SetResolution(res.width, res.height, Screen.fullScreen);
                 }
             }
-            Debug.Log("[SettingsManager] Graphics settings applied.");
+            // Debug.Log("[SettingsManager] Graphics settings applied.");
         }
 
         public void ApplyAudio()
@@ -447,7 +447,7 @@ namespace AnimalMagicRoyale.Components.UI
                 if (source != null) source.volume = MusicVolume;
             }
             
-            Debug.Log("[SettingsManager] Audio settings applied.");
+            // Debug.Log("[SettingsManager] Audio settings applied.");
         }
 
         private void ReturnToMainMenu()

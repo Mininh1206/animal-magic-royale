@@ -26,7 +26,7 @@ namespace AnimalMagicRoyale.Core
             if (prefab != null)
             {
                 Instantiate(prefab);
-                Debug.Log("[SceneLoader] Auto-instantiated from Resources.");
+                // Debug.Log("[SceneLoader] Auto-instantiated from Resources.");
             }
             else
             {
@@ -66,7 +66,7 @@ namespace AnimalMagicRoyale.Core
 
         public void LoadScene(string sceneName)
         {
-            Debug.Log($"[SceneLoader] Loading scene: {sceneName}");
+            // Debug.Log($"[SceneLoader] Loading scene: {sceneName}");
             StartCoroutine(LoadSceneAsyncCoroutine(sceneName));
         }
         

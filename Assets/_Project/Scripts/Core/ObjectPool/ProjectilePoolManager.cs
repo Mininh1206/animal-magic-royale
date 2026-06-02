@@ -52,7 +52,7 @@ namespace AnimalMagicRoyale.Core
                 Projectile projComp = prefab.GetComponent<Projectile>();
                 if (projComp == null)
                 {
-                    Debug.LogError($"[ProjectilePoolManager] Prefab {prefab.name} missing Projectile component.");
+                    // Debug.LogError($"[ProjectilePoolManager] Prefab {prefab.name} missing Projectile component.");
                     return null;
                 }
 

@@ -64,7 +64,7 @@ namespace AnimalMagicRoyale.AI
                 Tier = tier,
                 Timestamp = Time.time
             };
-            // Debug.Log($"[TeamMemory] Equipo {teamId} reportó hechizo {spellId} (Tier {tier}) en {pos}");
+            Debug.Log($"[TeamMemory] Equipo {teamId} reportó hechizo {spellId} (Tier {tier}) en {pos}");
         }
 
         public void RemoveSpell(int teamId, int spellId)
@@ -73,7 +73,7 @@ namespace AnimalMagicRoyale.AI
             {
                 if (teamSpells[teamId].Remove(spellId))
                 {
-                    // Debug.Log($"[TeamMemory] Equipo {teamId} eliminó hechizo {spellId} de la memoria (recogido o desaparecido)");
+                    Debug.Log($"[TeamMemory] Equipo {teamId} eliminó hechizo {spellId} de la memoria (recogido o desaparecido)");
                 }
             }
         }
@@ -96,7 +96,7 @@ namespace AnimalMagicRoyale.AI
                 LastKnownPosition = lastKnownPos,
                 Timestamp = Time.time
             };
-            // Debug.Log($"[TeamMemory] Equipo {teamId} reportó posición de enemigo {enemyId}");
+            Debug.Log($"[TeamMemory] Equipo {teamId} reportó posición de enemigo {enemyId}");
         }
 
         public void RemoveEnemy(int teamId, int enemyId)
@@ -105,7 +105,7 @@ namespace AnimalMagicRoyale.AI
             {
                 if (teamEnemies[teamId].Remove(enemyId))
                 {
-                    // Debug.Log($"[TeamMemory] Equipo {teamId} se rindió de buscar al enemigo {enemyId}");
+                    Debug.Log($"[TeamMemory] Equipo {teamId} se rindió de buscar al enemigo {enemyId}");
                 }
             }
         }

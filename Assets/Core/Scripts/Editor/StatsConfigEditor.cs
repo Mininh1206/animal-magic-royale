@@ -112,7 +112,7 @@ public class StatsConfigEditor : Editor
         }
         else
         {
-            Debug.Log($"<color=#44FF44><b>{message}</b></color>");
+            // Debug.Log($"<color=#44FF44><b>{message}</b></color>");
         }
     }
 

@@ -27,7 +27,8 @@ namespace AnimalMagicRoyale.Components
         {
             if (isOpened) return false;
 
-            if (Vector3.Distance(transform.position, player.transform.position) <= interactionRange)
+            float effectiveRange = Mathf.Max(interactionRange, 3f);
+            if (Vector3.Distance(transform.position, player.transform.position) <= effectiveRange)
             {
                 // In a real scenario with hold interaction, we'd check input over time here.
                 // Since user approved interaction, we assume the input system calls this when E is pressed.

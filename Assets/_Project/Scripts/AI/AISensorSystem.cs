@@ -46,7 +46,7 @@ namespace AnimalMagicRoyale.AI
                     if (t.type == TargetType.Enemy) enemyCount++;
                     if (t.type == TargetType.LootBox) lootCount++;
                 }
-                Debug.Log($"[AISensorSystem] {gameObject.name}: Scan found {VisibleTargets.Count} targets ({enemyCount} enemies, {lootCount} lootboxes)");
+                // Debug.Log($"[AISensorSystem] {gameObject.name}: Scan found {VisibleTargets.Count} targets ({enemyCount} enemies, {lootCount} lootboxes)");
             }
         }
 

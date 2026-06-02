@@ -45,7 +45,7 @@ namespace AnimalMagicRoyale.Core.Data
             DontDestroyOnLoad(temp);
             Instance.LoadPreferences();
             Instance.ApplyPreferences();
-            Debug.Log("[PlayerPreferences] Auto-instantiated BeforeSceneLoad.");
+            // Debug.Log("[PlayerPreferences] Auto-instantiated BeforeSceneLoad.");
         }
 
         private void Awake()
@@ -73,11 +73,11 @@ namespace AnimalMagicRoyale.Core.Data
                 if (savedHash == currentHash)
                 {
                     currentData = JsonUtility.FromJson<PlayerPreferencesData>(json);
-                    Debug.Log("[PlayerPreferences] Preferences loaded successfully.");
+                    // Debug.Log("[PlayerPreferences] Preferences loaded successfully.");
                 }
                 else
                 {
-                    Debug.LogWarning("[PlayerPreferences] Hash mismatch! File may have been tampered with. Creating new preferences.");
+                    // Debug.LogWarning("[PlayerPreferences] Hash mismatch! File may have been tampered with. Creating new preferences.");
                     currentData = new PlayerPreferencesData();
                     if (Screen.resolutions != null && Screen.resolutions.Length > 0)
                     {
@@ -121,7 +121,7 @@ namespace AnimalMagicRoyale.Core.Data
             
             File.WriteAllText(SavePath, json);
             File.WriteAllText(HashPath, hash);
-            Debug.Log("[PlayerPreferences] Preferences saved.");
+            // Debug.Log("[PlayerPreferences] Preferences saved.");
         }
         
         private string GenerateHash(string payload)

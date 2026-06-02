@@ -16,7 +16,7 @@ namespace AnimalMagicRoyale.Spells.Effects
             var hc = target.GetComponentInParent<HealthComponent>();
             if (hc != null)
             {
-                Debug.Log($"[DoTEffect] Aplicado a {target.name}. {dps} daño/s por {duration}s.");
+                // Debug.Log($"[DoTEffect] Aplicado a {target.name}. {dps} daño/s por {duration}s.");
                 var dot = target.AddComponent<DoTComponent>();
                 dot.Initialize(hc, caster, dps, duration);
             }

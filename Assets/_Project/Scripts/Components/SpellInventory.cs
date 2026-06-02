@@ -43,7 +43,7 @@ namespace AnimalMagicRoyale.Components
                 if (slots[i].IsEmpty)
                 {
                     slots[i].spellData = newSpell;
-                    Debug.Log($"¡Hechizo {newSpell.name} recogido en el slot {i + 1}!");
+                    // Debug.Log($"¡Hechizo {newSpell.name} recogido en el slot {i + 1}!");
                     return true;
                 }
             }
@@ -96,11 +96,11 @@ namespace AnimalMagicRoyale.Components
         {
             if (isSilenced)
             {
-                Debug.Log($"[SpellInventory] {caster.name} intentó castear pero está SILENCIADO.");
+                // Debug.Log($"[SpellInventory] {caster.name} intentó castear pero está SILENCIADO.");
                 return false;
             }
 
-            Debug.Log($"[SpellInventory] TryCast called by {caster.name}. activeSlotIndex: {activeSlotIndex}");
+            // Debug.Log($"[SpellInventory] TryCast called by {caster.name}. activeSlotIndex: {activeSlotIndex}");
             SpellSlot currentSlot = slots[activeSlotIndex];
 
             if (currentSlot.IsEmpty)
@@ -118,7 +118,7 @@ namespace AnimalMagicRoyale.Components
             
             if (data.targetType == TargetType.Self)
             {
-                Debug.Log($"[SpellInventory] Hechizo de Auto-Lanzamiento ({data.spellName}). Aplicando efectos al caster.");
+                // Debug.Log($"[SpellInventory] Hechizo de Auto-Lanzamiento ({data.spellName}). Aplicando efectos al caster.");
                 if (data.effects != null)
                 {
                     foreach (var effect in data.effects)
@@ -137,7 +137,7 @@ namespace AnimalMagicRoyale.Components
             }
 
             currentSlot.lastCastTime = Time.time;
-            Debug.Log($"[SpellInventory] {caster.name} fired {data.spellName} from slot {activeSlotIndex}");
+            // Debug.Log($"[SpellInventory] {caster.name} fired {data.spellName} from slot {activeSlotIndex}");
             
             // Reproducir sonido de ataque
             var sfxHandler = caster.GetComponent<CharacterSFXHandler>();
@@ -169,13 +169,13 @@ namespace AnimalMagicRoyale.Components
                     spreadDir = Quaternion.Euler(0, spreadAngle, 0) * direction;
                 }
 
-                Debug.Log($"[SpellInventory] Solicitando proyectil a ProjectilePoolManager. Prefab: {data.projectilePrefab.name}");
+                // Debug.Log($"[SpellInventory] Solicitando proyectil a ProjectilePoolManager. Prefab: {data.projectilePrefab.name}");
                 Projectile proj = Core.ProjectilePoolManager.Instance.GetProjectile(data.projectilePrefab);
                 if (proj != null)
                 {
                     proj.transform.position = spawnPos;
                     proj.Initialize(data, caster, spreadDir);
-                    Debug.Log($"[SpellInventory] Proyectil inicializado y lanzado.");
+                    // Debug.Log($"[SpellInventory] Proyectil inicializado y lanzado.");
                 }
                 else
                 {

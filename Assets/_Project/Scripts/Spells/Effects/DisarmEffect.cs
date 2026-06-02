@@ -9,7 +9,7 @@ namespace AnimalMagicRoyale.Spells.Effects
         public override void Apply(GameObject caster, GameObject target)
         {
             if (target == null) return;
-            Debug.Log($"[DisarmEffect] Aplicado a {target.name}. Soltando hechizo actual.");
+            // Debug.Log($"[DisarmEffect] Aplicado a {target.name}. Soltando hechizo actual.");
             var inventory = target.GetComponentInParent<SpellInventory>();
             if (inventory != null)
             {

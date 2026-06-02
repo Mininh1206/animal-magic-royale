@@ -12,7 +12,7 @@ namespace AnimalMagicRoyale.Components.Abilities
 
         public override void Activate(GameObject owner)
         {
-            Debug.Log($"{owner.name} activated Frenzy! (+Speed and double damage)");
+            // Debug.Log($"{owner.name} activated Frenzy! (+Speed and double damage)");
             var controller = owner.GetComponent<PlayerController>();
             if (controller != null)
             {

@@ -15,7 +15,7 @@ namespace AnimalMagicRoyale.Player
 
         public override void Enter()
         {
-            Debug.Log("[FSM] Entering MoveState");
+            // Debug.Log("[FSM] Entering MoveState");
             if (player.SFXHandler != null)
             {
                 player.SFXHandler.SetFootstepsActive(true);
@@ -34,7 +34,7 @@ namespace AnimalMagicRoyale.Player
         {
             if (player.AttackRequested)
             {
-                Debug.Log("[PlayerMoveState] AttackRequested is TRUE. Changing to AttackState.");
+                // Debug.Log("[PlayerMoveState] AttackRequested is TRUE. Changing to AttackState.");
                 stateMachine.ChangeState(player.AttackState);
                 return;
             }

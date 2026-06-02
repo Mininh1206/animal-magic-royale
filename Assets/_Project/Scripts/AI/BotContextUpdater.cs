@@ -71,7 +71,7 @@ namespace AnimalMagicRoyale.AI
                 }
                 else if (target.type == TargetType.SpellPickup)
                 {
-                    var pickup = target.transform.GetComponent<SpellPickup>();
+                    var pickup = target.transform.GetComponentInParent<SpellPickup>();
                     if (pickup != null && pickup.containedSpell != null)
                     {
                         int currentTier = bot.Inventory != null && bot.Inventory.GetActiveSpell() != null ? (int)bot.Inventory.GetActiveSpell().tier : -1;

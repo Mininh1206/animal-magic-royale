@@ -8,7 +8,7 @@ namespace AnimalMagicRoyale.Spells.Effects
         public override void Apply(GameObject caster, GameObject target)
         {
             if (caster == null || target == null) return;
-            Debug.Log($"[PullEffect] Acercando {target.name} a {caster.name}");
+            // Debug.Log($"[PullEffect] Acercando {target.name} a {caster.name}");
             
             var puller = target.AddComponent<PullComponent>();
             puller.Initialize(caster.transform, 0.5f);
@@ -33,7 +33,7 @@ namespace AnimalMagicRoyale.Spells.Effects
             Vector3 startPos = transform.position;
             float elapsed = 0f;
 
-            Debug.Log($"[PullComponent] Iniciando pull sobre {gameObject.name}");
+            // Debug.Log($"[PullComponent] Iniciando pull sobre {gameObject.name}");
 
             while (elapsed < duration)
             {
@@ -51,7 +51,7 @@ namespace AnimalMagicRoyale.Spells.Effects
                 yield return null;
             }
 
-            Debug.Log($"[PullComponent] Pull finalizado sobre {gameObject.name}");
+            // Debug.Log($"[PullComponent] Pull finalizado sobre {gameObject.name}");
 
             if (cc != null) cc.enabled = true;
             if (agent != null) agent.enabled = true;

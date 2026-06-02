@@ -72,7 +72,8 @@ namespace AnimalMagicRoyale.Components
 
         public bool TryPickup(GameObject player)
         {
-            if (Vector3.Distance(transform.position, player.transform.position) <= interactionRange)
+            float effectiveRange = Mathf.Max(interactionRange, 3f);
+            if (Vector3.Distance(transform.position, player.transform.position) <= effectiveRange)
             {
                 var inventory = player.GetComponent<SpellInventory>();
                 if (inventory != null && containedSpell != null)

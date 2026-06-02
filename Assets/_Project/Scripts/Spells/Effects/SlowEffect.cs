@@ -31,7 +31,7 @@ namespace AnimalMagicRoyale.Spells.Effects
 
         private IEnumerator ApplySlowBotRoutine(AnimalMagicRoyale.AI.BotController controller)
         {
-            Debug.Log($"[SlowEffect] Slow aplicado al bot {controller.gameObject.name} por {duration}s.");
+            // Debug.Log($"[SlowEffect] Slow aplicado al bot {controller.gameObject.name} por {duration}s.");
             float originalSpeed = controller.Agent.speed;
             controller.Agent.speed *= (1f - slowPercent);
 

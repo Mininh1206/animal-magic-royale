@@ -14,7 +14,7 @@ namespace AnimalMagicRoyale.Spells.Effects
         public override void Apply(GameObject caster, GameObject target)
         {
             if (target == null) return;
-            Debug.Log($"[SilenceEffect] Aplicado a {target.name}. Tipo: {silenceType} por {duration}s.");
+            // Debug.Log($"[SilenceEffect] Aplicado a {target.name}. Tipo: {silenceType} por {duration}s.");
             
             var silencer = target.AddComponent<SilenceComponent>();
             silencer.Initialize(duration, silenceType);

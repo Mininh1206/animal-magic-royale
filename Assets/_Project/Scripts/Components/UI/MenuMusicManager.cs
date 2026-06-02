@@ -51,7 +51,7 @@ namespace AnimalMagicRoyale.Components.UI
                 if (audioSource.isPlaying)
                 {
                     audioSource.Stop();
-                    Debug.Log("[MenuMusicManager] Stopping music because we are in match and it is disabled in settings.");
+                    // Debug.Log("[MenuMusicManager] Stopping music because we are in match and it is disabled in settings.");
                 }
                 return;
             }
@@ -60,7 +60,7 @@ namespace AnimalMagicRoyale.Components.UI
 
             if (!audioSource.isPlaying)
             {
-                Debug.Log("[MenuMusicManager] Track finished playing. Choosing a new random track.");
+                // Debug.Log("[MenuMusicManager] Track finished playing. Choosing a new random track.");
                 PlayRandomTrack();
             }
         }

@@ -49,7 +49,7 @@ namespace Blocks.Gameplay.Platformer
                     // Dynamically add the DoubleJumpAbility component
                     var newAbility = interactor.AddComponent<DoubleJumpAbility>();
                     coreMovement.AddAbility(newAbility);
-                    Debug.Log("Granted Double Jump ability.", interactor);
+                    // Debug.Log("Granted Double Jump ability.", interactor);
 
                     // Broadcast notification to all players
                     if (notificationEvent != null)

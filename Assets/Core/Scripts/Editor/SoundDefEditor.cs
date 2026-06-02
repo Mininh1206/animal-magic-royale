@@ -173,7 +173,7 @@ public class SoundDefEditor : Editor
         // When all audio sources finish playing, either repeat or stop based on repeat count
         if (playCount == 0)
         {
-            Debug.Log("Repeat Count:" + s_SoundEmitter.GetRepeatCount());
+            // Debug.Log("Repeat Count:" + s_SoundEmitter.GetRepeatCount());
 
             if (s_RepeatCount > 1)
             {

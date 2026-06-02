@@ -82,7 +82,7 @@ namespace AnimalMagicRoyale.Core
             }
 
             _currentSkin = skin;
-            Debug.Log($"[SkinManager] Applied skin: {skin.skinName} on {gameObject.name}");
+            // Debug.Log($"[SkinManager] Applied skin: {skin.skinName} on {gameObject.name}");
         }
 
         private void ClearPreviousModel()
@@ -120,13 +120,13 @@ namespace AnimalMagicRoyale.Core
                 if (skin != null && skin.animatorController != null)
                 {
                     newAnimator.runtimeAnimatorController = skin.animatorController;
-                    Debug.Log($"[SkinManager] Applied AnimatorController {skin.animatorController.name}");
+                    // Debug.Log($"[SkinManager] Applied AnimatorController {skin.animatorController.name}");
                 }
 
                 if (_animHandler != null)
                 {
                     _animHandler.SetAnimator(newAnimator);
-                    Debug.Log($"[SkinManager] Re-bound Animator for {_currentModelInstance.name}");
+                    // Debug.Log($"[SkinManager] Re-bound Animator for {_currentModelInstance.name}");
                 }
             }
         }
@@ -159,13 +159,13 @@ namespace AnimalMagicRoyale.Core
                 float forwardOffset = bounds.extents.z * 1.1f;
                 newFirePoint.localPosition = localCenter + new Vector3(0, chestHeight, forwardOffset);
                 
-                Debug.Log($"[SkinManager] Auto-generated FirePoint for {_currentModelInstance.name} at {newFirePoint.localPosition}");
+                // Debug.Log($"[SkinManager] Auto-generated FirePoint for {_currentModelInstance.name} at {newFirePoint.localPosition}");
             }
 
             if (_inventory != null)
             {
                 _inventory.SetFirePoint(newFirePoint);
-                Debug.Log($"[SkinManager] Re-bound FirePoint for {_currentModelInstance.name}");
+                // Debug.Log($"[SkinManager] Re-bound FirePoint for {_currentModelInstance.name}");
             }
         }
 
@@ -183,7 +183,7 @@ namespace AnimalMagicRoyale.Core
             {
                 navAgent.height = height;
                 navAgent.radius = radius;
-                Debug.Log($"[SkinManager] Adjusted NavMeshAgent. Height: {height:F2}, Radius: {radius:F2}");
+                // Debug.Log($"[SkinManager] Adjusted NavMeshAgent. Height: {height:F2}, Radius: {radius:F2}");
             }
 
             // Apply to CharacterController (for Player logic)
@@ -193,7 +193,7 @@ namespace AnimalMagicRoyale.Core
                 charController.height = height;
                 charController.radius = radius;
                 charController.center = localCenter;
-                Debug.Log($"[SkinManager] Adjusted CharacterController. Height: {height:F2}, Radius: {radius:F2}");
+                // Debug.Log($"[SkinManager] Adjusted CharacterController. Height: {height:F2}, Radius: {radius:F2}");
             }
 
             // Añadir BoxCollider al hijo para que bots y proyectiles colisionen con él (NavMeshAgent NO colisiona)
@@ -209,7 +209,7 @@ namespace AnimalMagicRoyale.Core
             boxCollider.size = bounds.size;
             boxCollider.isTrigger = false; // Queremos que reciba los rayos y overlaps físicos
             
-            Debug.Log($"[SkinManager] Added/Adjusted BoxCollider on model {_currentModelInstance.name}. Size: {boxCollider.size}");
+            // Debug.Log($"[SkinManager] Added/Adjusted BoxCollider on model {_currentModelInstance.name}. Size: {boxCollider.size}");
         }
 
         private void SetLayerRecursively(GameObject obj, int newLayer)
@@ -238,7 +238,7 @@ namespace AnimalMagicRoyale.Core
                         r.enabled = isVisible;
                     }
                 }
-                Debug.Log($"[SkinManager] Visibilidad ajustada a {isVisible} en {_currentModelInstance.name}");
+                // Debug.Log($"[SkinManager] Visibilidad ajustada a {isVisible} en {_currentModelInstance.name}");
             }
         }
     }

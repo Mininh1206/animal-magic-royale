@@ -11,11 +11,11 @@ namespace AnimalMagicRoyale.Spells.Effects
             
             if (target.layer != LayerMask.NameToLayer("Player"))
             {
-                Debug.Log($"[SwapPositionEffect] Target {target.name} no está en la capa Player. Intercambio abortado.");
+                // Debug.Log($"[SwapPositionEffect] Target {target.name} no está en la capa Player. Intercambio abortado.");
                 return;
             }
 
-            Debug.Log($"[SwapPositionEffect] Intercambiando posición de {caster.name} con {target.name}.");
+            // Debug.Log($"[SwapPositionEffect] Intercambiando posición de {caster.name} con {target.name}.");
             Vector3 temp = caster.transform.position;
             
             var targetAgent = target.GetComponent<UnityEngine.AI.NavMeshAgent>();

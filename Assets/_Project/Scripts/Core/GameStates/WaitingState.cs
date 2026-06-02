@@ -13,9 +13,7 @@ namespace AnimalMagicRoyale.Core
 
         public override void Enter()
         {
-            Debug.Log("[WaitingState] Entered Waiting State. Waiting for match to start...");
-            
-            // TODO: Disable player inputs here
+            // Debug.Log("[WaitingState] Entered Waiting State. Waiting for match to start...");
             
             if (gameManager.onGameStateChanged != null)
             {

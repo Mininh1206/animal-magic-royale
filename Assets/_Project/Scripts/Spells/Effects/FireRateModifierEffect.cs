@@ -16,7 +16,7 @@ namespace AnimalMagicRoyale.Spells.Effects
             var inventory = target.GetComponentInParent<SpellInventory>();
             if (inventory != null)
             {
-                Debug.Log($"[FireRateModifierEffect] Aplicado a {target.name}. Modificador {multiplier}x por {duration}s.");
+                // Debug.Log($"[FireRateModifierEffect] Aplicado a {target.name}. Modificador {multiplier}x por {duration}s.");
                 var modifier = target.AddComponent<FireRateModifierComponent>();
                 modifier.Initialize(multiplier, duration);
             }
@@ -39,9 +39,9 @@ namespace AnimalMagicRoyale.Spells.Effects
 
         private IEnumerator Routine(float duration)
         {
-            Debug.Log($"[FireRateModifierComponent] Iniciado con multiplicador {multiplier}");
+            // Debug.Log($"[FireRateModifierComponent] Iniciado con multiplicador {multiplier}");
             yield return new WaitForSeconds(duration);
-            Debug.Log($"[FireRateModifierComponent] Finalizado.");
+            // Debug.Log($"[FireRateModifierComponent] Finalizado.");
             Destroy(this);
         }
     }

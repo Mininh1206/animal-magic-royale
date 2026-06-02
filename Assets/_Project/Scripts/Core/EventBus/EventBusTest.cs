@@ -27,21 +27,21 @@ namespace AnimalMagicRoyale.Core
 
         private void Start()
         {
-            Debug.Log("[EventBusTest] Iniciando prueba...");
+            // Debug.Log("[EventBusTest] Iniciando prueba...");
             if (onPlayerDamaged != null)
             {
-                Debug.Log("[EventBusTest] Lanzando evento OnPlayerDamaged con valor 25.");
+                // Debug.Log("[EventBusTest] Lanzando evento OnPlayerDamaged con valor 25.");
                 onPlayerDamaged.Raise(25);
             }
             else
             {
-                Debug.LogWarning("[EventBusTest] El evento OnPlayerDamaged no está asignado.");
+                // Debug.LogWarning("[EventBusTest] El evento OnPlayerDamaged no está asignado.");
             }
         }
 
         private void HandlePlayerDamaged(int damage)
         {
-            Debug.Log($"[EventBusTest] Evento recibido: Jugador dañado por {damage} puntos de vida.");
+            // Debug.Log($"[EventBusTest] Evento recibido: Jugador dañado por {damage} puntos de vida.");
         }
     }
 }

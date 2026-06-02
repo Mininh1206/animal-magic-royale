@@ -26,7 +26,7 @@ namespace AnimalMagicRoyale.Components.UI
             if (prefab != null)
             {
                 Instantiate(prefab);
-                Debug.Log("[GameOverManager] Auto-instantiated from Resources.");
+                // Debug.Log("[GameOverManager] Auto-instantiated from Resources.");
             }
             else
             {

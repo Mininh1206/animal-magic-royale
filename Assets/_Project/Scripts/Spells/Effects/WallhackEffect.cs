@@ -10,7 +10,7 @@ namespace AnimalMagicRoyale.Spells.Effects
         public override void Apply(GameObject caster, GameObject target)
         {
             if (target == null) return;
-            Debug.Log($"[WallhackEffect] {target.name} activó visión a través de paredes por {duration}s.");
+            // Debug.Log($"[WallhackEffect] {target.name} activó visión a través de paredes por {duration}s.");
             
             // Wallhack es un buff para el jugador local, si este es el local:
             var input = target.GetComponent<UnityEngine.InputSystem.PlayerInput>();
@@ -32,12 +32,12 @@ namespace AnimalMagicRoyale.Spells.Effects
         private System.Collections.IEnumerator Routine(float duration)
         {
             AnimalMagicRoyale.Components.UI.TeamUI.RevealEnemiesOnScreen = true;
-            Debug.Log("[WallhackComponent] Wallhack Activado.");
+            // Debug.Log("[WallhackComponent] Wallhack Activado.");
             
             yield return new WaitForSeconds(duration);
             
             AnimalMagicRoyale.Components.UI.TeamUI.RevealEnemiesOnScreen = false;
-            Debug.Log("[WallhackComponent] Wallhack Desactivado.");
+            // Debug.Log("[WallhackComponent] Wallhack Desactivado.");
             
             Destroy(this);
         }

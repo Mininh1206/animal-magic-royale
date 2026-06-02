@@ -107,7 +107,7 @@ namespace AnimalMagicRoyale.Core
                 currentDiameter = phases[currentPhaseIndex].startDiameter;
                 targetDiameter = phases[currentPhaseIndex].startDiameter;
                 phaseTimer = phases[currentPhaseIndex].waitBeforeShrink;
-                Debug.Log($"[ZoneManager] Activated. Phase 0, start diameter: {currentDiameter}");
+                // Debug.Log($"[ZoneManager] Activated. Phase 0, start diameter: {currentDiameter}");
             }
             else
             {
@@ -161,7 +161,7 @@ namespace AnimalMagicRoyale.Core
             isShrinking = true;
             phaseTimer = phase.shrinkDuration;
             targetDiameter = phase.endDiameter;
-            Debug.Log($"[ZoneManager] Zone shrinking to {targetDiameter} over {phaseTimer}s.");
+            // Debug.Log($"[ZoneManager] Zone shrinking to {targetDiameter} over {phaseTimer}s.");
 
             if (onZoneShrink != null)
             {
@@ -183,11 +183,11 @@ namespace AnimalMagicRoyale.Core
             if (currentPhaseIndex < phases.Length)
             {
                 phaseTimer = phases[currentPhaseIndex].waitBeforeShrink;
-                Debug.Log($"[ZoneManager] Advanced to Phase {currentPhaseIndex}. Waiting {phaseTimer}s before shrink.");
+                // Debug.Log($"[ZoneManager] Advanced to Phase {currentPhaseIndex}. Waiting {phaseTimer}s before shrink.");
             }
             else
             {
-                Debug.Log("[ZoneManager] Final phase reached. Zone will no longer shrink.");
+                // Debug.Log("[ZoneManager] Final phase reached. Zone will no longer shrink.");
             }
         }
 

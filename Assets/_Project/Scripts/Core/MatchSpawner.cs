@@ -115,7 +115,7 @@ namespace AnimalMagicRoyale.Core
                                 spawnPos = hit.position;
                                 usedSpawnPositions.Add(spawnPos);
                                 foundValidPosition = true;
-                                Debug.Log($"[MatchSpawner] Found valid spawn point for entity {spawnedCount} (Team {teamId}) at {spawnPos}. Distance check valid.");
+                                // Debug.Log($"[MatchSpawner] Found valid spawn point for entity {spawnedCount} (Team {teamId}) at {spawnPos}. Distance check valid.");
                                 break;
                             }
                         }
@@ -138,7 +138,7 @@ namespace AnimalMagicRoyale.Core
                         if (currentAnimal == null)
                         {
                             currentAnimal = Resources.Load<AnimalMagicRoyale.Core.Data.AnimalType>("Animals/Pig/PigType");
-                            Debug.Log("[MatchSpawner] No animal selected for local player, defaulting to Pig.");
+                            // Debug.Log("[MatchSpawner] No animal selected for local player, defaulting to Pig.");
                         }
 
                         var skinManager = newEntity.GetComponentInChildren<SkinManager>();
@@ -226,7 +226,7 @@ namespace AnimalMagicRoyale.Core
                 }
             }
 
-            Debug.Log($"[MatchSpawner] Spawned {spawnedCount} entities across {totalTeams} teams.");
+            // Debug.Log($"[MatchSpawner] Spawned {spawnedCount} entities across {totalTeams} teams.");
         }
     }
 }

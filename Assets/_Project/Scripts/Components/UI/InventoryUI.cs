@@ -77,14 +77,14 @@ namespace AnimalMagicRoyale.Components.UI
 
         public void Toggle()
         {
-            Debug.Log($"[InventoryUI] Toggle called. Current state: IsOpen={IsOpen}");
+            // Debug.Log($"[InventoryUI] Toggle called. Current state: IsOpen={IsOpen}");
             if (IsOpen) Hide();
             else Show();
         }
 
         public void Show()
         {
-            Debug.Log("[InventoryUI] Show inventory.");
+            // Debug.Log("[InventoryUI] Show inventory.");
             if (inventoryRoot == null) return;
             inventoryRoot.style.display = DisplayStyle.Flex;
             RefreshUI();
@@ -98,7 +98,7 @@ namespace AnimalMagicRoyale.Components.UI
 
         public void Hide()
         {
-            Debug.Log("[InventoryUI] Hide inventory.");
+            // Debug.Log("[InventoryUI] Hide inventory.");
             if (inventoryRoot == null) return;
             inventoryRoot.style.display = DisplayStyle.None;
             
@@ -108,7 +108,7 @@ namespace AnimalMagicRoyale.Components.UI
 
         public void SetTrackedInventory(SpellInventory inventory)
         {
-            Debug.Log($"[InventoryUI] Tracking new inventory.");
+            // Debug.Log($"[InventoryUI] Tracking new inventory.");
             trackedInventory = inventory;
             RefreshUI();
         }
@@ -252,7 +252,7 @@ namespace AnimalMagicRoyale.Components.UI
         {
             if (trackedInventory == null) return;
 
-            Debug.Log($"[InventoryUI] Swapping spells between slot {indexA} and {indexB}");
+            // Debug.Log($"[InventoryUI] Swapping spells between slot {indexA} and {indexB}");
 
             trackedInventory.SwapSlots(indexA, indexB);
 

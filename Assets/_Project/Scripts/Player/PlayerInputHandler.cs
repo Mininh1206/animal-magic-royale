@@ -116,19 +116,19 @@ namespace AnimalMagicRoyale.Player
                             if (scrollY > 0)
                             {
                                 playerController.ActiveSlotChange = (current - 1 + inventory.slots.Length) % inventory.slots.Length;
-                                Debug.Log($"[PlayerInputHandler] Mouse scroll UP. Next slot: {playerController.ActiveSlotChange}");
+                                // Debug.Log($"[PlayerInputHandler] Mouse scroll UP. Next slot: {playerController.ActiveSlotChange}");
                             }
                             else if (scrollY < 0)
                             {
                                 playerController.ActiveSlotChange = (current + 1) % inventory.slots.Length;
-                                Debug.Log($"[PlayerInputHandler] Mouse scroll DOWN. Next slot: {playerController.ActiveSlotChange}");
+                                // Debug.Log($"[PlayerInputHandler] Mouse scroll DOWN. Next slot: {playerController.ActiveSlotChange}");
                             }
                         }
                     }
 
                     if (Mouse.current.leftButton.isPressed)
                     {
-                        Debug.Log("[PlayerInputHandler] Attack requested via Mouse Left Button.");
+                        // Debug.Log("[PlayerInputHandler] Attack requested via Mouse Left Button.");
                         playerController.AttackRequested = true;
                     }
                 }
@@ -154,7 +154,7 @@ namespace AnimalMagicRoyale.Player
                         
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.Ability))
                         {
-                            Debug.Log("[PlayerInputHandler] Ability requested via Keyboard.");
+                            // Debug.Log("[PlayerInputHandler] Ability requested via Keyboard.");
                             playerController.AbilityRequested = true;
                         }
                         

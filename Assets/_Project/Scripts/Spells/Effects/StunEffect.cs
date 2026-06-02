@@ -30,7 +30,7 @@ namespace AnimalMagicRoyale.Spells.Effects
 
         private System.Collections.IEnumerator ApplyStunBotRoutine(AnimalMagicRoyale.AI.BotController botController)
         {
-            Debug.Log($"[StunEffect] Stun aplicado al bot {botController.gameObject.name} por {duration}s.");
+            // Debug.Log($"[StunEffect] Stun aplicado al bot {botController.gameObject.name} por {duration}s.");
             if (botController.Agent != null && botController.Agent.isOnNavMesh)
             {
                 botController.Agent.isStopped = true;

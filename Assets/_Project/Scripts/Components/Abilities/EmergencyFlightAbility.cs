@@ -13,7 +13,7 @@ namespace AnimalMagicRoyale.Components.Abilities
 
         public override void Activate(GameObject owner)
         {
-            Debug.Log($"{owner.name} activated Emergency Flight!");
+            // Debug.Log($"{owner.name} activated Emergency Flight!");
             var controller = owner.GetComponent<PlayerController>();
             if (controller != null)
             {

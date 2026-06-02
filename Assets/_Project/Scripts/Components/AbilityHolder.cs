@@ -23,17 +23,17 @@ namespace AnimalMagicRoyale.Components
 
         public bool TryActivate()
         {
-            Debug.Log($"[AbilityHolder] TryActivate called on {gameObject.name}. IsReady: {IsReady}, isSilenced: {isSilenced}, ability is null: {ability == null}");
+            // Debug.Log($"[AbilityHolder] TryActivate called on {gameObject.name}. IsReady: {IsReady}, isSilenced: {isSilenced}, ability is null: {ability == null}");
             if (IsReady)
             {
-                Debug.Log($"[AbilityHolder] Activating ability {ability.abilityName} on {gameObject.name}");
+                // Debug.Log($"[AbilityHolder] Activating ability {ability.abilityName} on {gameObject.name}");
                 ability.Activate(gameObject);
                 lastUseTime = Time.time;
                 return true;
             }
             if (ability != null && !ability.CanActivate(lastUseTime))
             {
-                Debug.LogWarning($"[AbilityHolder] Ability {ability.abilityName} is on cooldown! {GetCooldownRemaining()}s left.");
+                // Debug.LogWarning($"[AbilityHolder] Ability {ability.abilityName} is on cooldown! {GetCooldownRemaining()}s left.");
             }
             return false;
         }

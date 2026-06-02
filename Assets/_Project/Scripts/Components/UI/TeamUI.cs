@@ -37,7 +37,7 @@ namespace AnimalMagicRoyale.Components.UI
             }
 
             int myTeam = TeamManager.Instance.GetTeam(localPlayer);
-            Debug.Log($"[TeamUI] SetupTeam called for localPlayer {localPlayer.name}. Assigned teamId: {myTeam}. Total AlivePlayers: {GameManager.Instance.AlivePlayersCount}");
+            // Debug.Log($"[TeamUI] SetupTeam called for localPlayer {localPlayer.name}. Assigned teamId: {myTeam}. Total AlivePlayers: {GameManager.Instance.AlivePlayersCount}");
             
             if (myTeam == -1) return;
 
@@ -62,7 +62,7 @@ namespace AnimalMagicRoyale.Components.UI
                 teamContainer.style.visibility = teammates.Count > 0 ? Visibility.Visible : Visibility.Hidden;
             }
             
-            Debug.Log($"[TeamUI] Found {teammates.Count} teammates for teamId {myTeam}. Team container visibility set to {(teammates.Count > 0 ? "Visible" : "Hidden")}");
+            // Debug.Log($"[TeamUI] Found {teammates.Count} teammates for teamId {myTeam}. Team container visibility set to {(teammates.Count > 0 ? "Visible" : "Hidden")}");
         }
 
         private void CreateTeammateVisual(GameObject teammate)

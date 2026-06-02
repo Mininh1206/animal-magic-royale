@@ -13,7 +13,7 @@ namespace AnimalMagicRoyale.Spells.Effects
         public override void Apply(GameObject caster, GameObject target)
         {
             if (target == null) return;
-            Debug.Log($"[StickyBombEffect] Pegado a {target.name}. Explotará en {delay}s.");
+            // Debug.Log($"[StickyBombEffect] Pegado a {target.name}. Explotará en {delay}s.");
             var bomb = target.AddComponent<StickyBombComponent>();
             bomb.Initialize(caster, delay, radius, damage);
         }
@@ -30,7 +30,7 @@ namespace AnimalMagicRoyale.Spells.Effects
         {
             yield return new WaitForSeconds(delay);
             
-            Debug.Log($"[StickyBombComponent] ¡Explosión en {gameObject.name}!");
+            // Debug.Log($"[StickyBombComponent] ¡Explosión en {gameObject.name}!");
             Collider[] hits = Physics.OverlapSphere(transform.position, radius);
             int casterTeam = -1;
             if (AnimalMagicRoyale.Core.TeamManager.Instance != null && caster != null)

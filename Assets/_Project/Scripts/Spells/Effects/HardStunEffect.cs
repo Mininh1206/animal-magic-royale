@@ -14,7 +14,7 @@ namespace AnimalMagicRoyale.Spells.Effects
             
             // TODO: Integrar con la StateMachine para forzar estado HardStunned
             // Provisionalmente logueamos
-            Debug.Log($"[HardStunEffect] Aplicado a {target.name} por {duration}s. Bloqueo total de input.");
+            // Debug.Log($"[HardStunEffect] Aplicado a {target.name} por {duration}s. Bloqueo total de input.");
         }
     }
 }

@@ -14,7 +14,7 @@ namespace AnimalMagicRoyale.Spells.Effects
             var hc = target.GetComponentInParent<HealthComponent>();
             if (hc != null)
             {
-                Debug.Log($"[ShieldEffect] Aplicado a {target.name}. +{shieldAmount} escudo temporal.");
+                // Debug.Log($"[ShieldEffect] Aplicado a {target.name}. +{shieldAmount} escudo temporal.");
                 var shield = target.AddComponent<AnimalMagicRoyale.Components.Abilities.ShieldComponent>();
                 shield.Initialize(shieldAmount, 10f); // 10s default duration if none provided
             }

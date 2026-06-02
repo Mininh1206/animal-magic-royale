@@ -10,7 +10,7 @@ namespace AnimalMagicRoyale.Spells.Effects
         public override void Apply(GameObject caster, GameObject target)
         {
             if (target == null) return;
-            Debug.Log($"[BlindEffect] Aplicado a {target.name} por {duration}s.");
+            // Debug.Log($"[BlindEffect] Aplicado a {target.name} por {duration}s.");
             
             // Si el target es el jugador local (tiene la cámara principal y el HUDManager)
             var playerInput = target.GetComponent<UnityEngine.InputSystem.PlayerInput>();
@@ -22,7 +22,7 @@ namespace AnimalMagicRoyale.Spells.Effects
             else
             {
                 // TODO: En el futuro, limitar visión de bots reduciendo su SensorySystem
-                Debug.Log($"[BlindEffect] (Bot) Visión reducida de {target.name}");
+                // Debug.Log($"[BlindEffect] (Bot) Visión reducida de {target.name}");
             }
         }
     }

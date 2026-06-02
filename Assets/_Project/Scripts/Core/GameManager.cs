@@ -74,13 +74,13 @@ namespace AnimalMagicRoyale.Core
             
             if (AnimalMagicRoyale.Core.Data.PlayerSetupData.SelectedMap != null)
             {
-                Debug.Log("[GameManager] Map selected from lobby. Initializing match...");
+                // Debug.Log("[GameManager] Map selected from lobby. Initializing match...");
                 // Usamos Invoke para darle un pequeñísimo margen al resto de Awake/Starts de la escena
                 Invoke(nameof(InitializeFromLobby), 0.1f);
             }
             else
             {
-                Debug.Log($"[GameManager] Auto-starting match in {autoStartDelay} seconds...");
+                // Debug.Log($"[GameManager] Auto-starting match in {autoStartDelay} seconds...");
                 Invoke(nameof(StartMatch), autoStartDelay);
             }
         }
@@ -102,7 +102,7 @@ namespace AnimalMagicRoyale.Core
             if (onPlayerDeath != null)
             {
                 onPlayerDeath.RegisterListener(HandlePlayerDeath);
-                Debug.Log($"[GameManager] Subscribed to DeathEvent (asset: {onPlayerDeath.name})");
+                // Debug.Log($"[GameManager] Subscribed to DeathEvent (asset: {onPlayerDeath.name})");
             }
             else
             {
@@ -140,7 +140,7 @@ namespace AnimalMagicRoyale.Core
                 alivePlayers.Add(player);
                 TotalPlayers = alivePlayers.Count;
                 NotifyAliveCount();
-                Debug.Log($"[GameManager] Registered: {player.name}. Alive: {alivePlayers.Count}");
+                // Debug.Log($"[GameManager] Registered: {player.name}. Alive: {alivePlayers.Count}");
             }
         }
 
@@ -150,7 +150,7 @@ namespace AnimalMagicRoyale.Core
             {
                 alivePlayers.Remove(player);
                 NotifyAliveCount();
-                Debug.Log($"[GameManager] Player eliminated: {player.name} by {killer?.name ?? "environment"}. Remaining: {alivePlayers.Count}");
+                // Debug.Log($"[GameManager] Player eliminated: {player.name} by {killer?.name ?? "environment"}. Remaining: {alivePlayers.Count}");
 
                 if (onPlayerEliminated != null)
                 {
@@ -173,7 +173,7 @@ namespace AnimalMagicRoyale.Core
         {
             if (alivePlayers.Count == 0)
             {
-                Debug.Log($"[GameManager] Match Ended! Draw!");
+                // Debug.Log($"[GameManager] Match Ended! Draw!");
                 StateMachine.ChangeState(GameOverState);
                 return;
             }
@@ -195,7 +195,7 @@ namespace AnimalMagicRoyale.Core
                 if (allSameTeam)
                 {
                     Winner = alivePlayers[0];
-                    Debug.Log($"[GameManager] Match Ended! Winning Team: {firstTeamId}");
+                    // Debug.Log($"[GameManager] Match Ended! Winning Team: {firstTeamId}");
                     StateMachine.ChangeState(GameOverState);
                 }
             }
@@ -204,7 +204,7 @@ namespace AnimalMagicRoyale.Core
                 if (alivePlayers.Count == 1)
                 {
                     Winner = alivePlayers[0];
-                    Debug.Log($"[GameManager] Match Ended! Winner: {Winner.name}");
+                    // Debug.Log($"[GameManager] Match Ended! Winner: {Winner.name}");
                     StateMachine.ChangeState(GameOverState);
                 }
             }
@@ -212,7 +212,7 @@ namespace AnimalMagicRoyale.Core
 
         private void HandlePlayerDeath(DeathPayload payload)
         {
-            Debug.Log($"[GameManager] HandlePlayerDeath received: {payload.victim?.name} killed by {payload.killer?.name ?? "environment"}");
+            // Debug.Log($"[GameManager] HandlePlayerDeath received: {payload.victim?.name} killed by {payload.killer?.name ?? "environment"}");
             
             // 1. Unregister first so AlivePlayers is updated
             UnregisterPlayer(payload.victim, payload.killer);
@@ -236,7 +236,7 @@ namespace AnimalMagicRoyale.Core
                         GameObject teammate = GetAliveTeammate(localPlayer);
                         if (teammate == null)
                         {
-                            Debug.Log("[GameManager] Local player's last teammate died. Proceeding to Game Over.");
+                            // Debug.Log("[GameManager] Local player's last teammate died. Proceeding to Game Over.");
                             StateMachine.ChangeState(GameOverState);
                         }
                     }
@@ -255,14 +255,14 @@ namespace AnimalMagicRoyale.Core
                     // Desvincular para que no se desactive cuando localPlayer.SetActive(false) ocurra
                     vcam.transform.parent.SetParent(null);
                     
-                    Debug.Log($"[Spectator] Local player died. Spectating teammate: {teammate.name}");
+                    // Debug.Log($"[Spectator] Local player died. Spectating teammate: {teammate.name}");
                     vcam.Follow = teammate.transform;
                     vcam.LookAt = teammate.transform;
                 }
             }
             else
             {
-                Debug.Log("[Spectator] No alive teammates found. Proceeding to Game Over.");
+                // Debug.Log("[Spectator] No alive teammates found. Proceeding to Game Over.");
                 StateMachine.ChangeState(GameOverState);
             }
         }
@@ -296,7 +296,7 @@ namespace AnimalMagicRoyale.Core
 
                 isCountingDown = true;
                 countdownTimer = countdownDuration;
-                Debug.Log($"[GameManager] Match starting in {countdownDuration} seconds...");
+                // Debug.Log($"[GameManager] Match starting in {countdownDuration} seconds...");
             }
         }
 

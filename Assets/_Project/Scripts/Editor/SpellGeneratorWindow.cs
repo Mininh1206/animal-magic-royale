@@ -284,7 +284,7 @@ namespace AnimalMagicRoyale.EditorScripts
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            Debug.Log("Spells successfully generated in Assets/_Project/Core/Data/Spells/");
+            // Debug.Log("Spells successfully generated in Assets/_Project/Core/Data/Spells/");
         }
     }
 }

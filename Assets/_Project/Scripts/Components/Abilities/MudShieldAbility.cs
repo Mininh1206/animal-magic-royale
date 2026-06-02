@@ -13,7 +13,7 @@ namespace AnimalMagicRoyale.Components.Abilities
         {
             var shield = owner.AddComponent<ShieldComponent>();
             shield.Initialize(shieldAmount, duration);
-            Debug.Log($"{owner.name} activated Mud Shield! ({shieldAmount} HP for {duration}s)");
+            // Debug.Log($"{owner.name} activated Mud Shield! ({shieldAmount} HP for {duration}s)");
         }
     }
 

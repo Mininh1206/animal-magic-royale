@@ -13,7 +13,7 @@ namespace AnimalMagicRoyale.Components.Abilities
 
         public override void Activate(GameObject owner)
         {
-            Debug.Log($"{owner.name} activated Stun Crow! (AoE Stun)");
+            // Debug.Log($"{owner.name} activated Stun Crow! (AoE Stun)");
             Collider[] hits = Physics.OverlapSphere(owner.transform.position, radius, targetLayer);
             foreach (var hit in hits)
             {

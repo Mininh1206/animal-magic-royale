@@ -13,15 +13,13 @@ namespace AnimalMagicRoyale.Core
 
         public override void Enter()
         {
-            Debug.Log("[PlayingState] Entered Playing State. Match is now active!");
+            // Debug.Log("[PlayingState] Entered Playing State. Match is now active!");
             
-            // TODO: Enable player inputs
             if (ZoneManager.Instance != null)
             {
                 ZoneManager.Instance.Activate();
-                Debug.Log("[PlayingState] ZoneManager activated.");
+                // Debug.Log("[PlayingState] ZoneManager activated.");
             }
-            // TODO: Enable LootBox spawners
             
             if (gameManager.onGameStateChanged != null)
             {

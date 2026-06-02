@@ -52,7 +52,7 @@ namespace AnimalMagicRoyale.Core
             if (ornitorrincoSpells == null || ornitorrincoSpells.Length == 0) ornitorrincoSpells = ornitorrincoList.ToArray();
             if (goatSpells == null || goatSpells.Length == 0) goatSpells = goatList.ToArray();
 
-            Debug.Log($"[LootBoxSpawner] Cargados por defecto: {hormigaSpells.Length} Hormiga, {ornitorrincoSpells.Length} Ornitorrinco, {goatSpells.Length} GOAT.");
+            // Debug.Log($"[LootBoxSpawner] Cargados por defecto: {hormigaSpells.Length} Hormiga, {ornitorrincoSpells.Length} Ornitorrinco, {goatSpells.Length} GOAT.");
         }
 
         private void Start()

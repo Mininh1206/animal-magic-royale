@@ -10,7 +10,7 @@ namespace AnimalMagicRoyale.Spells.Effects
         public override void Apply(GameObject caster, GameObject target)
         {
             if (target == null) return;
-            Debug.Log($"[InvisibilityEffect] {target.name} se vuelve invisible por {duration}s.");
+            // Debug.Log($"[InvisibilityEffect] {target.name} se vuelve invisible por {duration}s.");
             
             var invComp = target.AddComponent<InvisibilityComponent>();
             invComp.Initialize(duration);

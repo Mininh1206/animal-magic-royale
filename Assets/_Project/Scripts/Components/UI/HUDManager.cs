@@ -90,7 +90,7 @@ namespace AnimalMagicRoyale.Components.UI
                 if (inventoryUI != null) inventoryUI.Initialize(root);
             }
 
-            Debug.Log("[HUDManager] Start executed (UI Toolkit).");
+            // Debug.Log("[HUDManager] Start executed (UI Toolkit).");
             if (GameManager.Instance != null && GameManager.Instance.StateMachine.CurrentState is WaitingState)
             {
                 SetHUDActive(false);
@@ -103,7 +103,7 @@ namespace AnimalMagicRoyale.Components.UI
 
         private void HandleGameStateChanged(GameState state)
         {
-            Debug.Log($"[HUDManager] GameState changed to {state}");
+            // Debug.Log($"[HUDManager] GameState changed to {state}");
             switch (state)
             {
                 case GameState.Waiting:
@@ -135,7 +135,7 @@ namespace AnimalMagicRoyale.Components.UI
                             }
                             if (teamUI != null) StartCoroutine(SetupTeamDelayed(player.gameObject));
                             
-                            Debug.Log($"[HUDManager] Tracked player assigned: {player.gameObject.name}");
+                            // Debug.Log($"[HUDManager] Tracked player assigned: {player.gameObject.name}");
                         }
                         else
                         {
@@ -151,7 +151,7 @@ namespace AnimalMagicRoyale.Components.UI
         
         private void SetHUDActive(bool isActive)
         {
-            Debug.Log($"[HUDManager] Setting HUD active state to: {isActive}");
+            // Debug.Log($"[HUDManager] Setting HUD active state to: {isActive}");
             if (uiDocument != null && uiDocument.rootVisualElement != null)
             {
                 uiDocument.rootVisualElement.style.display = isActive ? UnityEngine.UIElements.DisplayStyle.Flex : UnityEngine.UIElements.DisplayStyle.None;

@@ -144,7 +144,7 @@ namespace AnimalMagicRoyale.Spells
 
             if (homingTarget != null)
             {
-                Debug.Log($"[Projectile Homing] {gameObject.name} fijó objetivo en {homingTarget.name}");
+                // Debug.Log($"[Projectile Homing] {gameObject.name} fijó objetivo en {homingTarget.name}");
             }
         }
 
@@ -217,12 +217,12 @@ namespace AnimalMagicRoyale.Spells
                 transform.position += normal * 0.2f;
 
                 bouncesLeft--;
-                Debug.Log($"[Projectile Bounce] {gameObject.name} rebotó en {other.gameObject.name}. Rebotes restantes: {bouncesLeft}. Normal: {normal}");
+                // Debug.Log($"[Projectile Bounce] {gameObject.name} rebotó en {other.gameObject.name}. Rebotes restantes: {bouncesLeft}. Normal: {normal}");
                 return;
             }
 
             // Debug para saber contra qué choca (ignorar si es un rebote)
-            Debug.Log($"[Projectile] Chocó contra: {other.gameObject.name}");
+            // Debug.Log($"[Projectile] Chocó contra: {other.gameObject.name}");
 
             if (spellData != null && spellData.effects != null)
             {
@@ -252,7 +252,7 @@ namespace AnimalMagicRoyale.Spells
 
         protected virtual void OnProjectileClash(Projectile other)
         {
-            Debug.Log($"[Projectile] Choque mágico detectado entre {gameObject.name} y {other.gameObject.name}");
+            // Debug.Log($"[Projectile] Choque mágico detectado entre {gameObject.name} y {other.gameObject.name}");
             
             // TODO: Futuro: Aquí se puede comprobar si spellData es Fuego y el otro es Agua,
             // instanciar un VFX de explosión o humo en el punto medio, etc.

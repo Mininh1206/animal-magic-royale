@@ -36,7 +36,7 @@ namespace AnimalMagicRoyale.AI
                 if (abilityHolder != null && abilityHolder.IsReady)
                 {
                     abilityHolder.TryActivate();
-                    // Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} usó habilidad evasiva para huir.");
+                    Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} usó habilidad evasiva para huir.");
                 }
 
                 Vector3 enemyPos = ctx.NearestEnemy.position;
@@ -231,7 +231,7 @@ namespace AnimalMagicRoyale.AI
                     {
                         if (ctx.Bot.Agent.isOnNavMesh && ctx.Bot.Agent.isActiveAndEnabled) ctx.Bot.Agent.isStopped = true;
                         
-                        var lootBox = ctx.BestPhysicalLoot.GetComponent<LootBox>();
+                        var lootBox = ctx.BestPhysicalLoot.GetComponentInParent<LootBox>();
                         if (lootBox != null)
                         {
                             if (lootBox.TryOpen(ctx.Bot.gameObject))
@@ -242,7 +242,7 @@ namespace AnimalMagicRoyale.AI
                         }
                         else
                         {
-                            var pickup = ctx.BestPhysicalLoot.GetComponent<SpellPickup>();
+                            var pickup = ctx.BestPhysicalLoot.GetComponentInParent<SpellPickup>();
                             if (pickup != null && pickup.containedSpell != null)
                             {
                                 int targetSlot = -1;
@@ -269,7 +269,7 @@ namespace AnimalMagicRoyale.AI
                                     {
                                         if (TeamMemorySystem.Instance != null)
 #pragma warning disable CS0618
-                                            TeamMemorySystem.Instance.RemoveSpell(ctx.TeamId, ctx.BestPhysicalLoot.gameObject.GetEntityId());
+                                            TeamMemorySystem.Instance.RemoveSpell(ctx.TeamId, pickup.gameObject.GetEntityId());
 #pragma warning restore CS0618
                                         Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} recogió un hechizo.");
                                         return NodeStatus.Success;
@@ -315,7 +315,7 @@ namespace AnimalMagicRoyale.AI
                             {
                                 TeamMemorySystem.Instance.RemoveSpell(ctx.TeamId, ctx.BestMemoryLoot.Value.InstanceID);
                             }
-                            // Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} llegó a la posición de memoria pero el hechizo no estaba.");
+                            Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} llegó a la posición de memoria pero el hechizo no estaba.");
                             return NodeStatus.Failure;
                         }
                     }

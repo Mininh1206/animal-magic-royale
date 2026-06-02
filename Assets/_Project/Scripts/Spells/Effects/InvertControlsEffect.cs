@@ -10,7 +10,7 @@ namespace AnimalMagicRoyale.Spells.Effects
         public override void Apply(GameObject caster, GameObject target)
         {
             if (target == null) return;
-            Debug.Log($"[InvertControlsEffect] Aplicado a {target.name} por {duration}s. Controles de movimiento invertidos.");
+            // Debug.Log($"[InvertControlsEffect] Aplicado a {target.name} por {duration}s. Controles de movimiento invertidos.");
             // TODO: Integrar con PlayerController / NavMeshAgent para invertir Input Vector
         }
     }

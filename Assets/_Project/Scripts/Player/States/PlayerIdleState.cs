@@ -14,14 +14,14 @@ namespace AnimalMagicRoyale.Player
 
         public override void Enter()
         {
-            Debug.Log("[FSM] Entering IdleState");
+            // Debug.Log("[FSM] Entering IdleState");
         }
 
         public override void Update()
         {
             if (player.AttackRequested)
             {
-                Debug.Log("[PlayerIdleState] AttackRequested is TRUE. Changing to AttackState.");
+                // Debug.Log("[PlayerIdleState] AttackRequested is TRUE. Changing to AttackState.");
                 stateMachine.ChangeState(player.AttackState);
                 return;
             }

@@ -29,7 +29,7 @@ namespace AnimalMagicRoyale.Core
             currentMode = mode;
             maxPlayers = maxPlayersInMap;
             playerTeams.Clear();
-            Debug.Log($"[TeamManager] Configured for Mode: {mode}, Max Players: {maxPlayers}");
+            // Debug.Log($"[TeamManager] Configured for Mode: {mode}, Max Players: {maxPlayers}");
         }
 
         public int GetMaxTeams()
@@ -54,7 +54,7 @@ namespace AnimalMagicRoyale.Core
             {
                 if (kvp.Value == teamId) countInTeam++;
             }
-            Debug.Log($"[TeamManager] Assigned {player.name} to Team {teamId}. Team {teamId} now has {countInTeam} members.");
+            // Debug.Log($"[TeamManager] Assigned {player.name} to Team {teamId}. Team {teamId} now has {countInTeam} members.");
         }
 
         public int GetTeam(GameObject player)

@@ -48,7 +48,7 @@ namespace AnimalMagicRoyale.Spells.Effects
                 
                 if (nextTarget != null)
                 {
-                    Debug.Log($"[ChainLightningEffect] Salto a {nextTarget.name}");
+                    // Debug.Log($"[ChainLightningEffect] Salto a {nextTarget.name}");
                     ApplyDamage(caster, nextTarget);
                     currentTarget = nextTarget;
                     currentPos = nextTarget.transform.position;
