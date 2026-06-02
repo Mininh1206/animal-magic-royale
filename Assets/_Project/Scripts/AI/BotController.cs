@@ -3,32 +3,38 @@ using UnityEngine;
 using UnityEngine.AI;
 using AnimalMagicRoyale.Components;
 using AnimalMagicRoyale.Core;
+using AnimalMagicRoyale.Components.Abilities;
 
 namespace AnimalMagicRoyale.AI
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(AISensorSystem))]
+    [RequireComponent(typeof(BotContextUpdater))]
     public class BotController : BasicController
     {
         public float attackRange = 10f;
         
         public NavMeshAgent Agent { get; private set; }
         public AISensorSystem Sensor { get; private set; }
+        public BotContextUpdater ContextUpdater { get; private set; }
+
+        public BotContext Context { get; private set; }
 
         private FuzzyController fuzzyController;
         private BTNode behaviorTree;
-        private BotContext context;
-        private float logTimer = 0f;
-        private float footstepTimer = 0f;
+        private float stuckTimer = 0f;
+
+        private float takingDamageTimer = 0f;
 
         protected override void Awake()
         {
             base.Awake();
             Agent = GetComponent<NavMeshAgent>();
             Sensor = GetComponent<AISensorSystem>();
+            ContextUpdater = GetComponent<BotContextUpdater>();
 
             fuzzyController = new FuzzyController();
-            context = new BotContext { Bot = this, Sensor = Sensor };
+            Context = new BotContext { Bot = this, Sensor = Sensor };
             
             BuildBehaviorTree();
         }
@@ -37,13 +43,14 @@ namespace AnimalMagicRoyale.AI
         {
             base.Start();
             
+            if (TeamManager.Instance != null)
+            {
+                Context.TeamId = TeamManager.Instance.GetTeam(gameObject);
+            }
+
             if (Inventory != null && Inventory.GetActiveSpell() == null)
             {
                 Debug.LogWarning($"[BotController] {gameObject.name} no tiene un hechizo activo asignado en su SpellInventory!");
-            }
-            else if (Inventory == null)
-            {
-                Debug.LogWarning($"[BotController] {gameObject.name} no tiene el componente SpellInventory!");
             }
         }
 
@@ -67,151 +74,175 @@ namespace AnimalMagicRoyale.AI
         {
             if (payload.target == gameObject && payload.delta < 0 && payload.source != null)
             {
+                takingDamageTimer = 1.0f; // Activar flag de daño reciente por 1 segundo
+                Context.IsTakingDamage = true;
+                Context.CurrentRevengeTarget = payload.source.transform;
+
+                // Reportar a la memoria del equipo si es un atacante lejano
+                if (TeamMemorySystem.Instance != null)
+                {
+#pragma warning disable CS0618
+                    TeamMemorySystem.Instance.ReportEnemy(Context.TeamId, payload.source.GetEntityId(), payload.source.transform.position);
+#pragma warning restore CS0618
+                }
+
                 Vector3 dir = payload.source.transform.position - transform.position;
-                dir.y = 0; // Evitar que el bot mire hacia arriba/abajo
+                dir.y = 0; 
                 if (dir.sqrMagnitude > 0.01f)
                 {
-                    // Forzamos el giro instantáneo hacia el atacante para meterlo en el sensor
                     transform.rotation = Quaternion.LookRotation(dir);
-                    Debug.Log($"[BotController] {gameObject.name} reaccionó al daño y se giró hacia {payload.source.name}");
                 }
             }
         }
 
         private void BuildBehaviorTree()
         {
-            // Flee Sequence
+            var investigateSequence = new BTSequence(new List<BTNode>
+            {
+                BotConditions.ShouldInvestigate(),
+                BotActions.Investigate()
+            });
+
             var fleeSequence = new BTSequence(new List<BTNode>
             {
                 BotConditions.ShouldFlee(),
                 BotActions.FleeFromNearestEnemy()
             });
 
-            // Combat Sequence
             var combatSequence = new BTSequence(new List<BTNode>
             {
                 BotConditions.ShouldAttack(),
                 BotActions.PursueAndAttack()
             });
 
-            // Collect Sequence
             var collectSequence = new BTSequence(new List<BTNode>
             {
                 BotConditions.ShouldCollect(),
-                BotActions.MoveToLootBox()
+                BotActions.MoveToLoot()
             });
 
-            // Zone Survival Sequence (Highest priority in selector)
             var zoneSequence = new BTSequence(new List<BTNode>
             {
                 BotConditions.IsOutsideZone(),
                 BotActions.MoveToZoneCenter()
             });
 
-            // Root Selector
+            // Prioridades: Zona > Huir > Combate > Investigar > Recolectar > Patrullar
             behaviorTree = new BTSelector(new List<BTNode>
             {
                 zoneSequence,
                 fleeSequence,
                 combatSequence,
+                investigateSequence,
                 collectSequence,
-                BotActions.PatrolRandomPoint() // Fallback
+                BotActions.PatrolRandomPoint()
             });
+        }
+
+        private float CalculateThreat(float healthPerc, int enemyCount, float enemyDist)
+        {
+            float baseThreat = (enemyCount * 0.3f);
+            
+            if (healthPerc < 40f) 
+                baseThreat += 0.5f;
+            else if (healthPerc < 70f)
+                baseThreat += 0.2f;
+
+            if (Context.IsTakingDamage) 
+                baseThreat += 0.2f; // Pico de pánico
+            
+            if (ZoneManager.Instance != null && !ZoneManager.Instance.IsInsideZone(transform.position))
+            {
+                return 1.0f; // Máxima amenaza si está fuera de zona
+            }
+
+            return Mathf.Clamp01(baseThreat);
         }
 
         private void Update()
         {
             if (!Health.IsAlive)
             {
-                Agent.isStopped = true;
+                if (Agent.isOnNavMesh && Agent.isActiveAndEnabled) Agent.isStopped = true;
                 return;
             }
 
-            // No ejecutar IA hasta que el juego este en estado Playing
             if (GameManager.Instance == null || 
-                !(GameManager.Instance.StateMachine.CurrentState is PlayingState))
+                GameManager.Instance.StateMachine.CurrentState is not PlayingState)
             {
-                if (Agent.isOnNavMesh) Agent.isStopped = true;
+                if (Agent.isOnNavMesh && Agent.isActiveAndEnabled) Agent.isStopped = true;
                 return;
             }
 
-            // Ensure agent is never left in a stopped state accidentally
-            if (Agent.isStopped)
+            if (Agent.isOnNavMesh && Agent.isActiveAndEnabled && Agent.isStopped)
             {
                 Agent.isStopped = false;
             }
 
-            UpdateContext();
+            // Actualizar timer de daño
+            if (takingDamageTimer > 0)
+            {
+                takingDamageTimer -= Time.deltaTime;
+                if (takingDamageTimer <= 0) Context.IsTakingDamage = false;
+            }
+
+            ContextUpdater.UpdateBotContext(Context);
             
+            // Stuck Prevention
+            if (Agent.isOnNavMesh && !Agent.isStopped && Agent.hasPath)
+            {
+                if (Agent.velocity.sqrMagnitude < 0.1f)
+                {
+                    stuckTimer += Time.deltaTime;
+                    if (stuckTimer > 2f)
+                    {
+                        if (Agent.isActiveAndEnabled) Agent.ResetPath();
+                        
+                        var ability = GetComponent<AbilityHolder>();
+                        if (ability != null && ability.IsReady) ability.TryActivate();
+                        
+                        Vector3 right = Vector3.Cross(transform.forward, Vector3.up);
+                        Agent.Move(right * (Random.value > 0.5f ? 1f : -1f) * 2f);
+
+                        stuckTimer = 0f;
+                        // Debug.Log($"[BotController] {gameObject.name} got stuck. Unstucking.");
+                    }
+                }
+                else
+                {
+                    stuckTimer = 0f;
+                }
+            }
+
             // Fuzzy Logic Step
             float healthPerc = (Health.CurrentHealth / Health.maxHealth) * 100f;
-            float enemyDist = context.NearestEnemy.HasValue ? context.NearestEnemy.Value.distance : 50f;
             
-            // Calculate Threat (0-1). Being outside zone is max threat.
-            float threat = 0f;
-            if (ZoneManager.Instance != null && !ZoneManager.Instance.IsInsideZone(transform.position))
+            int enemyCount = 0;
+            if (Sensor != null)
             {
-                threat = 1f;
+                foreach(var t in Sensor.VisibleTargets) 
+                    if(t.type == TargetType.Enemy) enemyCount++;
             }
-            else if (context.NearestEnemy.HasValue && enemyDist < 5f)
-            {
-                threat = 0.8f;
-            }
+            
+            float enemyDist = Context.NearestEnemy != null ? Vector3.Distance(transform.position, Context.NearestEnemy.position) : 50f;
+            float threat = CalculateThreat(healthPerc, enemyCount, enemyDist);
 
-            context.FuzzyResult = fuzzyController.Evaluate(healthPerc, enemyDist, threat);
+            Context.FuzzyResult = fuzzyController.Evaluate(healthPerc, enemyDist, threat);
 
             // Behavior Tree Step
-            behaviorTree.Tick(context);
+            behaviorTree.Tick(Context);
 
-            logTimer += Time.deltaTime;
-            if (logTimer >= 2f)
-            {
-                logTimer = 0f;
-                int enemyCount = 0;
-                if (Sensor != null)
-                {
-                    foreach(var t in Sensor.VisibleTargets) if(t.type == TargetType.Enemy) enemyCount++;
-                }
-                string activeSpell = (Inventory != null && Inventory.GetActiveSpell() != null) ? Inventory.GetActiveSpell().spellName : "NONE";
-                Debug.Log($"[BotController] {gameObject.name}: Enemies={enemyCount}, Fuzzy(A={context.FuzzyResult.attackScore:F2}, F={context.FuzzyResult.fleeScore:F2}, C={context.FuzzyResult.collectScore:F2}), Spell={activeSpell}");
-            }
-
+            // Animations and Sounds
             if (AnimHandler != null)
             {
                 float botSpeed = Agent.velocity.magnitude;
-                bool botRunning = botSpeed > 6.5f; // Umbral para correr (Walk=5, Run=8)
+                bool botRunning = botSpeed > 6.5f; 
                 AnimHandler.UpdateLocomotion(botSpeed, botRunning);
                 
-                // Pasos
                 if (SFXHandler != null)
                 {
                     bool isMoving = botSpeed > 0.1f;
                     SFXHandler.SetFootstepsActive(isMoving);
-                }
-            }
-        }
-
-        private void UpdateContext()
-        {
-            context.NearestEnemy = null;
-            context.NearestLootBox = null;
-            
-            if (Sensor == null) return;
-
-            float minEnemyDist = float.MaxValue;
-            float minLootDist = float.MaxValue;
-
-            foreach (var target in Sensor.VisibleTargets)
-            {
-                if (target.type == TargetType.Enemy && target.distance < minEnemyDist)
-                {
-                    minEnemyDist = target.distance;
-                    context.NearestEnemy = target;
-                }
-                else if (target.type == TargetType.LootBox && target.distance < minLootDist)
-                {
-                    minLootDist = target.distance;
-                    context.NearestLootBox = target;
                 }
             }
         }

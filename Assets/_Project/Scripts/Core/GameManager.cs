@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using AnimalMagicRoyale.AI;
 
 namespace AnimalMagicRoyale.Core
 {
+    [RequireComponent(typeof(TeamManager)), RequireComponent(typeof(TeamMemorySystem))]
     public class GameManager : MonoBehaviour
     {
         public static GameManager Instance { get; private set; }
@@ -222,7 +224,7 @@ namespace AnimalMagicRoyale.Core
             UnregisterPlayer(payload.victim, payload.killer);
 
             // 2. Comprobar si el equipo del jugador local ha sido eliminado por completo
-            var localPlayerController = FindFirstObjectByType<AnimalMagicRoyale.Player.PlayerController>();
+            var localPlayerController = FindAnyObjectByType<AnimalMagicRoyale.Player.PlayerController>();
             if (localPlayerController != null)
             {
                 GameObject localPlayer = localPlayerController.gameObject;
@@ -292,7 +294,7 @@ namespace AnimalMagicRoyale.Core
         {
             if (StateMachine.CurrentState == WaitingState)
             {
-                var spawner = FindFirstObjectByType<MatchSpawner>();
+                var spawner = FindAnyObjectByType<MatchSpawner>();
                 if (spawner != null)
                 {
                     spawner.SpawnEntities();

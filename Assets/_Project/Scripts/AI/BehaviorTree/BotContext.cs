@@ -8,11 +8,21 @@ namespace AnimalMagicRoyale.AI
         public AISensorSystem Sensor;
         public FuzzyOutput FuzzyResult;
         
+        // Context Info
+        public int TeamId;
+        public Transform CurrentRevengeTarget;
+        public bool IsTakingDamage;
+
         // Blackboard items for actions
-        public Transform CurrentTarget;
-        public Vector3 FleeDestination;
-        public SensorTarget? NearestEnemy;
-        public SensorTarget? NearestLootBox;
+        public Transform NearestEnemy;
+        
+        // Loot specific properties
+        public Transform BestPhysicalLoot;
+        public MemorySpellTarget? BestMemoryLoot;
+        
+        // Investigation specific properties
+        public MemoryEnemyTarget? InvestigationTarget;
+
         public float NextAttackTime;
     }
 }

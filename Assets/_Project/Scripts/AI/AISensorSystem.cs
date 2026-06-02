@@ -5,7 +5,7 @@ using AnimalMagicRoyale.Core;
 
 namespace AnimalMagicRoyale.AI
 {
-    public enum TargetType { Enemy, LootBox, ZoneBoundary }
+    public enum TargetType { Enemy, LootBox, ZoneBoundary, SpellPickup }
 
     public struct SensorTarget
     {
@@ -140,6 +140,10 @@ namespace AnimalMagicRoyale.AI
             if (obj.GetComponentInParent<LootBox>() != null)
             {
                 type = TargetType.LootBox;
+            }
+            else if (obj.GetComponentInParent<AnimalMagicRoyale.Components.SpellPickup>() != null)
+            {
+                type = TargetType.SpellPickup;
             }
             else
             {

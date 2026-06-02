@@ -1,6 +1,7 @@
 using UnityEngine;
 using AnimalMagicRoyale.Core;
 using AnimalMagicRoyale.Components;
+using AnimalMagicRoyale.Components.Abilities;
 
 namespace AnimalMagicRoyale.AI
 {
@@ -10,15 +11,14 @@ namespace AnimalMagicRoyale.AI
         {
             return new BTAction(ctx =>
             {
-                if (ZoneManager.Instance != null)
+                if (ZoneManager.Instance != null && ctx.Bot.Agent.isOnNavMesh && ctx.Bot.Agent.isActiveAndEnabled)
                 {
                     Vector3 center = ZoneManager.Instance.ZoneCenter;
-                    // Get slightly random point near center to avoid clustering
                     Vector3 randomOffset = new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-5f, 5f));
                     if (ctx.Bot.Agent.isStopped) ctx.Bot.Agent.isStopped = false;
-                    ctx.Bot.Agent.speed = 8f; // Correr a zona segura
+                    ctx.Bot.Agent.speed = 8f;
                     ctx.Bot.Agent.SetDestination(center + randomOffset);
-                    return NodeStatus.Running; // Always running until condition (IsOutsideZone) becomes false
+                    return NodeStatus.Running;
                 }
                 return NodeStatus.Failure;
             });
@@ -28,37 +28,39 @@ namespace AnimalMagicRoyale.AI
         {
             return new BTAction(ctx =>
             {
-                if (!ctx.NearestEnemy.HasValue) return NodeStatus.Failure;
+                if (ctx.NearestEnemy == null) return NodeStatus.Failure;
                 
-                // Si el agente ya tiene un camino activo y no ha llegado, continuar
-                if (!ctx.Bot.Agent.pathPending && ctx.Bot.Agent.hasPath && ctx.Bot.Agent.remainingDistance > 2f)
+                if (!ctx.Bot.Agent.isOnNavMesh || !ctx.Bot.Agent.isActiveAndEnabled) return NodeStatus.Failure;
+
+                var abilityHolder = ctx.Bot.GetComponent<AbilityHolder>();
+                if (abilityHolder != null && abilityHolder.IsReady)
                 {
-                    return NodeStatus.Running;
+                    abilityHolder.TryActivate();
+                    // Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} usó habilidad evasiva para huir.");
                 }
-                
-                // Calcular nuevo destino de huida
-                Vector3 enemyPos = ctx.NearestEnemy.Value.transform.position;
+
+                Vector3 enemyPos = ctx.NearestEnemy.position;
                 Vector3 fleeDir = (ctx.Bot.transform.position - enemyPos).normalized;
+                Vector3 fleeDest = ctx.Bot.transform.position + fleeDir * 15f;
                 
-                // Calculate destination
-                Vector3 fleeDest = ctx.Bot.transform.position + fleeDir * 10f;
-                
-                // Keep inside zone if possible
                 if (ZoneManager.Instance != null && !ZoneManager.Instance.IsInsideZone(fleeDest))
                 {
-                    // Steer towards zone center if fleeing pushes us out
                     Vector3 centerDir = (ZoneManager.Instance.ZoneCenter - ctx.Bot.transform.position).normalized;
-                    fleeDest = ctx.Bot.transform.position + (fleeDir + centerDir).normalized * 10f;
+                    fleeDest = ctx.Bot.transform.position + (fleeDir + centerDir).normalized * 15f;
+                }
+
+                if (UnityEngine.AI.NavMesh.SamplePosition(fleeDest, out UnityEngine.AI.NavMeshHit hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
+                {
+                    fleeDest = hit.position;
                 }
 
                 if (ctx.Bot.Agent.isStopped) ctx.Bot.Agent.isStopped = false;
-                ctx.Bot.Agent.speed = 8f; // Correr
+                ctx.Bot.Agent.speed = 8f;
                 ctx.Bot.Agent.SetDestination(fleeDest);
 
-                // Disparo en huida (Kiting)
+                // Kiting
                 if (ctx.Bot.Inventory != null && Time.time >= ctx.NextAttackTime)
                 {
-                    // Seleccionamos el primer hechizo sin cooldown
                     bool canShoot = false;
                     for (int i = 0; i < ctx.Bot.Inventory.slots.Length; i++)
                     {
@@ -73,15 +75,25 @@ namespace AnimalMagicRoyale.AI
                     if (canShoot)
                     {
                         float dist = Vector3.Distance(ctx.Bot.transform.position, enemyPos);
-                        if (dist > 8f) // Distancia prudente para detenerse un frame a disparar
+                        if (dist > 8f)
                         {
-                            Vector3 aimDir = (enemyPos - ctx.Bot.transform.position).normalized;
-                            aimDir.y = 0;
-                            // Girar instantáneamente hacia atrás para lanzar el hechizo
-                            ctx.Bot.transform.rotation = Quaternion.LookRotation(aimDir);
+                            Vector3 targetCenter = enemyPos + Vector3.up * 1f;
+                            Vector3 firePos = ctx.Bot.Inventory.FirePoint != null 
+                                              ? ctx.Bot.Inventory.FirePoint.position 
+                                              : ctx.Bot.transform.position + Vector3.up * 1f;
+
+                            Vector3 aimDir = (targetCenter - firePos).normalized;
+                            
+                            Vector3 lookDir = aimDir;
+                            lookDir.y = 0;
+                            if (lookDir.sqrMagnitude > 0)
+                            {
+                                ctx.Bot.transform.rotation = Quaternion.LookRotation(lookDir);
+                            }
+                            
                             if (ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, aimDir))
                             {
-                                ctx.NextAttackTime = Time.time + 1.5f; // Añadir un cooldown global para no dejar rastro
+                                ctx.NextAttackTime = Time.time + 1.5f;
                             }
                         }
                     }
@@ -95,12 +107,12 @@ namespace AnimalMagicRoyale.AI
         {
             return new BTAction(ctx =>
             {
-                if (!ctx.NearestEnemy.HasValue) return NodeStatus.Failure;
-                
-                Transform target = ctx.NearestEnemy.Value.transform;
+                if (ctx.NearestEnemy == null) return NodeStatus.Failure;
+                if (!ctx.Bot.Agent.isOnNavMesh || !ctx.Bot.Agent.isActiveAndEnabled) return NodeStatus.Failure;
+
+                Transform target = ctx.NearestEnemy;
                 float dist = Vector3.Distance(ctx.Bot.transform.position, target.position);
                 
-                // 1. Aim Prediction
                 Vector3 targetVelocity = Vector3.zero;
                 var targetCC = target.GetComponent<CharacterController>();
                 if (targetCC != null) targetVelocity = targetCC.velocity;
@@ -111,23 +123,36 @@ namespace AnimalMagicRoyale.AI
                 }
 
                 float projSpeed = 20f;
-                if (ctx.Bot.Inventory != null && ctx.Bot.Inventory.GetActiveSpell() != null)
+                bool isSelfCast = false;
+                bool hasBounces = false;
+
+                var activeSpellData = ctx.Bot.Inventory?.GetActiveSpell();
+                if (activeSpellData != null)
                 {
-                    projSpeed = ctx.Bot.Inventory.GetActiveSpell().projectileSpeed;
+                    projSpeed = activeSpellData.projectileSpeed;
+                    isSelfCast = activeSpellData.targetType == Spells.TargetType.Self;
+                    hasBounces = activeSpellData.maxBounces > 0;
                 }
 
                 float timeToTarget = dist / Mathf.Max(projSpeed, 1f);
                 Vector3 predictedPos = target.position + (targetVelocity * timeToTarget);
-                
-                Vector3 aimDir = (predictedPos - ctx.Bot.transform.position).normalized;
-                aimDir.y = 0;
+                Vector3 targetCenter = predictedPos + Vector3.up * 1f;
 
-                // Siempre rotar hacia el enemigo (posición predicha)
-                if (aimDir.sqrMagnitude > 0)
+                Vector3 firePos = ctx.Bot.Inventory != null && ctx.Bot.Inventory.FirePoint != null 
+                                  ? ctx.Bot.Inventory.FirePoint.position 
+                                  : ctx.Bot.transform.position + Vector3.up * 1f;
+
+                Vector3 aimDir = (targetCenter - firePos).normalized;
+
+                if (!isSelfCast)
                 {
-                    Quaternion lookRot = Quaternion.LookRotation(aimDir);
-                    ctx.Bot.transform.rotation = Quaternion.Slerp(
-                        ctx.Bot.transform.rotation, lookRot, Time.deltaTime * 10f);
+                    Vector3 lookDir = aimDir;
+                    lookDir.y = 0;
+                    if (lookDir.sqrMagnitude > 0)
+                    {
+                        Quaternion lookRot = Quaternion.LookRotation(lookDir);
+                        ctx.Bot.transform.rotation = Quaternion.Slerp(ctx.Bot.transform.rotation, lookRot, Time.deltaTime * 10f);
+                    }
                 }
 
                 if (dist > ctx.Bot.attackRange)
@@ -138,29 +163,27 @@ namespace AnimalMagicRoyale.AI
                 }
                 else
                 {
-                    // 2. Strafing (Movimiento lateral en lugar de quedarse estático)
                     if (ctx.Bot.Agent.isStopped) ctx.Bot.Agent.isStopped = false;
                     ctx.Bot.Agent.speed = 5f;
                     
                     if (!ctx.Bot.Agent.pathPending && ctx.Bot.Agent.remainingDistance < 1f)
                     {
-                        // Vector perpendicular a la mirada
                         Vector3 right = Vector3.Cross(aimDir, Vector3.up).normalized;
-                        // Dirección aleatoria
                         float sign = Random.value > 0.5f ? 1f : -1f;
                         Vector3 strafeDest = ctx.Bot.transform.position + (right * sign * 4f);
                         
-                        if (UnityEngine.AI.NavMesh.SamplePosition(strafeDest, out UnityEngine.AI.NavMeshHit hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
+                        if (ZoneManager.Instance != null && ZoneManager.Instance.IsInsideZone(strafeDest))
                         {
-                            ctx.Bot.Agent.SetDestination(hit.position);
+                            if (UnityEngine.AI.NavMesh.SamplePosition(strafeDest, out UnityEngine.AI.NavMeshHit hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
+                            {
+                                ctx.Bot.Agent.SetDestination(hit.position);
+                            }
                         }
                     }
                 }
 
-                // Intentar disparar siempre (si hay hechizo y no está en cooldown)
                 if (ctx.Bot.Inventory != null && Time.time >= ctx.NextAttackTime)
                 {
-                    // Seleccionar el mejor hechizo disponible
                     for (int i = 0; i < ctx.Bot.Inventory.slots.Length; i++)
                     {
                         var slot = ctx.Bot.Inventory.slots[i];
@@ -170,44 +193,165 @@ namespace AnimalMagicRoyale.AI
                             break;
                         }
                     }
-                    bool castSuccess = ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, aimDir);
+                    
+                    Vector3 finalAimDir = isSelfCast ? ctx.Bot.transform.forward : aimDir;
+                    bool castSuccess = ctx.Bot.Inventory.TryCast(ctx.Bot.gameObject, finalAimDir);
                     if (castSuccess)
                     {
-                        ctx.NextAttackTime = Time.time + 1.0f; // Pequeño retraso entre disparos
-                        Debug.Log($"[BotActions] {ctx.Bot.gameObject.name} casted spell at dist {dist:F1}m (Predicted)");
+                        ctx.NextAttackTime = Time.time + 1.0f;
                     }
+                }
+
+                var abilityHolder = ctx.Bot.GetComponent<AbilityHolder>();
+                if (abilityHolder != null && abilityHolder.IsReady && dist < 5f)
+                {
+                    abilityHolder.TryActivate();
                 }
 
                 return NodeStatus.Running;
             });
         }
 
-        public static BTAction MoveToLootBox()
+        public static BTAction MoveToLoot()
         {
             return new BTAction(ctx =>
             {
-                if (!ctx.NearestLootBox.HasValue) return NodeStatus.Failure;
-                
-                Transform box = ctx.NearestLootBox.Value.transform;
-                float dist = Vector3.Distance(ctx.Bot.transform.position, box.position);
-                
-                if (dist <= 2f) // Interaction range
+                // CASO A: Target Físico
+                if (ctx.BestPhysicalLoot != null)
                 {
-                    ctx.Bot.Agent.isStopped = true;
-                    var lootBox = box.GetComponent<LootBox>();
-                    if (lootBox != null)
+                    float dist = Vector3.Distance(ctx.Bot.transform.position, ctx.BestPhysicalLoot.position);
+                    
+                    if (dist <= 1.5f)
                     {
-                        if (lootBox.TryOpen(ctx.Bot.gameObject))
+                        if (ctx.Bot.Agent.isOnNavMesh && ctx.Bot.Agent.isActiveAndEnabled) ctx.Bot.Agent.isStopped = true;
+                        
+                        var lootBox = ctx.BestPhysicalLoot.GetComponent<LootBox>();
+                        if (lootBox != null)
                         {
-                            return NodeStatus.Success; // Opened
+                            if (lootBox.TryOpen(ctx.Bot.gameObject))
+                            {
+                                // Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} abrió un cofre.");
+                                return NodeStatus.Success;
+                            }
                         }
+                        else
+                        {
+                            var pickup = ctx.BestPhysicalLoot.GetComponent<SpellPickup>();
+                            if (pickup != null && pickup.containedSpell != null)
+                            {
+                                int targetSlot = -1;
+                                int lowestTier = int.MaxValue;
+                                
+                                for (int i = 0; i < ctx.Bot.Inventory.slots.Length; i++)
+                                {
+                                    if (ctx.Bot.Inventory.slots[i].IsEmpty)
+                                    {
+                                        targetSlot = i;
+                                        break;
+                                    }
+                                    else if ((int)ctx.Bot.Inventory.slots[i].spellData.tier < lowestTier)
+                                    {
+                                        lowestTier = (int)ctx.Bot.Inventory.slots[i].spellData.tier;
+                                        targetSlot = i;
+                                    }
+                                }
+                                
+                                if (targetSlot != -1)
+                                {
+                                    ctx.Bot.Inventory.SelectSlot(targetSlot);
+                                    if (pickup.TryPickup(ctx.Bot.gameObject))
+                                    {
+                                        if (TeamMemorySystem.Instance != null)
+#pragma warning disable CS0618
+                                            TeamMemorySystem.Instance.RemoveSpell(ctx.TeamId, ctx.BestPhysicalLoot.gameObject.GetEntityId());
+#pragma warning restore CS0618
+                                        // Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} recogió un hechizo.");
+                                        return NodeStatus.Success;
+                                    }
+                                }
+                            }
+                        }
+                        return NodeStatus.Failure;
                     }
-                    return NodeStatus.Failure; // Couldn't open or already open
+                    
+                    if (ctx.Bot.Agent.isOnNavMesh && ctx.Bot.Agent.isActiveAndEnabled)
+                    {
+                        ctx.Bot.Agent.isStopped = false;
+                        ctx.Bot.Agent.speed = 5f;
+                        ctx.Bot.Agent.SetDestination(ctx.BestPhysicalLoot.position);
+                    }
+                    return NodeStatus.Running;
                 }
                 
-                ctx.Bot.Agent.isStopped = false;
-                ctx.Bot.Agent.speed = 5f; // Andar a caja
-                ctx.Bot.Agent.SetDestination(box.position);
+                // CASO B: Target en Memoria
+                if (ctx.BestMemoryLoot.HasValue)
+                {
+                    Vector3 dest = ctx.BestMemoryLoot.Value.Position;
+                    float dist = Vector3.Distance(ctx.Bot.transform.position, dest);
+                    
+                    if (dist < 2.0f)
+                    {
+                        // Check if sensor sees the spell here
+                        bool spellFound = false;
+                        foreach (var target in ctx.Sensor.VisibleTargets)
+                        {
+                            if (target.type == TargetType.SpellPickup && Vector3.Distance(target.transform.position, dest) < 1f)
+                            {
+                                spellFound = true;
+                                break;
+                            }
+                        }
+
+                        if (!spellFound)
+                        {
+                            // Alguien se lo llevó o despawneó
+                            if (TeamMemorySystem.Instance != null)
+                            {
+                                TeamMemorySystem.Instance.RemoveSpell(ctx.TeamId, ctx.BestMemoryLoot.Value.InstanceID);
+                            }
+                            // Debug.Log($"[BotAI] {ctx.Bot.gameObject.name} llegó a la posición de memoria pero el hechizo no estaba.");
+                            return NodeStatus.Failure;
+                        }
+                    }
+
+                    if (ctx.Bot.Agent.isOnNavMesh && ctx.Bot.Agent.isActiveAndEnabled)
+                    {
+                        ctx.Bot.Agent.isStopped = false;
+                        ctx.Bot.Agent.speed = 5f;
+                        ctx.Bot.Agent.SetDestination(dest);
+                    }
+                    return NodeStatus.Running;
+                }
+
+                return NodeStatus.Failure;
+            });
+        }
+
+        public static BTAction Investigate()
+        {
+            return new BTAction(ctx =>
+            {
+                if (!ctx.InvestigationTarget.HasValue) return NodeStatus.Failure;
+
+                Vector3 dest = ctx.InvestigationTarget.Value.LastKnownPosition;
+                float dist = Vector3.Distance(ctx.Bot.transform.position, dest);
+
+                if (dist < 2.0f)
+                {
+                    // Llego y giro un poco
+                    ctx.Bot.transform.Rotate(0, 90 * Time.deltaTime, 0);
+                    
+                    // Como pasará el tiempo, el cleanup del TeamMemory lo borrará.
+                    // Pero podemos forzarlo si queremos.
+                    return NodeStatus.Running;
+                }
+
+                if (ctx.Bot.Agent.isOnNavMesh && ctx.Bot.Agent.isActiveAndEnabled)
+                {
+                    ctx.Bot.Agent.isStopped = false;
+                    ctx.Bot.Agent.speed = 5f;
+                    ctx.Bot.Agent.SetDestination(dest);
+                }
                 return NodeStatus.Running;
             });
         }
@@ -216,13 +360,14 @@ namespace AnimalMagicRoyale.AI
         {
             return new BTAction(ctx =>
             {
+                if (!ctx.Bot.Agent.isOnNavMesh || !ctx.Bot.Agent.isActiveAndEnabled) return NodeStatus.Failure;
+
                 if (ctx.Bot.Agent.isStopped) 
                 {
                     ctx.Bot.Agent.isStopped = false;
-                    ctx.Bot.Agent.ResetPath(); // Clear old paths to prevent walking backwards
+                    ctx.Bot.Agent.ResetPath();
                 }
 
-                // Si ha llegado a su destino o no tiene un camino pendiente
                 if (!ctx.Bot.Agent.pathPending && ctx.Bot.Agent.remainingDistance < 1.5f)
                 {
                     Vector3 center = ctx.Bot.transform.position;
@@ -230,16 +375,20 @@ namespace AnimalMagicRoyale.AI
                     if (ZoneManager.Instance != null && ZoneManager.Instance.IsActive)
                     {
                         center = ZoneManager.Instance.ZoneCenter;
-                        patrolRadius = Mathf.Max(10f, ZoneManager.Instance.CurrentRadius * 0.7f);
+                        patrolRadius = Mathf.Max(10f, (ZoneManager.Instance.CurrentDiameter / 2f) * 0.7f);
                     }
                     
                     Vector2 rand = Random.insideUnitCircle * patrolRadius;
                     Vector3 dest = center + new Vector3(rand.x, 0, rand.y);
                     
-                    // Comprobar que el punto es válido en el NavMesh
+                    if (ZoneManager.Instance != null && !ZoneManager.Instance.IsInsideZone(dest))
+                    {
+                        dest = center; // Ir al centro si random es fuera
+                    }
+
                     if (UnityEngine.AI.NavMesh.SamplePosition(dest, out UnityEngine.AI.NavMeshHit hit, 10f, UnityEngine.AI.NavMesh.AllAreas))
                     {
-                        ctx.Bot.Agent.speed = 5f; // Andar patrullando
+                        ctx.Bot.Agent.speed = 5f;
                         ctx.Bot.Agent.SetDestination(hit.position);
                     }
                 }

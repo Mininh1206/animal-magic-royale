@@ -28,9 +28,18 @@ namespace AnimalMagicRoyale.AI
         {
             return new BTCondition(ctx => 
             {
-                return ctx.NearestEnemy.HasValue && 
+                return ctx.NearestEnemy != null && 
                        ctx.FuzzyResult.attackScore > 0.2f &&
                        ctx.FuzzyResult.attackScore >= ctx.FuzzyResult.fleeScore;
+            });
+        }
+
+        public static BTCondition ShouldInvestigate()
+        {
+            return new BTCondition(ctx => 
+            {
+                return ctx.NearestEnemy == null && 
+                       ctx.InvestigationTarget.HasValue;
             });
         }
 
@@ -39,18 +48,18 @@ namespace AnimalMagicRoyale.AI
             return new BTCondition(ctx => 
             {
                 return ctx.FuzzyResult.collectScore > 0.3f && 
-                       ctx.NearestLootBox.HasValue;
+                       (ctx.BestPhysicalLoot != null || ctx.BestMemoryLoot.HasValue);
             });
         }
 
         public static BTCondition HasEnemyTarget()
         {
-            return new BTCondition(ctx => ctx.NearestEnemy.HasValue);
+            return new BTCondition(ctx => ctx.NearestEnemy != null);
         }
 
         public static BTCondition HasLootTarget()
         {
-            return new BTCondition(ctx => ctx.NearestLootBox.HasValue);
+            return new BTCondition(ctx => ctx.BestPhysicalLoot != null || ctx.BestMemoryLoot.HasValue);
         }
     }
 }
