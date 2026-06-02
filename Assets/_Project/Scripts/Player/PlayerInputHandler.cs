@@ -160,7 +160,7 @@ namespace AnimalMagicRoyale.Player
                         
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.Interact)) playerController.InteractRequested = true;
 
-                        // DEBUG
+#if UNITY_EDITOR                        
                         if (kb.GetActionDown(AnimalMagicRoyale.Core.KeyBindingManager.GameAction.LowerHealth))
                         {
                             // Invoca evento de daño sin usar eventbus
@@ -170,6 +170,7 @@ namespace AnimalMagicRoyale.Player
                         {
                             playerController.Heal(25f);
                         }
+#endif
                     }
                 }
             }
