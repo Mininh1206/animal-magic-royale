@@ -139,6 +139,19 @@ namespace AnimalMagicRoyale.Components
                 AnimalMagicRoyale.Core.GameManager.Instance.UnregisterPlayer(gameObject, lastDamager);
             }
             
+            // Drop all spells
+            var inventory = GetComponent<SpellInventory>();
+            if (inventory != null)
+            {
+                for (int i = 0; i < inventory.slots.Length; i++)
+                {
+                    if (!inventory.slots[i].IsEmpty)
+                    {
+                        inventory.DropSpell(inventory.slots[i].spellData);
+                    }
+                }
+            }
+
             gameObject.SetActive(false);
         }
     }
