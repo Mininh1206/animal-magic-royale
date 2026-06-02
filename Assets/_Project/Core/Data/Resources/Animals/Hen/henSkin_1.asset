@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.Data.SkinData
   skinName: Gallina Blanca
   animalType: 2
-  previewIcon: {fileID: 0}
+  previewIcon: {fileID: 21300000, guid: f0bc661c148a11442b553703cab91c58, type: 3}
   modelPrefab: {fileID: 919132149155446097, guid: 79f5ceccc716c344a97899f69bfa6156, type: 3}

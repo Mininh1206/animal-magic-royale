@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.Data.SkinData
   skinName: "Pato Marr\xF3n"
   animalType: 3
-  previewIcon: {fileID: -7343220986905845580, guid: 215687feeab0b7445b4a1cd86c82c2e1, type: 3}
+  previewIcon: {fileID: 21300000, guid: 36c5a3db05e4a71499cb7c7005a62036, type: 3}
   modelPrefab: {fileID: 919132149155446097, guid: 29bcb769f3c51f64987d1ba4482dc26d, type: 3}

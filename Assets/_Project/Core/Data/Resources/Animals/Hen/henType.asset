@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.Data.AnimalType
   typeId: 2
   displayName: Gallina
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: f0bc661c148a11442b553703cab91c58, type: 3}
   ability: {fileID: 11400000, guid: 024a83c5dffbcc54683e68607a4b3259, type: 2}
   audioData: {fileID: 11400000, guid: c9e809d5644c0264abc82566c3fccf20, type: 2}
   animatorController: {fileID: 0}

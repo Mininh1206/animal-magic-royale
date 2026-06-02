@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.Data.AnimalType
   typeId: 1
   displayName: Gallo
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 9719c6c363b825a4b8ff4f93346037ab, type: 3}
   ability: {fileID: 11400000, guid: b509b9e3233304a43923964d29399827, type: 2}
   audioData: {fileID: 11400000, guid: c9e809d5644c0264abc82566c3fccf20, type: 2}
   animatorController: {fileID: 0}

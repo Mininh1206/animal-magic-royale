@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.Data.MapData
   mapName: Pisos Picados
   sceneName: Map_Factory
-  previewImage: {fileID: 0}
+  previewImage: {fileID: 21300000, guid: d3cc71aa571b0204d9976d3c0c45a5fe, type: 3}
   description: "Pueblo Tomate Monta\xF1oso"
   maxPlayers: 60
   zonePhases:
