@@ -1,6 +1,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.Rendering;
 
 namespace AnimalMagicRoyale.Components.UI
 {
@@ -19,6 +20,37 @@ namespace AnimalMagicRoyale.Components.UI
             {
                 minimapImage.style.backgroundImage = new StyleBackground(
                     Background.FromRenderTexture(minimapRenderTexture));
+            }
+        }
+
+        private bool fogWasEnabled;
+
+        private void OnEnable()
+        {
+            RenderPipelineManager.beginCameraRendering += OnBeginCameraRendering;
+            RenderPipelineManager.endCameraRendering += OnEndCameraRendering;
+        }
+
+        private void OnDisable()
+        {
+            RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;
+            RenderPipelineManager.endCameraRendering -= OnEndCameraRendering;
+        }
+
+        private void OnBeginCameraRendering(ScriptableRenderContext context, UnityEngine.Camera camera)
+        {
+            if (camera == minimapCamera)
+            {
+                fogWasEnabled = RenderSettings.fog;
+                RenderSettings.fog = false;
+            }
+        }
+
+        private void OnEndCameraRendering(ScriptableRenderContext context, UnityEngine.Camera camera)
+        {
+            if (camera == minimapCamera)
+            {
+                RenderSettings.fog = fogWasEnabled;
             }
         }
 
