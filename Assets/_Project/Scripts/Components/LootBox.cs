@@ -20,7 +20,20 @@ namespace AnimalMagicRoyale.Components
             this.containedSpell = spell;
             this.tier = tier;
             isOpened = false;
+            
+            SetLayerRecursively(gameObject, LayerMask.NameToLayer("Drops"));
+            
             gameObject.SetActive(true);
+        }
+
+        private void SetLayerRecursively(GameObject obj, int newLayer)
+        {
+            if (obj == null) return;
+            obj.layer = newLayer;
+            foreach (Transform child in obj.transform)
+            {
+                SetLayerRecursively(child.gameObject, newLayer);
+            }
         }
 
         public bool TryOpen(GameObject player)

@@ -135,18 +135,13 @@ namespace AnimalMagicRoyale.AI
                 }
 
                 float timeToTarget = dist / Mathf.Max(projSpeed, 1f);
-                Vector3 predictedPos = target.position + (targetVelocity * timeToTarget);
-                Vector3 targetCenter = predictedPos + Vector3.up * 1f;
-
                 Vector3 firePos = ctx.Bot.Inventory != null && ctx.Bot.Inventory.FirePoint != null 
                                   ? ctx.Bot.Inventory.FirePoint.position 
                                   : ctx.Bot.transform.position + Vector3.up * 1f;
 
-                if (dist < 3f)
-                {
-                    targetCenter.y = firePos.y;
-                    // Debug.Log($"[BotAI] Ajustando mira vertical por cercanía (< 3f) en {ctx.Bot.gameObject.name}");
-                }
+                float aimHeightOffset = Mathf.Max(0.5f, firePos.y - ctx.Bot.transform.position.y);
+                Vector3 predictedPos = target.position + (targetVelocity * timeToTarget);
+                Vector3 targetCenter = predictedPos + Vector3.up * aimHeightOffset;
 
                 Vector3 aimDir = (targetCenter - firePos).normalized;
 
@@ -225,13 +220,16 @@ namespace AnimalMagicRoyale.AI
                 // CASO A: Target Físico
                 if (ctx.BestPhysicalLoot != null)
                 {
-                    float dist = Vector3.Distance(ctx.Bot.transform.position, ctx.BestPhysicalLoot.position);
+                    var lootBox = ctx.BestPhysicalLoot.GetComponentInParent<LootBox>();
+                    var pickup = ctx.BestPhysicalLoot.GetComponentInParent<SpellPickup>();
                     
-                    if (dist <= 2.5f)
+                    Transform targetRoot = lootBox != null ? lootBox.transform : (pickup != null ? pickup.transform : ctx.BestPhysicalLoot);
+                    float dist = Vector3.Distance(ctx.Bot.transform.position, targetRoot.position);
+                    
+                    if (dist <= 3f)
                     {
                         if (ctx.Bot.Agent.isOnNavMesh && ctx.Bot.Agent.isActiveAndEnabled) ctx.Bot.Agent.isStopped = true;
                         
-                        var lootBox = ctx.BestPhysicalLoot.GetComponentInParent<LootBox>();
                         if (lootBox != null)
                         {
                             if (lootBox.TryOpen(ctx.Bot.gameObject))
@@ -240,10 +238,7 @@ namespace AnimalMagicRoyale.AI
                                 return NodeStatus.Success;
                             }
                         }
-                        else
-                        {
-                            var pickup = ctx.BestPhysicalLoot.GetComponentInParent<SpellPickup>();
-                            if (pickup != null && pickup.containedSpell != null)
+                        else if (pickup != null && pickup.containedSpell != null)
                             {
                                 int targetSlot = -1;
                                 int lowestTier = int.MaxValue;
@@ -276,7 +271,6 @@ namespace AnimalMagicRoyale.AI
                                     }
                                 }
                             }
-                        }
                         return NodeStatus.Failure;
                     }
                     
@@ -284,7 +278,7 @@ namespace AnimalMagicRoyale.AI
                     {
                         ctx.Bot.Agent.isStopped = false;
                         ctx.Bot.Agent.speed = 5f;
-                        ctx.Bot.Agent.SetDestination(ctx.BestPhysicalLoot.position);
+                        ctx.Bot.Agent.SetDestination(targetRoot.position);
                     }
                     return NodeStatus.Running;
                 }

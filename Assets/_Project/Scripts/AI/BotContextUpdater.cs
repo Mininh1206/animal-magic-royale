@@ -34,6 +34,18 @@ namespace AnimalMagicRoyale.AI
             float minEnemyDist = float.MaxValue;
             Transform nearestEnemy = null;
 
+            bool hasEmptySlot = false;
+            int minTierInInventory = int.MaxValue;
+            if (bot.Inventory != null)
+            {
+                foreach (var slot in bot.Inventory.slots)
+                {
+                    if (slot.IsEmpty) hasEmptySlot = true;
+                    else if ((int)slot.spellData.tier < minTierInInventory) minTierInInventory = (int)slot.spellData.tier;
+                }
+            }
+            int currentLowestTier = hasEmptySlot ? -1 : (minTierInInventory == int.MaxValue ? -1 : minTierInInventory);
+
             // 3. Fusión de Sensores
             foreach (var target in sensor.VisibleTargets)
             {
@@ -74,10 +86,9 @@ namespace AnimalMagicRoyale.AI
                     var pickup = target.transform.GetComponentInParent<SpellPickup>();
                     if (pickup != null && pickup.containedSpell != null)
                     {
-                        int currentTier = bot.Inventory != null && bot.Inventory.GetActiveSpell() != null ? (int)bot.Inventory.GetActiveSpell().tier : -1;
                         int pickupTier = (int)pickup.containedSpell.tier;
 
-                        if (pickupTier <= currentTier)
+                        if (pickupTier <= currentLowestTier)
                         {
                             // Ignorar y reportar al equipo por si alguien lo quiere
                             if (TeamMemorySystem.Instance != null)
@@ -109,8 +120,7 @@ namespace AnimalMagicRoyale.AI
                     if (ZoneManager.Instance != null && !ZoneManager.Instance.IsInsideZone(memSpell.Position))
                         continue;
 
-                    int currentTier = bot.Inventory != null && bot.Inventory.GetActiveSpell() != null ? (int)bot.Inventory.GetActiveSpell().tier : -1;
-                    if ((int)memSpell.Tier > currentTier)
+                    if ((int)memSpell.Tier > currentLowestTier)
                     {
                         float dist = Vector3.Distance(transform.position, memSpell.Position);
                         float score = ((int)memSpell.Tier * 100f) - dist;
