@@ -45,12 +45,6 @@ namespace AnimalMagicRoyale.Core
                     transform.SetParent(null);
                 }
 
-                if (TeamManager.Instance == null)
-                {
-                    GameObject tmObj = new GameObject("TeamManager");
-                    tmObj.AddComponent<TeamManager>();
-                }
-
                 InitializeStateMachine();
             }
             else
