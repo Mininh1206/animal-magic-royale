@@ -199,8 +199,11 @@ namespace AnimalMagicRoyale.Spells
             // Rebotes (si no chocó contra alguien vivo)
             if (targetHealth == null && bouncesLeft > 0)
             {
-                Vector3 normal = -rb.linearVelocity.normalized;
-                var hits = Physics.RaycastAll(transform.position - rb.linearVelocity.normalized * 0.5f, rb.linearVelocity.normalized, 2f);
+                Vector3 direction = rb.linearVelocity.normalized;
+                Vector3 normal = -direction;
+                
+                // Hacer el raycast más atrás (3f) para no originarlo dentro del collider debido a la alta velocidad
+                var hits = Physics.RaycastAll(transform.position - direction * 3f, direction, 5f, ~0, QueryTriggerInteraction.Collide);
                 foreach (var hit in hits)
                 {
                     if (hit.collider == other)
@@ -210,11 +213,11 @@ namespace AnimalMagicRoyale.Spells
                     }
                 }
                 
-                rb.linearVelocity = Vector3.Reflect(rb.linearVelocity, normal).normalized * spellData.projectileSpeed;
+                rb.linearVelocity = Vector3.Reflect(direction, normal).normalized * spellData.projectileSpeed;
                 transform.rotation = Quaternion.LookRotation(rb.linearVelocity);
                 
                 // Pequeño push para no quedarnos atrapados en el collider y gastar rebotes
-                transform.position += normal * 0.2f;
+                transform.position += normal * 0.5f;
 
                 bouncesLeft--;
                 // Debug.Log($"[Projectile Bounce] {gameObject.name} rebotó en {other.gameObject.name}. Rebotes restantes: {bouncesLeft}. Normal: {normal}");

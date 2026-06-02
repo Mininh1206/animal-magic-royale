@@ -77,7 +77,16 @@ namespace AnimalMagicRoyale.AI
                         float dist = Vector3.Distance(ctx.Bot.transform.position, enemyPos);
                         if (dist > 8f)
                         {
-                            Vector3 targetCenter = enemyPos + Vector3.up * 1f;
+                            float targetCenterYOffset = 1f;
+                            var targetCC = ctx.NearestEnemy.GetComponentInParent<CharacterController>();
+                            if (targetCC != null) targetCenterYOffset = targetCC.height * 0.35f;
+                            else 
+                            {
+                                var targetAgent = ctx.NearestEnemy.GetComponentInParent<UnityEngine.AI.NavMeshAgent>();
+                                if (targetAgent != null) targetCenterYOffset = targetAgent.height * 0.35f;
+                            }
+
+                            Vector3 targetCenter = enemyPos + Vector3.up * targetCenterYOffset;
                             Vector3 firePos = ctx.Bot.Inventory.FirePoint != null 
                                               ? ctx.Bot.Inventory.FirePoint.position 
                                               : ctx.Bot.transform.position + Vector3.up * 1f;
@@ -114,12 +123,23 @@ namespace AnimalMagicRoyale.AI
                 float dist = Vector3.Distance(ctx.Bot.transform.position, target.position);
                 
                 Vector3 targetVelocity = Vector3.zero;
-                var targetCC = target.GetComponent<CharacterController>();
-                if (targetCC != null) targetVelocity = targetCC.velocity;
+                float targetCenterYOffset = 1f;
+                var targetCC = target.GetComponentInParent<CharacterController>();
+                if (targetCC != null) 
+                {
+                    targetVelocity = targetCC.velocity;
+                    // El centro geométrico puede quedar muy alto por la cabeza/cuello. 
+                    // Apuntamos al torso (35% de la altura total) para no fallar por encima.
+                    targetCenterYOffset = targetCC.height * 0.35f;
+                }
                 else 
                 {
-                    var targetAgent = target.GetComponent<UnityEngine.AI.NavMeshAgent>();
-                    if (targetAgent != null) targetVelocity = targetAgent.velocity;
+                    var targetAgent = target.GetComponentInParent<UnityEngine.AI.NavMeshAgent>();
+                    if (targetAgent != null) 
+                    {
+                        targetVelocity = targetAgent.velocity;
+                        targetCenterYOffset = targetAgent.height * 0.35f;
+                    }
                 }
 
                 float projSpeed = 20f;
@@ -139,9 +159,9 @@ namespace AnimalMagicRoyale.AI
                                   ? ctx.Bot.Inventory.FirePoint.position 
                                   : ctx.Bot.transform.position + Vector3.up * 1f;
 
-                float aimHeightOffset = Mathf.Max(0.5f, firePos.y - ctx.Bot.transform.position.y);
                 Vector3 predictedPos = target.position + (targetVelocity * timeToTarget);
-                Vector3 targetCenter = predictedPos + Vector3.up * aimHeightOffset;
+                // Aim at the target's actual center using its character controller offset
+                Vector3 targetCenter = predictedPos + Vector3.up * targetCenterYOffset;
 
                 Vector3 aimDir = (targetCenter - firePos).normalized;
 
