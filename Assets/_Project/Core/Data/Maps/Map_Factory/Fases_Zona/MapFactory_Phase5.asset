@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a5ae5eba19702c4fb6921e8b0054396, type: 3}
-  m_Name: MapFactory_Phase3
+  m_Name: MapFactory_Phase5
   m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Core.ZonePhaseData
-  startDiameter: 300
-  endDiameter: 200
-  shrinkDuration: 30
+  startDiameter: 100
+  endDiameter: 5
+  shrinkDuration: 15
   waitBeforeShrink: 30
-  baseDamage: 4
-  damageMultiplier: 0.05
+  baseDamage: 10
+  damageMultiplier: 0.1

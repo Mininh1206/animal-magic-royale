@@ -16,5 +16,5 @@ MonoBehaviour:
   endDiameter: 100
   shrinkDuration: 30
   waitBeforeShrink: 30
-  baseDamage: 10
-  damageMultiplier: 0.1
+  baseDamage: 6
+  damageMultiplier: 0.05
