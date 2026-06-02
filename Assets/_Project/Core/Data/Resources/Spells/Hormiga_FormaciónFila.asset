@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: "Formaci\xF3n Fila"
   description: Triple proyectil
   tier: 1
-  icon: {fileID: -1358704786, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -1037089990, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 6
   projectileSpeed: 35
   projectileCount: 3

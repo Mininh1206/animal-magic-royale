@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Picadura 1:00 AM
   description: "Veneno: 2 da\xF1o/s (5s)"
   tier: 1
-  icon: {fileID: -543841706, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -268841084, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 4
   projectileSpeed: 45
   projectileCount: 1

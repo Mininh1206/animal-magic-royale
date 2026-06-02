@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: "Rat\xF3n de Bola"
   description: Proyectil pesado (rueda)
   tier: 2
-  icon: {fileID: -1852882383, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -1729021158, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 3
   projectileSpeed: 25
   projectileCount: 1

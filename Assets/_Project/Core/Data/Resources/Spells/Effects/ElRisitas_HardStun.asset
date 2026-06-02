@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac7ebd317b8163047a9bca2dc6f30c40, type: 3}
-  m_Name: TicketComedor_Heal
-  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Spells.Effects.HealEffect
-  healAmount: 20
-  healCasterInstead: 0
+  m_Script: {fileID: 11500000, guid: 39d4842c8e3ac7e4e8d610ecbe775312, type: 3}
+  m_Name: ElRisitas_HardStun
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalMagicRoyale.Spells.Effects.HardStunEffect
+  duration: 1.5

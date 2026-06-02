@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Hoja Afilada
   description: Melee (rango corto)
   tier: 1
-  icon: {fileID: -270804019, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -1072495433, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 2
   projectileSpeed: 0
   projectileCount: 1

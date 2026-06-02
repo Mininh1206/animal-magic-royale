@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Huevo Sorpresa
   description: Mina terrestre (radio 4m)
   tier: 2
-  icon: {fileID: -1072495433, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: 1582677432, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 8
   projectileSpeed: 0
   projectileCount: 1
@@ -26,4 +26,4 @@ MonoBehaviour:
   spellColor: {r: 0, g: 1, b: 1, a: 1}
   effects:
   - {fileID: 11400000, guid: f9ae0a22cfa4c7746a8946f26034f112, type: 2}
-  - {fileID: 11400000, guid: 03f0fdab86f03e34eb338ba2fff6c1a1, type: 2}
+  - {fileID: 11400000, guid: f0b0d6af610a4744597b569211915c5b, type: 2}

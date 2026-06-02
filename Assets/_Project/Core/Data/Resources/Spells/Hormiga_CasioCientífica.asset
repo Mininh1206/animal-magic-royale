@@ -15,12 +15,12 @@ MonoBehaviour:
   spellName: "Casio Cient\xEDfica"
   description: Proyectil homing
   tier: 1
-  icon: {fileID: -270804019, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -1072495433, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 4
   projectileSpeed: 35
   projectileCount: 1
   targetType: 0
-  isHoming: 0
+  isHoming: 1
   maxBounces: 0
   projectilePrefab: {fileID: 8349761922293664815, guid: 848e099678108084e90bb9235cfb1d9b, type: 3}
   spellColor: {r: 0, g: 1, b: 0, a: 1}

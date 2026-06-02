@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Cable Ethernet
   description: Atrapa enemigo y lo acerca
   tier: 2
-  icon: {fileID: -543841706, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -268841084, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 6
   projectileSpeed: 40
   projectileCount: 1

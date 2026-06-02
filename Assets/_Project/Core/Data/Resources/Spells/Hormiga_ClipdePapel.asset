@@ -15,13 +15,13 @@ MonoBehaviour:
   spellName: Clip de Papel
   description: Rebota en paredes (x2)
   tier: 1
-  icon: {fileID: -1852882383, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -1729021158, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 0.8
   projectileSpeed: 40
   projectileCount: 1
   targetType: 0
   isHoming: 0
-  maxBounces: 0
+  maxBounces: 2
   projectilePrefab: {fileID: 8349761922293664815, guid: 848e099678108084e90bb9235cfb1d9b, type: 3}
   spellColor: {r: 0, g: 1, b: 0, a: 1}
   effects:

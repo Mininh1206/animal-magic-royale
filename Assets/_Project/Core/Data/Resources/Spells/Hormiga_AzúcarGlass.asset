@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: "Az\xFAcar Glass"
   description: Inmoviliza 1.5s
   tier: 1
-  icon: {fileID: -1021419661, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -270804019, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 7
   projectileSpeed: 25
   projectileCount: 1

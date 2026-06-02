@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Tung Tung Sahur
   description: "Explosi\xF3n masiva + Knockback"
   tier: 3
-  icon: {fileID: -270804019, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -1072495433, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 20
   projectileSpeed: 35
   projectileCount: 1

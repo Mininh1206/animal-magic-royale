@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Canal Sur
   description: Revela enemigos en radar (10s)
   tier: 1
-  icon: {fileID: -1729021158, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -543841706, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 12
   projectileSpeed: 0
   projectileCount: 1

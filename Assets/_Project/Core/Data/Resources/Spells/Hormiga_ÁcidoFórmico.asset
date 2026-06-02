@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: "\xC1cido F\xF3rmico"
   description: Veneno fuerte DoT (4s)
   tier: 1
-  icon: {fileID: -1072495433, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: 1582677432, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 5
   projectileSpeed: 20
   projectileCount: 1

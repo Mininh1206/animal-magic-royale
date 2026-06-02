@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: El Risitas
   description: Stun total (1.5s) + suelta arma
   tier: 3
-  icon: {fileID: -268841084, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -1021419661, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 20
   projectileSpeed: 35
   projectileCount: 1
@@ -26,5 +26,5 @@ MonoBehaviour:
   spellColor: {r: 0.8, g: 0, b: 1, a: 1}
   effects:
   - {fileID: 11400000, guid: ea9ceb3fce985e646bb9f469035d4355, type: 2}
-  - {fileID: 11400000, guid: c09bf089ae7fc7846be9a6c1988c436d, type: 2}
+  - {fileID: 11400000, guid: 978202957e73caa4db69785c722afb83, type: 2}
   - {fileID: 11400000, guid: 2e63393944945834db05c69f387838bd, type: 2}

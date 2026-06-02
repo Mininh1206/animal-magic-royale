@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: "Espol\xF3n Veneno"
   description: "Par\xE1lisis total (1.5s)"
   tier: 2
-  icon: {fileID: -268841084, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -1021419661, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 6
   projectileSpeed: 40
   projectileCount: 1

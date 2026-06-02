@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Grapadora
   description: Reduce cadencia al 50% (4s)
   tier: 1
-  icon: {fileID: -543841706, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -268841084, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 3
   projectileSpeed: 45
   projectileCount: 1
@@ -26,4 +26,4 @@ MonoBehaviour:
   spellColor: {r: 0, g: 1, b: 0, a: 1}
   effects:
   - {fileID: 11400000, guid: c2ace4786f5daa0459be0c66cbfd7050, type: 2}
-  - {fileID: 11400000, guid: 3fdecdfa5b4abf74e9854e6da455cb91, type: 2}
+  - {fileID: 11400000, guid: 9950e38f306771c49a99ecce465e4936, type: 2}

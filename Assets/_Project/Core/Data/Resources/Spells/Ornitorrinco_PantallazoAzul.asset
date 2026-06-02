@@ -15,7 +15,7 @@ MonoBehaviour:
   spellName: Pantallazo Azul
   description: Congela y ciega al rival (1.5s)
   tier: 2
-  icon: {fileID: -1358704786, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
+  icon: {fileID: -1037089990, guid: d2ba6cd5168bb2f4483082a36ff4f2ac, type: 3}
   cooldown: 12
   projectileSpeed: 40
   projectileCount: 1
@@ -26,5 +26,5 @@ MonoBehaviour:
   spellColor: {r: 0, g: 1, b: 1, a: 1}
   effects:
   - {fileID: 11400000, guid: 57c639284b44f124896d450cfe8cd76e, type: 2}
-  - {fileID: 11400000, guid: f3ae023439dee9a47a671a020a73cb34, type: 2}
+  - {fileID: 11400000, guid: 9b43f9cce8f7087409b2751aa9ad6300, type: 2}
   - {fileID: 11400000, guid: 482d7cf87187eb44db91f43351d7a9ef, type: 2}
