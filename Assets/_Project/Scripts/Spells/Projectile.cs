@@ -237,6 +237,11 @@ namespace AnimalMagicRoyale.Spells
         protected virtual void OnProjectileClash(Projectile other)
         {
             Debug.Log($"[Projectile] Choque mágico detectado entre {gameObject.name} y {other.gameObject.name}");
+            
+            // TODO: Futuro: Aquí se puede comprobar si spellData es Fuego y el otro es Agua,
+            // instanciar un VFX de explosión o humo en el punto medio, etc.
+            
+            // Por defecto, ambos proyectiles se anulan y vuelven al pool
             ReturnToPool();
         }
     }
