@@ -35,7 +35,7 @@
                             <ui:Label text="Calidad de imagen vs rendimiento" class="setting-item-desc"/>
                         </ui:VisualElement>
                         <ui:VisualElement class="setting-item-control">
-                            <ui:DropdownField name="dropdown-resolution" choices="1920x1080,1280x720" value="1920x1080" style="width: 200px;" />
+                            <ui:DropdownField name="dropdown-resolution" choices="1920x1080,1280x720" value="1920x1080" style="width: 300px;" />
                         </ui:VisualElement>
                     </ui:VisualElement>
                     
