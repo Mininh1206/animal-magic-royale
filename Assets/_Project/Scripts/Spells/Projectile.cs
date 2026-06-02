@@ -190,6 +190,12 @@ namespace AnimalMagicRoyale.Spells
                 return;
             }
 
+            // Ignorar hechizos en el suelo (Drops)
+            if (other.gameObject.layer == LayerMask.NameToLayer("Drops"))
+            {
+                return;
+            }
+
             // Rebotes (si no chocó contra alguien vivo)
             if (targetHealth == null && bouncesLeft > 0)
             {
